@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { type BubbleProps, GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, type QuickRepliesProps } from "react-native-gifted-chat";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { mockedMessages } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
-import { OptionSelector } from "./OptionSelector";
+import { QuickReplies } from "./QuickReplies";
 
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
@@ -18,13 +18,29 @@ export const Chat: React.FC = () => {
 		);
 	}, []);
 
-	const renderCustomView = useCallback(
-		(props: Readonly<BubbleProps<IMessage>>) => {
-			if (!props.currentMessage?.mutipleChoices) return null;
+	const renderQuickReplies = useCallback(
+		(props: Readonly<QuickRepliesProps<IMessage>>) => {
+			const {
+				currentMessage,
+				onQuickReply,
+				nextMessage,
+				renderQuickReplySend,
+				quickReplyStyle,
+				quickReplyTextStyle,
+				quickReplyContainerStyle,
+			} = props;
+
+			if (!currentMessage?.quickReplies) return null;
+
 			return (
-				<OptionSelector
-					{...props}
-					options={props.currentMessage.mutipleChoices.options}
+				<QuickReplies
+					currentMessage={currentMessage}
+					onQuickReply={onQuickReply}
+					renderQuickReplySend={renderQuickReplySend}
+					quickReplyStyle={quickReplyStyle}
+					quickReplyTextStyle={quickReplyTextStyle}
+					quickReplyContainerStyle={quickReplyContainerStyle}
+					nextMessage={nextMessage}
 				/>
 			);
 		},
@@ -39,7 +55,7 @@ export const Chat: React.FC = () => {
 				user={{
 					_id: 1,
 				}}
-				renderCustomView={renderCustomView}
+				renderQuickReplies={renderQuickReplies}
 			/>
 		</SafeAreaView>
 	);

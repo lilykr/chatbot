@@ -10,11 +10,12 @@ export const mockedMessages: IMessage[] = [
       name: "Assistant Personnel",
       avatar: "🤖"
     },
-    mutipleChoices: {
-      options: [
-        { id: "feminine", label: "Féminin" },
-        { id: "masculine", label: "Masculin" },
-        { id: "neutral", label: "Neutre" }
+    quickReplies: {
+      type: "radio",
+      values: [
+        { value: "feminine", title: "Féminin" },
+        { value: "masculine", title: "Masculin" },
+        { value: "neutral", title: "Neutre" }
       ]
     }
   },
@@ -27,10 +28,11 @@ export const mockedMessages: IMessage[] = [
       name: "Assistant Personnel",
       avatar: "🤖"
     },
-    mutipleChoices: {
-      options: [
-        { id: "personalize", label: "Personnaliser" },
-        { id: "default", label: "Garder l'assistant par défaut" }
+    quickReplies: {
+      type: "radio",
+      values: [
+        { value: "personalize", title: "Personnaliser" },
+        { value: "default", title: "Garder l'assistant par défaut" }
       ]
     }
   },
