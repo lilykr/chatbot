@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { GiftedChat, type QuickRepliesProps } from "react-native-gifted-chat";
+import {
+	GiftedChat,
+	type QuickRepliesProps,
+	type Reply,
+} from "react-native-gifted-chat";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { mockedMessages } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
@@ -15,6 +19,25 @@ export const Chat: React.FC = () => {
 	const onSend = useCallback((messages: IMessage[]) => {
 		setMessages((previousMessages) =>
 			GiftedChat.append(previousMessages, messages),
+		);
+	}, []);
+
+	const onQuickReply = useCallback((replies: Reply[]) => {
+		if (!replies.length) return;
+		const reply = replies[0]; // Since we're using 'radio' type, we'll only have one reply
+		if (!reply) return;
+		// Create a user message showing their selection
+		const userMessage: IMessage = {
+			_id: Math.round(Math.random() * 1000000),
+			text: reply.title,
+			createdAt: new Date(),
+			user: {
+				_id: 1,
+			},
+		};
+
+		setMessages((previousMessages) =>
+			GiftedChat.append(previousMessages, [userMessage]),
 		);
 	}, []);
 
@@ -56,6 +79,7 @@ export const Chat: React.FC = () => {
 					_id: 1,
 				}}
 				renderQuickReplies={renderQuickReplies}
+				onQuickReply={onQuickReply}
 			/>
 		</SafeAreaView>
 	);

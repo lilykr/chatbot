@@ -7,4 +7,10 @@ export interface IMessage extends DefaultIMessage {
       label: string;
     }[];
   };
+  multipleChoicesAnswer?: {
+    id: string;
+    label: string;
+    multipleChoicesMessageId: string | number;
+  }
 }
+

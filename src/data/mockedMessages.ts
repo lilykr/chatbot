@@ -1,6 +1,7 @@
 import type { IMessage } from "../types/chat";
 
 export const mockedMessages: IMessage[] = [
+
   {
     _id: 5,
     text: "D'abord, choisissez mon genre :",
@@ -20,7 +21,17 @@ export const mockedMessages: IMessage[] = [
     }
   },
   {
-    _id: 4,
+    _id: 6,
+    text: "Garder l'assistant par défaut",
+    createdAt: new Date("2024-05-27T09:41:03"),
+    user: {
+      _id: 1,
+      name: "User",
+      avatar: "🤖"
+    },
+  },
+  {
+    _id: 7,
     text: "Que voulez-vous faire ?",
     createdAt: new Date("2024-05-27T09:41:03"),
     user: {
