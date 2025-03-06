@@ -1,6 +1,12 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, SafeAreaView } from "react-native";
+import {
+	Keyboard,
+	Pressable,
+	SafeAreaView,
+	StyleSheet,
+	View,
+} from "react-native";
 import {
 	type IMessage as DefaultIMessage,
 	GiftedChat,
@@ -44,6 +50,11 @@ export const Chat: React.FC = () => {
 		);
 	}, []);
 
+	const toggleShowCamera = useCallback(() => {
+		setShowCamera((previous) => !previous);
+		Keyboard.dismiss();
+	}, []);
+
 	const renderQuickReplies = useCallback(
 		(props: Readonly<QuickRepliesProps<DefaultIMessage>>) => {
 			const {
@@ -73,10 +84,6 @@ export const Chat: React.FC = () => {
 		[],
 	);
 
-	if (showCamera) {
-		return <Camera onClose={() => setShowCamera(false)} />;
-	}
-
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 			<GiftedChat
@@ -90,7 +97,7 @@ export const Chat: React.FC = () => {
 				disableComposer={!!messages[0]?.quickReplies}
 				showAvatarForEveryMessage={true}
 				renderActions={() => (
-					<Pressable onPress={() => setShowCamera(true)}>
+					<Pressable onPress={toggleShowCamera}>
 						<Ionicons
 							name="camera"
 							size={24}
@@ -103,6 +110,11 @@ export const Chat: React.FC = () => {
 					messages[0]?.quickReplies ? "Faites votre choix" : "Tapez un message"
 				}
 			/>
+			{showCamera && (
+				<View style={[StyleSheet.absoluteFill]}>
+					<Camera onClose={() => setShowCamera(false)} />
+				</View>
+			)}
 		</SafeAreaView>
 	);
 };
