@@ -23,6 +23,7 @@ import VideoPlayer from "./VideoPlayer";
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [showCamera, setShowCamera] = useState(false);
+	const isQuickReplies = !!messages[0]?.quickReplies;
 
 	useEffect(() => {
 		setMessages(mockedMessages);
@@ -114,21 +115,23 @@ export const Chat: React.FC = () => {
 				}}
 				renderQuickReplies={renderQuickReplies}
 				onQuickReply={onQuickReply}
-				disableComposer={!!messages[0]?.quickReplies}
+				disableComposer={isQuickReplies}
 				showAvatarForEveryMessage={true}
-				renderActions={() => (
-					<Pressable onPress={toggleShowCamera}>
-						<Ionicons
-							name="camera"
-							size={24}
-							color="black"
-							style={{ marginBottom: 10, marginLeft: 12 }}
-						/>
-					</Pressable>
-				)}
-				placeholder={
-					messages[0]?.quickReplies ? "Faites votre choix" : "Tapez un message"
+				renderActions={
+					isQuickReplies
+						? () => null
+						: () => (
+								<Pressable onPress={toggleShowCamera}>
+									<Ionicons
+										name="camera"
+										size={24}
+										color="black"
+										style={{ marginBottom: 10, marginLeft: 12 }}
+									/>
+								</Pressable>
+							)
 				}
+				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
 			/>
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
