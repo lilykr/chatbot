@@ -30,7 +30,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			return;
 		}
 		if (isRecording) {
-			cameraRef.current.recordAsync({ maxDuration: 10 }).then((video) => {
+			cameraRef.current.recordAsync().then((video) => {
 				setRecordedVideoUri(video?.uri);
 				onVideoCaptured(video?.uri);
 			});

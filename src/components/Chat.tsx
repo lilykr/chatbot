@@ -23,7 +23,6 @@ import VideoPlayer from "./VideoPlayer";
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [showCamera, setShowCamera] = useState(false);
-	const [videoUri, setVideoUri] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
 		setMessages(mockedMessages);
@@ -60,7 +59,6 @@ export const Chat: React.FC = () => {
 	const onVideoCaptured = useCallback((videoUri: string | undefined) => {
 		if (!videoUri) return;
 		setShowCamera(false);
-		setVideoUri(videoUri);
 		setMessages((previousMessages) =>
 			appendToChat(previousMessages, [
 				{
@@ -73,6 +71,7 @@ export const Chat: React.FC = () => {
 			]),
 		);
 	}, []);
+
 	const renderQuickReplies = useCallback(
 		(props: Readonly<QuickRepliesProps<DefaultIMessage>>) => {
 			const {
@@ -105,7 +104,9 @@ export const Chat: React.FC = () => {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 			<GiftedChat
-				renderMessageVideo={() => <VideoPlayer videoUri={videoUri} />}
+				renderMessageVideo={(message) => (
+					<VideoPlayer videoUri={message.currentMessage.video} />
+				)}
 				messages={messages as DefaultIMessage[]}
 				onSend={(messages) => onSend(messages as IMessage[])}
 				user={{
