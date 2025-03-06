@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
+import { type LegacyRef, useRef, useState } from "react";
 import {
 	Button,
 	Pressable,
@@ -18,6 +18,11 @@ export const Camera: React.FC<CameraProps> = ({ onClose }) => {
 	const [permission, requestPermission] = useCameraPermissions();
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
+	const [currentVideoUri, setCurrentVideoUri] = useState<string | undefined>(
+		undefined,
+	);
+
+	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
 
 	if (!permission) {
 		return <View />;
@@ -38,9 +43,16 @@ export const Camera: React.FC<CameraProps> = ({ onClose }) => {
 		setCameraFacing((prev) => (prev === "front" ? "back" : "front"));
 	};
 
-	const toggleRecording = () => {
+	const toggleRecording = async () => {
 		setIsRecording((prev) => !prev);
-		// TODO: Implement actual video recording logic
+
+		if (isRecording) {
+			const video = await cameraRef.current?.recordAsync();
+			setCurrentVideoUri(video?.uri);
+		} else {
+			cameraRef.current?.stopRecording();
+			setCurrentVideoUri(undefined);
+		}
 	};
 
 	return (
@@ -52,7 +64,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose }) => {
 				</Pressable>
 			</View>
 
-			<CameraView style={styles.camera} facing={cameraFacing} />
+			<CameraView style={styles.camera} facing={cameraFacing} ref={cameraRef} />
 
 			<View style={styles.controls}>
 				<Pressable
