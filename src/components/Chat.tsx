@@ -1,20 +1,21 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable } from "react-native";
+import { Pressable, SafeAreaView } from "react-native";
 import {
 	type IMessage as DefaultIMessage,
 	GiftedChat,
 	type QuickRepliesProps,
 	type Reply,
 } from "react-native-gifted-chat";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { mockedMessages } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
 import { appendToChat } from "../utils/chat/appendToChat";
+import { Camera } from "./Camera";
 import { QuickReplies } from "./QuickReplies";
 
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
+	const [showCamera, setShowCamera] = useState(false);
 
 	useEffect(() => {
 		setMessages(mockedMessages);
@@ -72,6 +73,10 @@ export const Chat: React.FC = () => {
 		[],
 	);
 
+	if (showCamera) {
+		return <Camera onClose={() => setShowCamera(false)} />;
+	}
+
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 			<GiftedChat
@@ -85,7 +90,7 @@ export const Chat: React.FC = () => {
 				disableComposer={!!messages[0]?.quickReplies}
 				showAvatarForEveryMessage={true}
 				renderActions={() => (
-					<Pressable onPress={() => console.log("Camera")}>
+					<Pressable onPress={() => setShowCamera(true)}>
 						<Ionicons
 							name="camera"
 							size={24}
