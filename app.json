@@ -1,42 +1,49 @@
 {
-  "expo": {
-    "name": "chatbot",
-    "slug": "chatbot",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.lilykr.chatbot"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.lilykr.chatbot"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "expo": {
-      "plugins": [
-        [
-          "expo-camera",
-          {
-            "cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
-            "microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
-            "recordAudioAndroid": true
-          }
-        ]
-      ]
-    }
-  }
+	"expo": {
+		"name": "chatbot",
+		"slug": "chatbot",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"newArchEnabled": true,
+		"splash": {
+			"image": "./assets/splash-icon.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.lilykr.chatbot"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#ffffff"
+			},
+			"package": "com.lilykr.chatbot"
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"expo": {
+			"plugins": [
+				[
+					"expo-camera",
+					{
+						"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
+						"microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
+						"recordAudioAndroid": true
+					}
+				]
+			]
+		},
+		"plugins": [
+			"expo-video",
+			{
+				"supportsBackgroundPlayback": true,
+				"supportsPictureInPicture": true
+			}
+		]
+	}
 }
