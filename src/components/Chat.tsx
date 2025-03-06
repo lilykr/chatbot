@@ -80,6 +80,7 @@ export const Chat: React.FC = () => {
 				}}
 				renderQuickReplies={renderQuickReplies}
 				onQuickReply={onQuickReply}
+				disableComposer={!!messages[0]?.quickReplies}
 			/>
 		</SafeAreaView>
 	);

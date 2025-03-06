@@ -139,7 +139,7 @@ export function QuickReplies({
 			<View style={styles.carouselContainer}>
 				<Carousel
 					items={currentMessage.quickReplies.values as CarouselReply[]}
-					onSelect={(reply) => handlePress(reply)()}
+					onSelect={handleCarouselSelect}
 					color={color}
 				/>
 			</View>
