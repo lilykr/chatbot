@@ -2,10 +2,10 @@ import type React from "react";
 import {
 	Dimensions,
 	Image,
+	Pressable,
 	ScrollView,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
 	View,
 } from "react-native";
 import type { CarouselReply } from "../types/chat";
@@ -19,6 +19,50 @@ interface CarouselProps {
 	color?: string;
 }
 
+export const Carousel: React.FC<CarouselProps> = ({
+	items,
+	onSelect,
+	color = "#007AFF",
+}) => {
+	return (
+		<View style={styles.container}>
+			<ScrollView
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				style={styles.scrollView}
+				snapToInterval={CARD_WIDTH + 15}
+				decelerationRate="fast"
+				contentContainerStyle={{ alignItems: "center" }}
+			>
+				{items.map((item, index) => (
+					<Pressable
+						key={`${item.value}-${index}`}
+						style={styles.card}
+						onPress={() => onSelect(item)}
+					>
+						<View style={styles.imageContainer}>
+							<Image
+								source={{ uri: item.image }}
+								style={styles.image}
+								resizeMode="cover"
+							/>
+							<View style={styles.captionOverlay}>
+								<Text style={styles.caption}>{item.caption}</Text>
+							</View>
+						</View>
+						<View style={styles.content}>
+							<Text style={[styles.title, { color }]}>{item.title}</Text>
+							<Text style={styles.description} numberOfLines={3}>
+								{item.description}
+							</Text>
+						</View>
+					</Pressable>
+				))}
+			</ScrollView>
+		</View>
+	);
+};
+
 const styles = StyleSheet.create({
 	container: {
 		marginVertical: 10,
@@ -27,7 +71,6 @@ const styles = StyleSheet.create({
 		maxHeight: CARD_WIDTH * 1.5,
 	},
 	scrollView: {
-		paddingHorizontal: width * 0.1,
 		flexGrow: 0,
 	},
 	card: {
@@ -82,47 +125,3 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 });
-
-export const Carousel: React.FC<CarouselProps> = ({
-	items,
-	onSelect,
-	color = "#007AFF",
-}) => {
-	return (
-		<View style={styles.container}>
-			<ScrollView
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				style={styles.scrollView}
-				snapToInterval={CARD_WIDTH + 15}
-				decelerationRate="fast"
-				contentContainerStyle={{ alignItems: "center" }}
-			>
-				{items.map((item, index) => (
-					<TouchableOpacity
-						key={`${item.value}-${index}`}
-						style={styles.card}
-						onPress={() => onSelect(item)}
-					>
-						<View style={styles.imageContainer}>
-							<Image
-								source={{ uri: item.image }}
-								style={styles.image}
-								resizeMode="cover"
-							/>
-							<View style={styles.captionOverlay}>
-								<Text style={styles.caption}>{item.caption}</Text>
-							</View>
-						</View>
-						<View style={styles.content}>
-							<Text style={[styles.title, { color }]}>{item.title}</Text>
-							<Text style={styles.description} numberOfLines={3}>
-								{item.description}
-							</Text>
-						</View>
-					</TouchableOpacity>
-				))}
-			</ScrollView>
-		</View>
-	);
-};

@@ -99,6 +99,9 @@ export const Chat: React.FC = () => {
 						/>
 					</Pressable>
 				)}
+				placeholder={
+					messages[0]?.quickReplies ? "Faites votre choix" : "Tapez un message"
+				}
 			/>
 		</SafeAreaView>
 	);
