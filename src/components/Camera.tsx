@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { type LegacyRef, useRef, useState } from "react";
+import { type LegacyRef, useEffect, useRef, useState } from "react";
 import {
 	Button,
 	Pressable,
@@ -12,17 +12,32 @@ import {
 
 interface CameraProps {
 	onClose?: () => void;
+	onVideoCaptured: (videoUri?: string) => void;
 }
 
-export const Camera: React.FC<CameraProps> = ({ onClose }) => {
+export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [permission, requestPermission] = useCameraPermissions();
-	const [isRecording, setIsRecording] = useState(false);
-	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
-	const [currentVideoUri, setCurrentVideoUri] = useState<string | undefined>(
+	const [recordedVideoUri, setRecordedVideoUri] = useState<string | undefined>(
 		undefined,
 	);
+	const [isRecording, setIsRecording] = useState(false);
+	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
 
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
+
+	useEffect(() => {
+		if (!cameraRef.current) {
+			return;
+		}
+		if (isRecording) {
+			cameraRef.current.recordAsync({ maxDuration: 10 }).then((video) => {
+				setRecordedVideoUri(video?.uri);
+				onVideoCaptured(video?.uri);
+			});
+		} else {
+			cameraRef.current.stopRecording();
+		}
+	}, [isRecording, onVideoCaptured]);
 
 	if (!permission) {
 		return <View />;
@@ -43,16 +58,8 @@ export const Camera: React.FC<CameraProps> = ({ onClose }) => {
 		setCameraFacing((prev) => (prev === "front" ? "back" : "front"));
 	};
 
-	const toggleRecording = async () => {
+	const toggleRecording = () => {
 		setIsRecording((prev) => !prev);
-
-		if (isRecording) {
-			const video = await cameraRef.current?.recordAsync();
-			setCurrentVideoUri(video?.uri);
-		} else {
-			cameraRef.current?.stopRecording();
-			setCurrentVideoUri(undefined);
-		}
 	};
 
 	return (
@@ -64,7 +71,12 @@ export const Camera: React.FC<CameraProps> = ({ onClose }) => {
 				</Pressable>
 			</View>
 
-			<CameraView style={styles.camera} facing={cameraFacing} ref={cameraRef} />
+			<CameraView
+				style={styles.camera}
+				facing={cameraFacing}
+				ref={cameraRef}
+				mode="video"
+			/>
 
 			<View style={styles.controls}>
 				<Pressable

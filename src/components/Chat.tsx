@@ -18,10 +18,12 @@ import type { IMessage } from "../types/chat";
 import { appendToChat } from "../utils/chat/appendToChat";
 import { Camera } from "./Camera";
 import { QuickReplies } from "./QuickReplies";
+import VideoPlayer from "./VideoPlayer";
 
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [showCamera, setShowCamera] = useState(false);
+	const [videoUri, setVideoUri] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
 		setMessages(mockedMessages);
@@ -55,6 +57,22 @@ export const Chat: React.FC = () => {
 		Keyboard.dismiss();
 	}, []);
 
+	const onVideoCaptured = useCallback((videoUri: string | undefined) => {
+		if (!videoUri) return;
+		setShowCamera(false);
+		setVideoUri(videoUri);
+		setMessages((previousMessages) =>
+			appendToChat(previousMessages, [
+				{
+					_id: Math.round(Math.random() * 1000000),
+					video: videoUri,
+					text: "",
+					user: { _id: 1 },
+					createdAt: new Date(),
+				},
+			]),
+		);
+	}, []);
 	const renderQuickReplies = useCallback(
 		(props: Readonly<QuickRepliesProps<DefaultIMessage>>) => {
 			const {
@@ -87,6 +105,7 @@ export const Chat: React.FC = () => {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 			<GiftedChat
+				renderMessageVideo={() => <VideoPlayer videoUri={videoUri} />}
 				messages={messages as DefaultIMessage[]}
 				onSend={(messages) => onSend(messages as IMessage[])}
 				user={{
@@ -112,7 +131,10 @@ export const Chat: React.FC = () => {
 			/>
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
-					<Camera onClose={() => setShowCamera(false)} />
+					<Camera
+						onClose={() => setShowCamera(false)}
+						onVideoCaptured={onVideoCaptured}
+					/>
 				</View>
 			)}
 		</SafeAreaView>
