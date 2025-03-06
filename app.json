@@ -30,8 +30,8 @@
 				[
 					"expo-camera",
 					{
-						"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-						"microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+						"cameraPermission": "Allow the chatbot to access your camera",
+						"microphonePermission": "Allow the chatbot to access your microphone",
 						"recordAudioAndroid": true
 					}
 				]
