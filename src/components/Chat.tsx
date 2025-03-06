@@ -20,6 +20,9 @@ import { Camera } from "./Camera";
 import { QuickReplies } from "./QuickReplies";
 import VideoPlayer from "./VideoPlayer";
 
+const AVATAR_USER =
+	"https://media.licdn.com/dms/image/v2/C5603AQGUmxHYqgbv2Q/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516267491614?e=1746662400&v=beta&t=Lnb3HpfKwA5PlxrWX28h-kbsm7dfh4TFwz7U7zh28bQ";
+
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [showCamera, setShowCamera] = useState(false);
@@ -44,6 +47,7 @@ export const Chat: React.FC = () => {
 			createdAt: new Date(),
 			user: {
 				_id: 1,
+				avatar: AVATAR_USER,
 			},
 		};
 
@@ -132,6 +136,7 @@ export const Chat: React.FC = () => {
 							)
 				}
 				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
+				showUserAvatar={true}
 			/>
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
