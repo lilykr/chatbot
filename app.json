@@ -34,16 +34,14 @@
 						"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
 						"microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
 						"recordAudioAndroid": true
+					},
+					"expo-video",
+					{
+						"supportsBackgroundPlayback": true,
+						"supportsPictureInPicture": true
 					}
 				]
 			]
-		},
-		"plugins": [
-			"expo-video",
-			{
-				"supportsBackgroundPlayback": true,
-				"supportsPictureInPicture": true
-			}
-		]
+		}
 	}
 }
