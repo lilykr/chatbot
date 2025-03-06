@@ -10,17 +10,20 @@ import {
 	View,
 	type ViewStyle,
 } from "react-native";
-import {
-	type IMessage,
-	type Reply,
-	StylePropType,
-} from "react-native-gifted-chat";
+import { type Reply, StylePropType } from "react-native-gifted-chat";
+import type { CarouselReply, IMessage } from "../types/chat";
+import { Carousel } from "./Carousel";
 
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
 		flexWrap: "wrap",
 		maxWidth: 300,
+	},
+	carouselContainer: {
+		width: "100%",
+		maxWidth: "100%",
+		alignSelf: "flex-start",
 	},
 	quickReply: {
 		justifyContent: "center",
@@ -106,7 +109,6 @@ export function QuickReplies({
 						if (replies.find(sameReply(reply)))
 							setReplies(replies.filter(diffReply(reply)));
 						else setReplies([...replies, reply]);
-
 						return;
 					}
 					default: {
@@ -116,6 +118,10 @@ export function QuickReplies({
 		},
 		[replies, currentMessage],
 	);
+
+	const handleCarouselSelect = useCallback((reply: CarouselReply) => {
+		handleSend([reply])();
+	}, []);
 
 	const handleSend = (repliesData: Reply[]) => () => {
 		onQuickReply?.(
@@ -127,6 +133,18 @@ export function QuickReplies({
 	};
 
 	if (!shouldComponentDisplay) return null;
+
+	if (type === "carousel") {
+		return (
+			<View style={styles.carouselContainer}>
+				<Carousel
+					items={currentMessage.quickReplies.values as CarouselReply[]}
+					onSelect={(reply) => handlePress(reply)()}
+					color={color}
+				/>
+			</View>
+		);
+	}
 
 	return (
 		<View style={[styles.container, quickReplyContainerStyle]}>

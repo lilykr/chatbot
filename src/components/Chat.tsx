@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
+	type IMessage as DefaultIMessage,
 	GiftedChat,
 	type QuickRepliesProps,
 	type Reply,
@@ -7,6 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { mockedMessages } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
+import { appendToChat } from "../utils/chat/appendToChat";
 import { QuickReplies } from "./QuickReplies";
 
 export const Chat: React.FC = () => {
@@ -17,9 +19,7 @@ export const Chat: React.FC = () => {
 	}, []);
 
 	const onSend = useCallback((messages: IMessage[]) => {
-		setMessages((previousMessages) =>
-			GiftedChat.append(previousMessages, messages),
-		);
+		setMessages((previousMessages) => appendToChat(previousMessages, messages));
 	}, []);
 
 	const onQuickReply = useCallback((replies: Reply[]) => {
@@ -37,12 +37,12 @@ export const Chat: React.FC = () => {
 		};
 
 		setMessages((previousMessages) =>
-			GiftedChat.append(previousMessages, [userMessage]),
+			appendToChat(previousMessages, [userMessage]),
 		);
 	}, []);
 
 	const renderQuickReplies = useCallback(
-		(props: Readonly<QuickRepliesProps<IMessage>>) => {
+		(props: Readonly<QuickRepliesProps<DefaultIMessage>>) => {
 			const {
 				currentMessage,
 				onQuickReply,
@@ -73,8 +73,8 @@ export const Chat: React.FC = () => {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
 			<GiftedChat
-				messages={messages}
-				onSend={(messages) => onSend(messages)}
+				messages={messages as DefaultIMessage[]}
+				onSend={(messages) => onSend(messages as IMessage[])}
 				user={{
 					_id: 1,
 				}}
