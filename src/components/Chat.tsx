@@ -1,4 +1,6 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCallback, useEffect, useState } from "react";
+import { Pressable } from "react-native";
 import {
 	type IMessage as DefaultIMessage,
 	GiftedChat,
@@ -81,6 +83,17 @@ export const Chat: React.FC = () => {
 				renderQuickReplies={renderQuickReplies}
 				onQuickReply={onQuickReply}
 				disableComposer={!!messages[0]?.quickReplies}
+				showAvatarForEveryMessage={true}
+				renderActions={() => (
+					<Pressable onPress={() => console.log("Camera")}>
+						<Ionicons
+							name="camera"
+							size={24}
+							color="black"
+							style={{ marginBottom: 10, marginLeft: 12 }}
+						/>
+					</Pressable>
+				)}
 			/>
 		</SafeAreaView>
 	);
