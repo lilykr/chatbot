@@ -1,14 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { type LegacyRef, useEffect, useRef, useState } from "react";
-import {
-	Button,
-	Pressable,
-	SafeAreaView,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { Alert, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
 
 interface CameraProps {
 	onClose?: () => void;
@@ -44,14 +37,21 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	}
 
 	if (!permission.granted) {
-		return (
-			<View style={styles.container}>
-				<Text style={styles.message}>
-					We need your permission to show the camera
-				</Text>
-				<Button onPress={requestPermission} title="grant permission" />
-			</View>
+		Alert.alert(
+			"Accès à la caméra nécessaire",
+			"Nous avons besoin de votre permission pour accéder à la caméra",
+			[
+				{
+					text: "Autoriser",
+					onPress: requestPermission,
+				},
+				{
+					text: "Annuler",
+					style: "cancel",
+				},
+			],
 		);
+		return null;
 	}
 
 	const toggleCameraFacing = () => {
