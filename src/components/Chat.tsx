@@ -1,21 +1,15 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import { useCallback, useEffect, useState } from "react";
-import {
-	Keyboard,
-	KeyboardAvoidingView,
-	Platform,
-	Pressable,
-	SafeAreaView,
-	StyleSheet,
-	View,
-} from "react-native";
+import { Keyboard, Pressable, StyleSheet, View } from "react-native";
 import {
 	type IMessage as DefaultIMessage,
 	GiftedChat,
 	type QuickRepliesProps,
 	type Reply,
 } from "react-native-gifted-chat";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { mockedMessages } from "../data/mockedMessages";
+import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
 import type { IMessage } from "../types/chat";
 import { appendToChat } from "../utils/chat/appendToChat";
 import { Camera } from "./Camera";
@@ -29,6 +23,9 @@ export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [showCamera, setShowCamera] = useState(false);
 	const isQuickReplies = !!messages[0]?.quickReplies;
+
+	const safeAreaInsets = useSafeAreaInsets();
+	const keyboardHeight = useKeyboardHeight();
 
 	useEffect(() => {
 		setMessages(mockedMessages);
@@ -109,8 +106,21 @@ export const Chat: React.FC = () => {
 	);
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+		<View
+			style={{
+				flex: 1,
+				backgroundColor: "white",
+				paddingTop: safeAreaInsets.top,
+				paddingBottom: safeAreaInsets.bottom,
+			}}
+		>
+			            
 			<GiftedChat
+				listViewProps={{
+					contentContainerStyle: {
+						paddingBottom: keyboardHeight,
+					},
+				}}
 				renderMessageVideo={(message) => (
 					<VideoPlayer videoUri={message.currentMessage.video} />
 				)}
@@ -128,27 +138,32 @@ export const Chat: React.FC = () => {
 						? () => null
 						: () => (
 								<Pressable onPress={toggleShowCamera}>
+									                                    
 									<Ionicons
 										name="camera"
 										size={24}
 										color="black"
 										style={{ marginBottom: 10, marginLeft: 12 }}
 									/>
+									                                
 								</Pressable>
 							)
 				}
 				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
 				showUserAvatar={true}
 			/>
-			{Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
+			            
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
+					                    
 					<Camera
 						onClose={() => setShowCamera(false)}
 						onVideoCaptured={onVideoCaptured}
 					/>
+					                
 				</View>
 			)}
-		</SafeAreaView>
+			        
+		</View>
 	);
 };
