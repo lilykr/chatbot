@@ -12,16 +12,14 @@ import {
 
 interface CameraProps {
 	onClose?: () => void;
-	onVideoCaptured: (videoUri?: string) => void;
+	onVideoCaptured: (videoUri: string) => void;
 }
 
 export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [permission, requestPermission] = useCameraPermissions();
-	const [recordedVideoUri, setRecordedVideoUri] = useState<string | undefined>(
-		undefined,
-	);
+
 	const [isRecording, setIsRecording] = useState(false);
-	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
+	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
 	const [flash, setFlash] = useState(false);
 
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
@@ -32,13 +30,16 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			return;
 		}
 		if (isRecording) {
-			cameraRef.current.recordAsync().then((video) => {
-				setRecordedVideoUri(video?.uri);
+			cameraRef.current.recordAsync().then((url) => {
+				if (!url?.uri) {
+					return alert("Erreur lors de l'enregistrement de la vidéo");
+				}
+				onVideoCaptured(url.uri);
 			});
 		} else {
 			cameraRef.current.stopRecording();
 		}
-	}, [isRecording]);
+	}, [isRecording, onVideoCaptured]);
 
 	useEffect(() => {
 		Animated.timing(animatedValue, {
@@ -80,17 +81,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		setFlash((prev) => !prev);
 	};
 
-	const handleSend = () => {
-		if (recordedVideoUri) {
-			onVideoCaptured(recordedVideoUri);
-			setRecordedVideoUri(undefined);
-		}
-	};
-
-	const handleRetake = () => {
-		setRecordedVideoUri(undefined);
-	};
-
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<View style={styles.header}>
@@ -107,45 +97,37 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 				mode="video"
 				flash={flash ? "on" : "off"}
 				enableTorch={flash}
+				onMountError={(error) => {
+					console.log("error", error);
+				}}
 			/>
 
 			<View style={styles.controls}>
-				{!recordedVideoUri ? (
-					<>
-						<Pressable
-							onPress={cameraFacing === "back" ? toggleFlash : undefined}
-							style={[
-								styles.flipButton,
-								flash && styles.activeFlipButton,
-								cameraFacing === "front" && styles.disabledButton,
-							]}
-						>
-							<Ionicons
-								name="flash"
-								size={30}
-								color={flash ? "#ffeb3b" : "white"}
-								style={cameraFacing === "front" && { opacity: 0 }}
-							/>
-						</Pressable>
-						<Pressable onPress={toggleRecording}>
-							<Animated.View
-								style={[styles.recordButtonInner, { borderRadius }]}
-							/>
-						</Pressable>
-						<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
-							<Ionicons name="camera-reverse" size={30} color="white" />
-						</Pressable>
-					</>
-				) : (
-					<>
-						<Pressable onPress={handleRetake} style={styles.actionButton}>
-							<Ionicons name="refresh" size={30} color="white" />
-						</Pressable>
-						<Pressable onPress={handleSend} style={styles.actionButton}>
-							<Ionicons name="send" size={30} color="white" />
-						</Pressable>
-					</>
-				)}
+				<>
+					<Pressable
+						onPress={cameraFacing === "back" ? toggleFlash : undefined}
+						style={[
+							styles.flipButton,
+							flash && styles.activeFlipButton,
+							cameraFacing === "front" && styles.disabledButton,
+						]}
+					>
+						<Ionicons
+							name="flash"
+							size={30}
+							color={flash ? "#ffeb3b" : "white"}
+							style={cameraFacing === "front" && { opacity: 0 }}
+						/>
+					</Pressable>
+					<Pressable onPress={toggleRecording}>
+						<Animated.View
+							style={[styles.recordButtonInner, { borderRadius }]}
+						/>
+					</Pressable>
+					<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
+						<Ionicons name="camera-reverse" size={30} color="white" />
+					</Pressable>
+				</>
 			</View>
 		</SafeAreaView>
 	);
@@ -219,14 +201,5 @@ const styles = StyleSheet.create({
 	},
 	disabledButton: {
 		opacity: 0,
-	},
-	actionButton: {
-		padding: 8,
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
-		borderRadius: 25,
-		width: 50,
-		height: 50,
-		justifyContent: "center",
-		alignItems: "center",
 	},
 });
