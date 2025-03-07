@@ -140,12 +140,7 @@ export const Chat: React.FC = () => {
 				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
 				showUserAvatar={true}
 			/>
-			{Platform.OS === "android" && (
-				<KeyboardAvoidingView
-					behavior="padding"
-					keyboardVerticalOffset={-500}
-				/>
-			)}
+			{Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
 					<Camera

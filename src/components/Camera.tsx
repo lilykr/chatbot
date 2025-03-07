@@ -1,5 +1,9 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { CameraView, useCameraPermissions } from "expo-camera";
+import {
+	CameraView,
+	useCameraPermissions,
+	useMicrophonePermissions,
+} from "expo-camera";
 import type React from "react";
 import { type LegacyRef, useEffect, useRef, useState } from "react";
 import {
@@ -17,7 +21,9 @@ interface CameraProps {
 }
 
 export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
-	const [permission, requestPermission] = useCameraPermissions();
+	const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+	const [microphonePermission, requestMicrophonePermission] =
+		useMicrophonePermissions();
 
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
@@ -55,18 +61,18 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		outputRange: [30, 12],
 	});
 
-	if (!permission) {
+	if (!cameraPermission || !microphonePermission) {
 		// Camera permissions are still loading.
 		return null;
 	}
 
-	if (!permission.granted) {
-		if (permission.status === "undetermined") {
-			requestPermission();
+	if (!cameraPermission.granted) {
+		if (cameraPermission.status === "undetermined") {
+			requestCameraPermission();
 			return null;
 		}
 
-		if (permission.status === "denied") {
+		if (cameraPermission.status === "denied") {
 			Alert.alert(
 				"Permission d'utiliser la caméra refusée",
 				"Veuillez autoriser la caméra dans vos réglages",
@@ -81,6 +87,28 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			return null;
 		}
 
+		return null;
+	}
+	if (!microphonePermission.granted) {
+		if (microphonePermission.status === "undetermined") {
+			requestMicrophonePermission();
+			return null;
+		}
+
+		if (microphonePermission.status === "denied") {
+			Alert.alert(
+				"Permission d'utiliser le microphone refusée",
+				"Veuillez autoriser le microphone dans vos réglages",
+				[
+					{
+						text: "Fermer",
+						style: "cancel",
+						onPress: onClose,
+					},
+				],
+			);
+			return null;
+		}
 		return null;
 	}
 
