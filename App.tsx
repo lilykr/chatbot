@@ -5,9 +5,11 @@ import { Chat } from "./src/components/Chat";
 
 export function App() {
 	return (
-		<SafeAreaProvider>
+		<>
 			<StatusBar style="dark" />
-			<Chat />
-		</SafeAreaProvider>
+			<SafeAreaProvider>
+				<Chat />
+			</SafeAreaProvider>
+		</>
 	);
 }
