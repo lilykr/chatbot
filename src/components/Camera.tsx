@@ -61,6 +61,11 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		outputRange: [30, 12],
 	});
 
+	const scale = animatedValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: [1, 0.6],
+	});
+
 	if (!cameraPermission || !microphonePermission) {
 		// Camera permissions are still loading.
 		return null;
@@ -169,9 +174,18 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 						/>
 					</Pressable>
 					<Pressable onPress={toggleRecording}>
-						<Animated.View
-							style={[styles.recordButtonInner, { borderRadius }]}
-						/>
+						<View>
+							<Animated.View
+								style={[
+									styles.recordButtonInner,
+									{
+										borderRadius,
+										transform: [{ scale }],
+									},
+								]}
+							/>
+							<View style={[styles.recordButtonBorder]} />
+						</View>
 					</Pressable>
 					<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
 						<Ionicons name="camera-reverse" size={30} color="white" />
@@ -229,12 +243,17 @@ const styles = StyleSheet.create({
 		paddingBottom: 14,
 	},
 	recordButtonInner: {
+		backgroundColor: "#ff0000",
+		width: 60,
+		height: 60,
+	},
+	recordButtonBorder: {
 		width: 60,
 		height: 60,
 		borderRadius: 30,
-		backgroundColor: "#ff0000",
 		borderWidth: 4,
 		borderColor: "white",
+		position: "absolute",
 	},
 	flipButton: {
 		padding: 8,
