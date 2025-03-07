@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import type React from "react";
 import { type LegacyRef, useEffect, useRef, useState } from "react";
 import {
 	Animated,
@@ -33,12 +34,11 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		if (isRecording) {
 			cameraRef.current.recordAsync().then((video) => {
 				setRecordedVideoUri(video?.uri);
-				onVideoCaptured(video?.uri);
 			});
 		} else {
 			cameraRef.current.stopRecording();
 		}
-	}, [isRecording, onVideoCaptured]);
+	}, [isRecording]);
 
 	useEffect(() => {
 		Animated.timing(animatedValue, {
@@ -74,6 +74,17 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		setFlash((prev) => !prev);
 	};
 
+	const handleSend = () => {
+		if (recordedVideoUri) {
+			onVideoCaptured(recordedVideoUri);
+			setRecordedVideoUri(undefined);
+		}
+	};
+
+	const handleRetake = () => {
+		setRecordedVideoUri(undefined);
+	};
+
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<View style={styles.header}>
@@ -93,15 +104,30 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			/>
 
 			<View style={styles.controls}>
-				<Pressable onPress={toggleFlash} style={styles.flipButton}>
-					<Ionicons name="flash" size={30} color="white" />
-				</Pressable>
-				<Pressable onPress={toggleRecording}>
-					<Animated.View style={[styles.recordButtonInner, { borderRadius }]} />
-				</Pressable>
-				<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
-					<Ionicons name="camera-reverse" size={30} color="white" />
-				</Pressable>
+				{!recordedVideoUri ? (
+					<>
+						<Pressable onPress={toggleFlash} style={styles.flipButton}>
+							<Ionicons name="flash" size={30} color="white" />
+						</Pressable>
+						<Pressable onPress={toggleRecording}>
+							<Animated.View
+								style={[styles.recordButtonInner, { borderRadius }]}
+							/>
+						</Pressable>
+						<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
+							<Ionicons name="camera-reverse" size={30} color="white" />
+						</Pressable>
+					</>
+				) : (
+					<>
+						<Pressable onPress={handleRetake} style={styles.actionButton}>
+							<Ionicons name="refresh" size={30} color="white" />
+						</Pressable>
+						<Pressable onPress={handleSend} style={styles.actionButton}>
+							<Ionicons name="send" size={30} color="white" />
+						</Pressable>
+					</>
+				)}
 			</View>
 		</SafeAreaView>
 	);
@@ -135,7 +161,7 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 	},
 	headerSpacer: {
-		width: 40, // Same width as headerButton for balance
+		width: 40,
 	},
 	closeButton: {
 		paddingTop: 40,
@@ -152,7 +178,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingHorizontal: 20,
 	},
-
 	recordButtonInner: {
 		width: 60,
 		height: 60,
@@ -161,10 +186,18 @@ const styles = StyleSheet.create({
 		borderWidth: 4,
 		borderColor: "white",
 	},
-
 	flipButton: {
 		padding: 8,
 		backgroundColor: "rgba(0, 0, 0, 0.3)",
+		borderRadius: 25,
+		width: 50,
+		height: 50,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	actionButton: {
+		padding: 8,
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
 		borderRadius: 25,
 		width: 50,
 		height: 50,
