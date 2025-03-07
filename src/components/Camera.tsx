@@ -63,7 +63,13 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	}
 
 	const toggleCameraFacing = () => {
-		setCameraFacing((prev) => (prev === "front" ? "back" : "front"));
+		setCameraFacing((prev) => {
+			const newFacing = prev === "front" ? "back" : "front";
+			if (newFacing === "front" && flash) {
+				setFlash(false);
+			}
+			return newFacing;
+		});
 	};
 
 	const toggleRecording = () => {
@@ -106,8 +112,20 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			<View style={styles.controls}>
 				{!recordedVideoUri ? (
 					<>
-						<Pressable onPress={toggleFlash} style={styles.flipButton}>
-							<Ionicons name="flash" size={30} color="white" />
+						<Pressable
+							onPress={cameraFacing === "back" ? toggleFlash : undefined}
+							style={[
+								styles.flipButton,
+								flash && styles.activeFlipButton,
+								cameraFacing === "front" && styles.disabledButton,
+							]}
+						>
+							<Ionicons
+								name="flash"
+								size={30}
+								color={flash ? "#ffeb3b" : "white"}
+								style={cameraFacing === "front" && { opacity: 0 }}
+							/>
 						</Pressable>
 						<Pressable onPress={toggleRecording}>
 							<Animated.View
@@ -177,6 +195,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		paddingHorizontal: 20,
+		paddingBottom: 14,
 	},
 	recordButtonInner: {
 		width: 60,
@@ -194,6 +213,12 @@ const styles = StyleSheet.create({
 		height: 50,
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	activeFlipButton: {
+		backgroundColor: "rgba(255, 235, 59, 0.3)",
+	},
+	disabledButton: {
+		opacity: 0,
 	},
 	actionButton: {
 		padding: 8,

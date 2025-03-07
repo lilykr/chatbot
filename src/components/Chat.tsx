@@ -143,7 +143,7 @@ export const Chat: React.FC = () => {
 			{Platform.OS === "android" && (
 				<KeyboardAvoidingView
 					behavior="padding"
-					keyboardVerticalOffset={-200}
+					keyboardVerticalOffset={-500}
 				/>
 			)}
 			{showCamera && (
