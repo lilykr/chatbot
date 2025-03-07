@@ -7,11 +7,9 @@ import {
 	Pressable,
 	SafeAreaView,
 	StyleSheet,
-	TouchableWithoutFeedback,
 	View,
 } from "react-native";
 import {
-	Bubble,
 	type IMessage as DefaultIMessage,
 	GiftedChat,
 	type QuickRepliesProps,
@@ -112,58 +110,42 @@ export const Chat: React.FC = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				style={{ flex: 1 }}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -500}
-			>
-				<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-					<View style={{ flex: 1 }}>
-						<GiftedChat
-							renderMessageVideo={(message) => (
-								<VideoPlayer videoUri={message.currentMessage.video} />
-							)}
-							messages={messages as DefaultIMessage[]}
-							onSend={(messages) => onSend(messages as IMessage[])}
-							user={{
-								_id: 1,
-							}}
-							renderQuickReplies={renderQuickReplies}
-							onQuickReply={onQuickReply}
-							disableComposer={isQuickReplies}
-							showAvatarForEveryMessage={true}
-							renderActions={
-								isQuickReplies
-									? () => null
-									: () => (
-											<Pressable onPress={toggleShowCamera}>
-												<Ionicons
-													name="camera"
-													size={24}
-													color="black"
-													style={{ marginBottom: 10, marginLeft: 12 }}
-												/>
-											</Pressable>
-										)
-							}
-							placeholder={
-								isQuickReplies ? "Faites votre choix" : "Tapez un message"
-							}
-							showUserAvatar={true}
-							renderBubble={(props) => (
-								<Bubble
-									{...props}
-									wrapperStyle={{
-										right: props.currentMessage?.video
-											? { backgroundColor: "transparent" }
-											: undefined,
-									}}
-								/>
-							)}
-						/>
-					</View>
-				</TouchableWithoutFeedback>
-			</KeyboardAvoidingView>
+			<GiftedChat
+				renderMessageVideo={(message) => (
+					<VideoPlayer videoUri={message.currentMessage.video} />
+				)}
+				messages={messages as DefaultIMessage[]}
+				onSend={(messages) => onSend(messages as IMessage[])}
+				user={{
+					_id: 1,
+				}}
+				renderQuickReplies={renderQuickReplies}
+				onQuickReply={onQuickReply}
+				disableComposer={isQuickReplies}
+				showAvatarForEveryMessage={true}
+				renderActions={
+					isQuickReplies
+						? () => null
+						: () => (
+								<Pressable onPress={toggleShowCamera}>
+									<Ionicons
+										name="camera"
+										size={24}
+										color="black"
+										style={{ marginBottom: 10, marginLeft: 12 }}
+									/>
+								</Pressable>
+							)
+				}
+				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
+				showUserAvatar={true}
+			/>
+			{Platform.OS === "android" && (
+				<KeyboardAvoidingView
+					behavior="padding"
+					keyboardVerticalOffset={-200}
+				/>
+			)}
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
 					<Camera
