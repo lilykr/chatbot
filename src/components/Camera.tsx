@@ -3,6 +3,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import type React from "react";
 import { type LegacyRef, useEffect, useRef, useState } from "react";
 import {
+	Alert,
 	Animated,
 	Pressable,
 	SafeAreaView,
@@ -55,11 +56,31 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	});
 
 	if (!permission) {
-		return <View />;
+		// Camera permissions are still loading.
+		return null;
 	}
 
 	if (!permission.granted) {
-		requestPermission();
+		if (permission.status === "undetermined") {
+			requestPermission();
+			return null;
+		}
+
+		if (permission.status === "denied") {
+			Alert.alert(
+				"Permission d'utiliser la caméra refusée",
+				"Veuillez autoriser la caméra dans vos réglages",
+				[
+					{
+						text: "Fermer",
+						style: "cancel",
+						onPress: onClose,
+					},
+				],
+			);
+			return null;
+		}
+
 		return null;
 	}
 
