@@ -14,6 +14,7 @@ export default function VideoPlayer({ videoUri }: Props) {
 	}
 
 	const player = useVideoPlayer(videoUri, (player) => {
+		player.muted = true;
 		player.loop = true;
 		player.play();
 	});
@@ -44,6 +45,12 @@ export default function VideoPlayer({ videoUri }: Props) {
 				player={player}
 				allowsFullscreen
 				contentFit="cover"
+				onFullscreenEnter={() => {
+					player.muted = false;
+				}}
+				onFullscreenExit={() => {
+					player.muted = true;
+				}}
 			/>
 		</Pressable>
 	);
