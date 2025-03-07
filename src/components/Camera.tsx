@@ -1,7 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { type LegacyRef, useEffect, useRef, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, View } from "react-native";
+import {
+	Animated,
+	Pressable,
+	SafeAreaView,
+	StyleSheet,
+	View,
+} from "react-native";
 
 interface CameraProps {
 	onClose?: () => void;
@@ -15,8 +21,10 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	);
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
+	const [flash, setFlash] = useState(false);
 
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
+	const animatedValue = useRef(new Animated.Value(0)).current;
 
 	useEffect(() => {
 		if (!cameraRef.current) {
@@ -31,6 +39,19 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			cameraRef.current.stopRecording();
 		}
 	}, [isRecording, onVideoCaptured]);
+
+	useEffect(() => {
+		Animated.timing(animatedValue, {
+			toValue: isRecording ? 1 : 0,
+			duration: 300,
+			useNativeDriver: false,
+		}).start();
+	}, [isRecording, animatedValue]);
+
+	const borderRadius = animatedValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: [30, 12],
+	});
 
 	if (!permission) {
 		return <View />;
@@ -49,6 +70,10 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		setIsRecording((prev) => !prev);
 	};
 
+	const toggleFlash = () => {
+		setFlash((prev) => !prev);
+	};
+
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<View style={styles.header}>
@@ -63,14 +88,16 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 				facing={cameraFacing}
 				ref={cameraRef}
 				mode="video"
+				flash={flash ? "on" : "off"}
+				enableTorch={flash}
 			/>
 
 			<View style={styles.controls}>
-				<Pressable
-					onPress={toggleRecording}
-					style={[styles.recordButton, isRecording && styles.recording]}
-				>
-					<View style={styles.recordButtonInner} />
+				<Pressable onPress={toggleFlash} style={styles.flipButton}>
+					<Ionicons name="flash" size={30} color="white" />
+				</Pressable>
+				<Pressable onPress={toggleRecording}>
+					<Animated.View style={[styles.recordButtonInner, { borderRadius }]} />
 				</Pressable>
 				<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
 					<Ionicons name="camera-reverse" size={30} color="white" />
@@ -121,18 +148,11 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		flexDirection: "row",
-		justifyContent: "center",
+		justifyContent: "space-between",
 		alignItems: "center",
 		paddingHorizontal: 20,
 	},
-	recordButton: {
-		width: 80,
-		height: 80,
-		borderRadius: 40,
-		backgroundColor: "rgba(255, 255, 255, 0.3)",
-		justifyContent: "center",
-		alignItems: "center",
-	},
+
 	recordButtonInner: {
 		width: 60,
 		height: 60,
@@ -141,13 +161,8 @@ const styles = StyleSheet.create({
 		borderWidth: 4,
 		borderColor: "white",
 	},
-	recording: {
-		backgroundColor: "rgba(255, 0, 0, 0.3)",
-	},
+
 	flipButton: {
-		position: "absolute",
-		right: 30,
-		bottom: 20,
 		padding: 8,
 		backgroundColor: "rgba(0, 0, 0, 0.3)",
 		borderRadius: 25,
