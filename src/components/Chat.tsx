@@ -1,6 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback, useEffect, useState } from "react";
-import { Keyboard, Pressable, StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+	type FlatList,
+	Keyboard,
+	Pressable,
+	StyleSheet,
+	View,
+} from "react-native";
 import {
 	type IMessage as DefaultIMessage,
 	GiftedChat,
@@ -28,12 +34,15 @@ export const Chat: React.FC = () => {
 	const safeAreaInsets = useSafeAreaInsets();
 	const keyboardHeight = useKeyboardHeight();
 
+	const listRef = useRef<FlatList>(null);
+
 	useEffect(() => {
 		setMessages(mockedMessages);
 	}, []);
 
 	const onSend = useCallback((messages: IMessage[]) => {
 		setMessages((previousMessages) => appendToChat(previousMessages, messages));
+		listRef.current?.scrollToIndex({ index: 0, animated: true });
 	}, []);
 
 	const onQuickReply = useCallback(
@@ -143,6 +152,7 @@ export const Chat: React.FC = () => {
 		>
 			<GiftedChat
 				listViewProps={{
+					ref: listRef,
 					contentContainerStyle: {
 						paddingBottom: keyboardHeight,
 					},
