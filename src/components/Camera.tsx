@@ -9,6 +9,9 @@ import { type LegacyRef, useEffect, useRef, useState } from "react";
 import {
 	Alert,
 	Animated,
+	Dimensions,
+	Easing,
+	Platform,
 	Pressable,
 	SafeAreaView,
 	StyleSheet,
@@ -29,10 +32,14 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
 	const [flash, setFlash] = useState(false);
 	const [recordingTime, setRecordingTime] = useState(0);
+	const [isCameraReady, setIsCameraReady] = useState(false);
 
 	const timerRef = useRef<NodeJS.Timeout>();
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
 	const animatedValue = useRef(new Animated.Value(0)).current;
+	const slideAnimation = useRef(
+		new Animated.Value(Dimensions.get("window").height),
+	).current;
 	const isManualClosing = useRef(false);
 
 	useEffect(() => {
@@ -78,6 +85,22 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			}
 		};
 	}, [isRecording]);
+
+	useEffect(() => {
+		if (isCameraReady) {
+			setTimeout(
+				() => {
+					Animated.timing(slideAnimation, {
+						toValue: 0,
+						useNativeDriver: true,
+						duration: 300,
+						easing: Easing.out(Easing.ease),
+					}).start();
+				},
+				Platform.OS === "android" ? 400 : 0,
+			);
+		}
+	}, [isCameraReady, slideAnimation]);
 
 	const borderRadius = animatedValue.interpolate({
 		inputRange: [0, 1],
@@ -164,69 +187,85 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	};
 
 	return (
-		<SafeAreaView style={styles.safeArea}>
-			<View style={styles.header}>
-				<View style={styles.headerSpacer} />
-				<View style={styles.timerContainer}>
-					<Text style={styles.timerText}>
-						{Math.floor(recordingTime / 60)}:
-						{(recordingTime % 60).toString().padStart(2, "0")}
-					</Text>
+		<Animated.View
+			style={[
+				styles.cameraContainer,
+				{
+					transform: [{ translateY: slideAnimation }],
+				},
+			]}
+		>
+			<SafeAreaView style={styles.safeArea}>
+				<View style={styles.header}>
+					<View style={styles.headerSpacer} />
+					<View style={styles.timerContainer}>
+						<Text style={styles.timerText}>
+							{Math.floor(recordingTime / 60)}:
+							{(recordingTime % 60).toString().padStart(2, "0")}
+						</Text>
+					</View>
+					<Pressable onPress={onCloseCamera} style={styles.closeButton}>
+						<Ionicons name="close" size={24} color="white" />
+					</Pressable>
 				</View>
-				<Pressable onPress={onCloseCamera} style={styles.closeButton}>
-					<Ionicons name="close" size={24} color="white" />
-				</Pressable>
-			</View>
 
-			<CameraView
-				style={styles.camera}
-				facing={cameraFacing}
-				ref={cameraRef}
-				mode="video"
-				flash={flash ? "on" : "off"}
-				enableTorch={flash}
-				onMountError={(error) => {
-					console.log("error", error);
-				}}
-			/>
+				<CameraView
+					style={styles.camera}
+					facing={cameraFacing}
+					ref={cameraRef}
+					mode="video"
+					flash={flash ? "on" : "off"}
+					enableTorch={flash}
+					onMountError={(error) => {
+						console.log("error", error);
+					}}
+					onCameraReady={() => {
+						setIsCameraReady(true);
+					}}
+				/>
 
-			<View style={styles.controls}>
-				<>
-					<Pressable
-						onPress={cameraFacing === "back" ? toggleFlash : undefined}
-						style={[
-							styles.flipButton,
-							flash && styles.activeFlipButton,
-							cameraFacing === "front" && styles.disabledButton,
-						]}
-					>
-						<Ionicons
-							name="flash"
-							size={30}
-							color={flash ? "#ffeb3b" : "white"}
-							style={cameraFacing === "front" && { opacity: 0 }}
-						/>
-					</Pressable>
-					<Pressable onPress={toggleRecording}>
-						<View>
-							<Animated.View
-								style={[
-									styles.recordButtonInner,
-									{
-										borderRadius,
-										transform: [{ scale }],
-									},
-								]}
+				<View style={styles.controls}>
+					<>
+						<Pressable
+							onPress={cameraFacing === "back" ? toggleFlash : undefined}
+							style={[
+								styles.flipButton,
+								flash && styles.activeFlipButton,
+								cameraFacing === "front" && styles.disabledButton,
+							]}
+						>
+							<Ionicons
+								name="flash"
+								size={30}
+								color={flash ? "#ffeb3b" : "white"}
+								style={cameraFacing === "front" && { opacity: 0 }}
 							/>
-							<View style={[styles.recordButtonBorder]} />
-						</View>
-					</Pressable>
-					<Pressable onPress={toggleCameraFacing} style={styles.flipButton}>
-						<Ionicons name="camera-reverse" size={30} color="white" />
-					</Pressable>
-				</>
-			</View>
-		</SafeAreaView>
+						</Pressable>
+						<Pressable onPress={toggleRecording}>
+							<View>
+								<Animated.View
+									style={[
+										styles.recordButtonInner,
+										{
+											borderRadius,
+											transform: [{ scale }],
+										},
+									]}
+								/>
+								<View style={[styles.recordButtonBorder]} />
+							</View>
+						</Pressable>
+						<Pressable
+							disabled={isRecording}
+							onPress={toggleCameraFacing}
+							style={[styles.flipButton, isRecording ? { opacity: 0 } : null]}
+						>
+							<Ionicons name="camera-reverse" size={30} color="white" />
+						</Pressable>
+					</>
+				</View>
+			</SafeAreaView>
+		</Animated.View>
 	);
 };
 
@@ -243,6 +282,9 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		paddingBottom: 10,
 		color: "white",
+	},
+	cameraContainer: {
+		flex: 1,
 	},
 	camera: {
 		flex: 1,
