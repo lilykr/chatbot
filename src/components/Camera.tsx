@@ -223,8 +223,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		setFlash((prev) => !prev);
 	};
 
-	const isLandscape = true;
-
 	const rotationStyle = {
 		transform: [
 			{
@@ -235,6 +233,10 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			},
 		],
 	};
+
+	const showFlash =
+		cameraFacing === "back" &&
+		((Platform.OS === "android" && !isRecording) || Platform.OS === "ios");
 
 	return (
 		<Animated.View
@@ -249,12 +251,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 				<View style={styles.header}>
 					<View style={styles.headerSpacer} />
 					<Animated.View style={[styles.timerContainer, rotationStyle]}>
-						<Text
-							style={[
-								styles.timerText,
-								isLandscape && styles.timerTextLandscape,
-							]}
-						>
+						<Text style={[styles.timerText, styles.timerTextLandscape]}>
 							{Math.floor(recordingTime / 60)}:
 							{(recordingTime % 60).toString().padStart(2, "0")}
 						</Text>
@@ -290,31 +287,18 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					<>
 						<Animated.View style={rotationStyle}>
 							<Pressable
-								onPress={
-									!isRecording &&
-									Platform.OS !== "android" &&
-									cameraFacing === "back"
-										? toggleFlash
-										: undefined
-								}
+								onPress={toggleFlash}
 								style={[
 									styles.flipButton,
 									flash && styles.activeFlipButton,
-									(cameraFacing === "front" ||
-										(isRecording && Platform.OS === "android")) &&
-										styles.disabledButton,
+									!showFlash && styles.disabledButton,
 								]}
+								disabled={!showFlash}
 							>
 								<Ionicons
 									name="flash"
 									size={30}
 									color={flash ? "#ffeb3b" : "white"}
-									style={[
-										(cameraFacing === "front" ||
-											(isRecording && Platform.OS === "android")) && {
-											opacity: 0,
-										},
-									]}
 								/>
 							</Pressable>
 						</Animated.View>
