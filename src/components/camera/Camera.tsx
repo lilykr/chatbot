@@ -1,24 +1,21 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-	type CameraOrientation,
-	CameraView,
-	useCameraPermissions,
-	useMicrophonePermissions,
-} from "expo-camera";
+import { type CameraOrientation, CameraView } from "expo-camera";
 import type React from "react";
 import { type LegacyRef, useEffect, useRef, useState } from "react";
 import {
-	Alert,
 	Animated,
 	Dimensions,
 	Easing,
 	Platform,
-	Pressable,
 	SafeAreaView,
 	StyleSheet,
 	Text,
 	View,
 } from "react-native";
+import { CloseButton } from "./CloseButton";
+import { FlashButton } from "./FlashButton";
+import { FlipCameraButton } from "./FlipCameraButton";
+import { RecordButton } from "./RecordButton";
+import { useCameraPermissions } from "./hooks/useCameraPermissions";
 
 interface CameraProps {
 	onClose: () => void;
@@ -26,9 +23,7 @@ interface CameraProps {
 }
 
 export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
-	const [cameraPermission, requestCameraPermission] = useCameraPermissions();
-	const [microphonePermission, requestMicrophonePermission] =
-		useMicrophonePermissions();
+	const { hasPermissions, requestPermissions } = useCameraPermissions(onClose);
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
 	const [flash, setFlash] = useState(false);
@@ -154,54 +149,8 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		});
 	};
 
-	if (!cameraPermission || !microphonePermission) {
-		// Camera permissions are still loading.
-		return null;
-	}
-
-	if (!cameraPermission.granted) {
-		if (cameraPermission.status === "undetermined") {
-			requestCameraPermission();
-			return null;
-		}
-
-		if (cameraPermission.status === "denied") {
-			Alert.alert(
-				"Permission d'utiliser la caméra refusée",
-				"Veuillez autoriser la caméra dans vos réglages",
-				[
-					{
-						text: "Fermer",
-						style: "cancel",
-						onPress: onClose,
-					},
-				],
-			);
-			return null;
-		}
-
-		return null;
-	}
-	if (!microphonePermission.granted) {
-		if (microphonePermission.status === "undetermined") {
-			requestMicrophonePermission();
-			return null;
-		}
-
-		if (microphonePermission.status === "denied") {
-			Alert.alert(
-				"Permission d'utiliser le microphone refusée",
-				"Veuillez autoriser le microphone dans vos réglages",
-				[
-					{
-						text: "Fermer",
-						style: "cancel",
-						onPress: onClose,
-					},
-				],
-			);
-			return null;
-		}
+	if (!hasPermissions) {
+		requestPermissions();
 		return null;
 	}
 
@@ -256,11 +205,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 							{(recordingTime % 60).toString().padStart(2, "0")}
 						</Text>
 					</Animated.View>
-					<Animated.View style={rotationStyle}>
-						<Pressable onPress={onCloseCamera} style={styles.closeButton}>
-							<Ionicons name="close" size={24} color="white" />
-						</Pressable>
-					</Animated.View>
+					<CloseButton onClose={onCloseCamera} rotationStyle={rotationStyle} />
 				</View>
 
 				<CameraView
@@ -283,48 +228,22 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 				/>
 
 				<View style={styles.controls}>
-					<>
-						<Animated.View style={rotationStyle}>
-							<Pressable
-								onPress={toggleFlash}
-								style={[
-									styles.flipButton,
-									flash && styles.activeFlipButton,
-									!showFlash && styles.disabledButton,
-								]}
-								disabled={!showFlash}
-							>
-								<Ionicons
-									name="flash"
-									size={30}
-									color={flash ? "#ffeb3b" : "white"}
-								/>
-							</Pressable>
-						</Animated.View>
-						<Pressable onPress={toggleRecording}>
-							<View>
-								<Animated.View
-									style={[
-										styles.recordButtonInner,
-										{
-											borderRadius,
-											transform: [{ scale }],
-										},
-									]}
-								/>
-								<View style={[styles.recordButtonBorder]} />
-							</View>
-						</Pressable>
-						<Animated.View style={rotationStyle}>
-							<Pressable
-								disabled={isRecording}
-								onPress={toggleCameraFacing}
-								style={[styles.flipButton, isRecording ? { opacity: 0 } : null]}
-							>
-								<Ionicons name="camera-reverse" size={30} color="white" />
-							</Pressable>
-						</Animated.View>
-					</>
+					<FlashButton
+						flash={flash}
+						showFlash={showFlash}
+						onToggleFlash={toggleFlash}
+						rotationStyle={rotationStyle}
+					/>
+					<RecordButton
+						onToggleRecording={toggleRecording}
+						borderRadius={borderRadius}
+						scale={scale}
+					/>
+					<FlipCameraButton
+						isRecording={isRecording}
+						onToggleCameraFacing={toggleCameraFacing}
+						rotationStyle={rotationStyle}
+					/>
 				</View>
 			</SafeAreaView>
 		</Animated.View>
@@ -335,15 +254,6 @@ const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
 		backgroundColor: "black",
-	},
-	container: {
-		flex: 1,
-		justifyContent: "center",
-	},
-	message: {
-		textAlign: "center",
-		paddingBottom: 10,
-		color: "white",
 	},
 	cameraContainer: {
 		flex: 1,
@@ -359,10 +269,6 @@ const styles = StyleSheet.create({
 	headerSpacer: {
 		width: 40,
 	},
-	closeButton: {
-		width: 40,
-		alignItems: "center",
-	},
 	controls: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -370,34 +276,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		paddingBottom: 14,
 		paddingTop: 20,
-	},
-	recordButtonInner: {
-		backgroundColor: "#ff0000",
-		width: 60,
-		height: 60,
-	},
-	recordButtonBorder: {
-		width: 60,
-		height: 60,
-		borderRadius: 30,
-		borderWidth: 4,
-		borderColor: "white",
-		position: "absolute",
-	},
-	flipButton: {
-		padding: 8,
-		backgroundColor: "rgba(0, 0, 0, 0.3)",
-		borderRadius: 25,
-		width: 50,
-		height: 50,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	activeFlipButton: {
-		backgroundColor: "rgba(255, 235, 59, 0.3)",
-	},
-	disabledButton: {
-		opacity: 0,
 	},
 	timerContainer: {
 		alignItems: "center",

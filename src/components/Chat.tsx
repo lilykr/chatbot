@@ -11,9 +11,9 @@ import { AVATAR_USER } from "../data/mockedMessages";
 import { useCamera } from "../hooks/useCamera";
 import { useChatMessages } from "../hooks/useChatMessages";
 import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
-import { Camera } from "./Camera";
 import { QuickReplies } from "./QuickReplies";
 import VideoPlayer from "./VideoPlayer";
+import { Camera } from "./camera/Camera";
 
 export const Chat: React.FC = () => {
 	const {
