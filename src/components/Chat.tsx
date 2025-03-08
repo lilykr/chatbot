@@ -63,7 +63,6 @@ export const Chat: React.FC = () => {
 
 	const onVideoCaptured = useCallback((videoUri: string | undefined) => {
 		if (!videoUri) return;
-		setShowCamera(false);
 		setMessages((previousMessages) =>
 			appendToChat(previousMessages, [
 				{

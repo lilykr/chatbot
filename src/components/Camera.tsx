@@ -53,6 +53,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					return alert("Erreur lors de l'enregistrement de la vidéo");
 				}
 				onVideoCaptured(url.uri);
+				onCloseCamera();
 			});
 		} else {
 			cameraRef.current.stopRecording();
@@ -123,13 +124,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			onClose();
 		});
 	};
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		if (!isRecording && recordingTime > 0) {
-			onCloseCamera();
-		}
-	}, [isRecording, recordingTime]);
 
 	if (!cameraPermission || !microphonePermission) {
 		// Camera permissions are still loading.
