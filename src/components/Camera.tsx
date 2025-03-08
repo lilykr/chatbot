@@ -12,6 +12,7 @@ import {
 	Pressable,
 	SafeAreaView,
 	StyleSheet,
+	Text,
 	View,
 } from "react-native";
 
@@ -28,6 +29,8 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
 	const [flash, setFlash] = useState(false);
+	const [recordingTime, setRecordingTime] = useState(0);
+	const timerRef = useRef<NodeJS.Timeout>();
 
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
 	const animatedValue = useRef(new Animated.Value(0)).current;
@@ -55,6 +58,25 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			useNativeDriver: false,
 		}).start();
 	}, [isRecording, animatedValue]);
+
+	useEffect(() => {
+		if (isRecording) {
+			timerRef.current = setInterval(() => {
+				setRecordingTime((prev) => prev + 1);
+			}, 1000);
+		} else {
+			if (timerRef.current) {
+				clearInterval(timerRef.current);
+			}
+			setRecordingTime(0);
+		}
+
+		return () => {
+			if (timerRef.current) {
+				clearInterval(timerRef.current);
+			}
+		};
+	}, [isRecording]);
 
 	const borderRadius = animatedValue.interpolate({
 		inputRange: [0, 1],
@@ -139,6 +161,12 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		<SafeAreaView style={styles.safeArea}>
 			<View style={styles.header}>
 				<View style={styles.headerSpacer} />
+				<View style={styles.timerContainer}>
+					<Text style={styles.timerText}>
+						{Math.floor(recordingTime / 60)}:
+						{(recordingTime % 60).toString().padStart(2, "0")}
+					</Text>
+				</View>
 				<Pressable onPress={onClose} style={styles.closeButton}>
 					<Ionicons name="close" size={24} color="white" />
 				</Pressable>
@@ -217,30 +245,21 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		padding: 20,
-		position: "absolute",
-		top: 0,
-		left: 0,
-		right: 0,
-		zIndex: 1,
 	},
 	headerSpacer: {
 		width: 40,
 	},
 	closeButton: {
-		paddingTop: 40,
 		width: 40,
 		alignItems: "center",
 	},
 	controls: {
-		position: "absolute",
-		bottom: 40,
-		left: 0,
-		right: 0,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
 		paddingHorizontal: 20,
 		paddingBottom: 14,
+		paddingTop: 20,
 	},
 	recordButtonInner: {
 		backgroundColor: "#ff0000",
@@ -269,5 +288,14 @@ const styles = StyleSheet.create({
 	},
 	disabledButton: {
 		opacity: 0,
+	},
+	timerContainer: {
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	timerText: {
+		color: "white",
+		fontSize: 18,
+		fontWeight: "bold",
 	},
 });
