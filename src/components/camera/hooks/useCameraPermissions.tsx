@@ -34,6 +34,12 @@ export const useCameraPermissions = (
 		}
 
 		if (cameraPermission.status === PermissionStatus.DENIED) {
+			if (cameraPermission.canAskAgain) {
+				return {
+					hasPermissions: false,
+					requestPermissions: requestCameraPermission,
+				};
+			}
 			Alert.alert(
 				"Permission d'utiliser la caméra refusée",
 				"Veuillez autoriser la caméra dans vos réglages",
@@ -61,6 +67,12 @@ export const useCameraPermissions = (
 		}
 
 		if (microphonePermission.status === PermissionStatus.DENIED) {
+			if (microphonePermission.canAskAgain) {
+				return {
+					hasPermissions: false,
+					requestPermissions: requestMicrophonePermission,
+				};
+			}
 			Alert.alert(
 				"Permission d'utiliser le microphone refusée",
 				"Veuillez autoriser le microphone dans vos réglages",
