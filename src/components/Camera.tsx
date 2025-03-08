@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
+	type CameraOrientation,
 	CameraView,
 	useCameraPermissions,
 	useMicrophonePermissions,
@@ -33,6 +34,9 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [flash, setFlash] = useState(false);
 	const [recordingTime, setRecordingTime] = useState(0);
 	const [isCameraReady, setIsCameraReady] = useState(false);
+	const [orientation, setOrientation] = useState<CameraOrientation | undefined>(
+		undefined,
+	);
 
 	const timerRef = useRef<NodeJS.Timeout>();
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
@@ -41,6 +45,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		new Animated.Value(Dimensions.get("window").height),
 	).current;
 	const isManualClosing = useRef(false);
+	const rotationAnimation = useRef(new Animated.Value(0)).current;
 
 	useEffect(() => {
 		if (!cameraRef.current) {
@@ -103,11 +108,35 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		}
 	}, [isCameraReady, slideAnimation]);
 
+	useEffect(() => {
+		let rotationDegree = 0;
+		switch (orientation) {
+			case "portrait":
+				rotationDegree = 0;
+				break;
+			case "portraitUpsideDown":
+				rotationDegree = 180;
+				break;
+			case "landscapeLeft":
+				rotationDegree = 90;
+				break;
+			case "landscapeRight":
+				rotationDegree = -90;
+				break;
+		}
+
+		Animated.timing(rotationAnimation, {
+			toValue: rotationDegree,
+			duration: 150,
+			useNativeDriver: true,
+			easing: Easing.ease,
+		}).start();
+	}, [orientation, rotationAnimation]);
+
 	const borderRadius = animatedValue.interpolate({
 		inputRange: [0, 1],
 		outputRange: [30, 12],
 	});
-
 	const scale = animatedValue.interpolate({
 		inputRange: [0, 1],
 		outputRange: [1, 0.6],
@@ -194,6 +223,19 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		setFlash((prev) => !prev);
 	};
 
+	const isLandscape = true;
+
+	const rotationStyle = {
+		transform: [
+			{
+				rotate: rotationAnimation.interpolate({
+					inputRange: [-90, 0, 90, 180],
+					outputRange: ["-90deg", "0deg", "90deg", "180deg"],
+				}),
+			},
+		],
+	};
+
 	return (
 		<Animated.View
 			style={[
@@ -206,21 +248,29 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			<SafeAreaView style={styles.safeArea}>
 				<View style={styles.header}>
 					<View style={styles.headerSpacer} />
-					<View style={styles.timerContainer}>
-						<Text style={styles.timerText}>
+					<Animated.View style={[styles.timerContainer, rotationStyle]}>
+						<Text
+							style={[
+								styles.timerText,
+								isLandscape && styles.timerTextLandscape,
+							]}
+						>
 							{Math.floor(recordingTime / 60)}:
 							{(recordingTime % 60).toString().padStart(2, "0")}
 						</Text>
-					</View>
-					<Pressable onPress={onCloseCamera} style={styles.closeButton}>
-						<Ionicons name="close" size={24} color="white" />
-					</Pressable>
+					</Animated.View>
+					<Animated.View style={rotationStyle}>
+						<Pressable onPress={onCloseCamera} style={styles.closeButton}>
+							<Ionicons name="close" size={24} color="white" />
+						</Pressable>
+					</Animated.View>
 				</View>
 
 				<CameraView
 					style={styles.camera}
 					facing={cameraFacing}
 					ref={cameraRef}
+					responsiveOrientationWhenOrientationLocked={true}
 					mode="video"
 					flash={flash ? "on" : "off"}
 					enableTorch={flash}
@@ -230,25 +280,31 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					onCameraReady={() => {
 						setIsCameraReady(true);
 					}}
+					onResponsiveOrientationChanged={(orientation) => {
+						setOrientation(orientation.orientation);
+					}}
+					ratio="4:3"
 				/>
 
 				<View style={styles.controls}>
 					<>
-						<Pressable
-							onPress={cameraFacing === "back" ? toggleFlash : undefined}
-							style={[
-								styles.flipButton,
-								flash && styles.activeFlipButton,
-								cameraFacing === "front" && styles.disabledButton,
-							]}
-						>
-							<Ionicons
-								name="flash"
-								size={30}
-								color={flash ? "#ffeb3b" : "white"}
-								style={cameraFacing === "front" && { opacity: 0 }}
-							/>
-						</Pressable>
+						<Animated.View style={rotationStyle}>
+							<Pressable
+								onPress={cameraFacing === "back" ? toggleFlash : undefined}
+								style={[
+									styles.flipButton,
+									flash && styles.activeFlipButton,
+									cameraFacing === "front" && styles.disabledButton,
+								]}
+							>
+								<Ionicons
+									name="flash"
+									size={30}
+									color={flash ? "#ffeb3b" : "white"}
+									style={[cameraFacing === "front" && { opacity: 0 }]}
+								/>
+							</Pressable>
+						</Animated.View>
 						<Pressable onPress={toggleRecording}>
 							<View>
 								<Animated.View
@@ -263,13 +319,15 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 								<View style={[styles.recordButtonBorder]} />
 							</View>
 						</Pressable>
-						<Pressable
-							disabled={isRecording}
-							onPress={toggleCameraFacing}
-							style={[styles.flipButton, isRecording ? { opacity: 0 } : null]}
-						>
-							<Ionicons name="camera-reverse" size={30} color="white" />
-						</Pressable>
+						<Animated.View style={rotationStyle}>
+							<Pressable
+								disabled={isRecording}
+								onPress={toggleCameraFacing}
+								style={[styles.flipButton, isRecording ? { opacity: 0 } : null]}
+							>
+								<Ionicons name="camera-reverse" size={30} color="white" />
+							</Pressable>
+						</Animated.View>
 					</>
 				</View>
 			</SafeAreaView>
@@ -348,10 +406,14 @@ const styles = StyleSheet.create({
 	timerContainer: {
 		alignItems: "center",
 		justifyContent: "center",
+		minWidth: 80,
 	},
 	timerText: {
 		color: "white",
 		fontSize: 18,
 		fontWeight: "bold",
+	},
+	timerTextLandscape: {
+		fontSize: 14,
 	},
 });
