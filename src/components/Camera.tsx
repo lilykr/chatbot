@@ -280,7 +280,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					onResponsiveOrientationChanged={(orientation) => {
 						setOrientation(orientation.orientation);
 					}}
-					ratio="4:3"
 				/>
 
 				<View style={styles.controls}>
