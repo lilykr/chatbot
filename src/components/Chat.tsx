@@ -22,6 +22,7 @@ const AVATAR_USER =
 export const Chat: React.FC = () => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [showCamera, setShowCamera] = useState(false);
+
 	const isQuickReplies = !!messages[0]?.quickReplies;
 
 	const safeAreaInsets = useSafeAreaInsets();
@@ -76,6 +77,10 @@ export const Chat: React.FC = () => {
 		);
 	}, []);
 
+	const onCloseCamera = useCallback(() => {
+		setShowCamera(false);
+	}, []);
+
 	const renderQuickReplies = useCallback(
 		(props: Readonly<QuickRepliesProps<DefaultIMessage>>) => {
 			const {
@@ -114,7 +119,6 @@ export const Chat: React.FC = () => {
 				paddingBottom: safeAreaInsets.bottom,
 			}}
 		>
-			            
 			<GiftedChat
 				listViewProps={{
 					contentContainerStyle: {
@@ -138,32 +142,23 @@ export const Chat: React.FC = () => {
 						? () => null
 						: () => (
 								<Pressable onPress={toggleShowCamera}>
-									                                    
 									<Ionicons
 										name="camera"
 										size={24}
 										color="black"
 										style={{ marginBottom: 10, marginLeft: 12 }}
 									/>
-									                                
 								</Pressable>
 							)
 				}
 				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
 				showUserAvatar={true}
 			/>
-			            
 			{showCamera && (
 				<View style={[StyleSheet.absoluteFill]}>
-					                    
-					<Camera
-						onClose={() => setShowCamera(false)}
-						onVideoCaptured={onVideoCaptured}
-					/>
-					                
+					<Camera onClose={onCloseCamera} onVideoCaptured={onVideoCaptured} />
 				</View>
 			)}
-			        
 		</View>
 	);
 };

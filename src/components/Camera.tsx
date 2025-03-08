@@ -17,7 +17,7 @@ import {
 } from "react-native";
 
 interface CameraProps {
-	onClose?: () => void;
+	onClose: () => void;
 	onVideoCaptured: (videoUri: string) => void;
 }
 
@@ -25,22 +25,23 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [cameraPermission, requestCameraPermission] = useCameraPermissions();
 	const [microphonePermission, requestMicrophonePermission] =
 		useMicrophonePermissions();
-
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
 	const [flash, setFlash] = useState(false);
 	const [recordingTime, setRecordingTime] = useState(0);
-	const timerRef = useRef<NodeJS.Timeout>();
 
+	const timerRef = useRef<NodeJS.Timeout>();
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
 	const animatedValue = useRef(new Animated.Value(0)).current;
+	const isManualClosing = useRef(false);
 
 	useEffect(() => {
 		if (!cameraRef.current) {
 			return;
 		}
 		if (isRecording) {
-			cameraRef.current.recordAsync().then((url) => {
+			cameraRef.current.recordAsync({ maxDuration: 30 }).then((url) => {
+				if (isManualClosing.current) return;
 				if (!url?.uri) {
 					return alert("Erreur lors de l'enregistrement de la vidéo");
 				}
@@ -157,6 +158,11 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		setFlash((prev) => !prev);
 	};
 
+	const onCloseCamera = () => {
+		isManualClosing.current = true;
+		onClose();
+	};
+
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<View style={styles.header}>
@@ -167,7 +173,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 						{(recordingTime % 60).toString().padStart(2, "0")}
 					</Text>
 				</View>
-				<Pressable onPress={onClose} style={styles.closeButton}>
+				<Pressable onPress={onCloseCamera} style={styles.closeButton}>
 					<Ionicons name="close" size={24} color="white" />
 				</Pressable>
 			</View>
