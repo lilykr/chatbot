@@ -290,18 +290,31 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					<>
 						<Animated.View style={rotationStyle}>
 							<Pressable
-								onPress={cameraFacing === "back" ? toggleFlash : undefined}
+								onPress={
+									!isRecording &&
+									Platform.OS !== "android" &&
+									cameraFacing === "back"
+										? toggleFlash
+										: undefined
+								}
 								style={[
 									styles.flipButton,
 									flash && styles.activeFlipButton,
-									cameraFacing === "front" && styles.disabledButton,
+									(cameraFacing === "front" ||
+										(isRecording && Platform.OS === "android")) &&
+										styles.disabledButton,
 								]}
 							>
 								<Ionicons
 									name="flash"
 									size={30}
 									color={flash ? "#ffeb3b" : "white"}
-									style={[cameraFacing === "front" && { opacity: 0 }]}
+									style={[
+										(cameraFacing === "front" ||
+											(isRecording && Platform.OS === "android")) && {
+											opacity: 0,
+										},
+									]}
 								/>
 							</Pressable>
 						</Animated.View>
