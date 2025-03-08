@@ -46,6 +46,12 @@
 					}
 				]
 			]
-		}
+		},
+		"extra": {
+			"eas": {
+				"projectId": "bdc933d0-39b9-4dfb-9e9e-caca2b091286"
+			}
+		},
+		"owner": "lilykr"
 	}
 }
