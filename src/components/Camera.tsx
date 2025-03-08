@@ -112,6 +112,25 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		outputRange: [1, 0.6],
 	});
 
+	const onCloseCamera = () => {
+		isManualClosing.current = true;
+		Animated.timing(slideAnimation, {
+			toValue: Dimensions.get("window").height,
+			useNativeDriver: true,
+			duration: 200,
+			easing: Easing.in(Easing.ease),
+		}).start(() => {
+			onClose();
+		});
+	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		if (!isRecording && recordingTime > 0) {
+			onCloseCamera();
+		}
+	}, [isRecording, recordingTime]);
+
 	if (!cameraPermission || !microphonePermission) {
 		// Camera permissions are still loading.
 		return null;
@@ -179,11 +198,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 
 	const toggleFlash = () => {
 		setFlash((prev) => !prev);
-	};
-
-	const onCloseCamera = () => {
-		isManualClosing.current = true;
-		onClose();
 	};
 
 	return (
