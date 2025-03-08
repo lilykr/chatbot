@@ -1,4 +1,4 @@
-import type { IMessage } from "../../types/chat";
+import type { IMessage } from "../../../types/chat";
 
 // extracted from GiftedChat.append
 export const appendToChat = (

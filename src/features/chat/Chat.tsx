@@ -7,13 +7,13 @@ import type {
 } from "react-native-gifted-chat";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AVATAR_USER } from "../data/mockedMessages";
-import { useCamera } from "../hooks/useCamera";
-import { useChatMessages } from "../hooks/useChatMessages";
-import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
+import { AVATAR_USER } from "../../data/mockedMessages";
+import { Camera } from "../camera/Camera";
 import { QuickReplies } from "./QuickReplies";
 import VideoPlayer from "./VideoPlayer";
-import { Camera } from "./camera/Camera";
+import { useCamera } from "./hooks/useCamera";
+import { useChatMessages } from "./hooks/useChatMessages";
+import { useKeyboardHeight } from "./hooks/useKeyboardHeight";
 
 export const Chat: React.FC = () => {
 	const {
