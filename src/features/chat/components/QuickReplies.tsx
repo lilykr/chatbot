@@ -11,7 +11,7 @@ import {
 	type ViewStyle,
 } from "react-native";
 import { type Reply, StylePropType } from "react-native-gifted-chat";
-import type { CarouselReply, IMessage } from "../../types/chat";
+import type { CarouselReply, IMessage } from "../types/chat";
 import { Carousel } from "./Carousel";
 
 const styles = StyleSheet.create({

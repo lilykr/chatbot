@@ -1,6 +1,6 @@
 import type { Reply } from "react-native-gifted-chat";
-import { AVATAR_URL, AVATAR_USER } from "../../../data/mockedMessages";
-import type { IMessage } from "../../../types/chat";
+import { AVATAR_URL, AVATAR_USER } from "../data/mockedMessages";
+import type { IMessage } from "../types/chat";
 
 export const getPersonalitySelectionMessage = (): IMessage => ({
 	_id: Math.round(Math.random() * 1000000),

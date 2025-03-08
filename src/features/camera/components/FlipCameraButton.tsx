@@ -1,6 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Animated, Pressable } from "react-native";
-import { styles } from "./styles";
+import { Animated, Pressable, StyleSheet } from "react-native";
 
 interface FlipCameraButtonProps {
 	isRecording: boolean;
@@ -29,3 +28,15 @@ export const FlipCameraButton: React.FC<FlipCameraButtonProps> = ({
 		</Animated.View>
 	);
 };
+
+export const styles = StyleSheet.create({
+	flipButton: {
+		padding: 8,
+		backgroundColor: "rgba(0, 0, 0, 0.3)",
+		borderRadius: 25,
+		width: 50,
+		height: 50,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});

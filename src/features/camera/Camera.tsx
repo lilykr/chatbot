@@ -11,10 +11,10 @@ import {
 	Text,
 	View,
 } from "react-native";
-import { CloseButton } from "./CloseButton";
-import { FlashButton } from "./FlashButton";
-import { FlipCameraButton } from "./FlipCameraButton";
-import { RecordButton } from "./RecordButton";
+import { CloseButton } from "./components/CloseButton";
+import { FlashButton } from "./components/FlashButton";
+import { FlipCameraButton } from "./components/FlipCameraButton";
+import { RecordButton } from "./components/RecordButton";
 import { useCameraPermissions } from "./hooks/useCameraPermissions";
 import { useOrientationAnimation } from "./hooks/useOrientationAnimation";
 import { useRecordingAnimation } from "./hooks/useRecordingAnimation";

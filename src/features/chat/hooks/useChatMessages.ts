@@ -4,8 +4,8 @@ import type {
 	IMessage as DefaultIMessage,
 	Reply,
 } from "react-native-gifted-chat";
-import { AVATAR_USER, mockedMessages } from "../../../data/mockedMessages";
-import type { IMessage } from "../../../types/chat";
+import { AVATAR_USER, mockedMessages } from "../data/mockedMessages";
+import type { IMessage } from "../types/chat";
 import { appendToChat } from "../utils/appendToChat";
 import {
 	getPersonalitySelectionMessage,
