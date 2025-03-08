@@ -1,5 +1,4 @@
-import { Animated, Pressable, StyleSheet } from "react-native";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
 
 interface RecordButtonProps {
 	onToggleRecording: () => void;
