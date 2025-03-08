@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Chat } from "./src/features/chat/Chat";
+import { Chat } from "./features/chat/Chat";
 
 export function App() {
 	return (
