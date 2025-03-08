@@ -16,6 +16,9 @@ import { FlashButton } from "./FlashButton";
 import { FlipCameraButton } from "./FlipCameraButton";
 import { RecordButton } from "./RecordButton";
 import { useCameraPermissions } from "./hooks/useCameraPermissions";
+import { useOrientationAnimation } from "./hooks/useOrientationAnimation";
+import { useRecordingAnimation } from "./hooks/useRecordingAnimation";
+import { useRecordingTimer } from "./hooks/useRecordingTimer";
 
 interface CameraProps {
 	onClose: () => void;
@@ -27,30 +30,29 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	const [isRecording, setIsRecording] = useState(false);
 	const [cameraFacing, setCameraFacing] = useState<"front" | "back">("back");
 	const [flash, setFlash] = useState(false);
-	const [recordingTime, setRecordingTime] = useState(0);
 	const [isCameraReady, setIsCameraReady] = useState(false);
 	const [orientation, setOrientation] = useState<CameraOrientation | undefined>(
 		undefined,
 	);
 
-	const timerRef = useRef<NodeJS.Timeout>();
 	const cameraRef: LegacyRef<CameraView> | undefined = useRef(null);
-	const animatedValue = useRef(new Animated.Value(0)).current;
 	const slideAnimation = useRef(
 		new Animated.Value(Dimensions.get("window").height),
 	).current;
 	const isManualClosing = useRef(false);
-	const rotationAnimation = useRef(new Animated.Value(0)).current;
+
+	const recordingTime = useRecordingTimer(isRecording);
+	const { borderRadius, scale } = useRecordingAnimation(isRecording);
+	const rotationStyle = useOrientationAnimation(orientation);
 
 	useEffect(() => {
-		if (!cameraRef.current) {
-			return;
-		}
+		if (!cameraRef.current) return;
+
 		if (isRecording) {
 			cameraRef.current.recordAsync({ maxDuration: 30 }).then((url) => {
 				if (isManualClosing.current) return;
 				if (!url?.uri) {
-					return alert("Erreur lors de l'enregistrement de la vidéo");
+					return alert("Error recording video");
 				}
 				onVideoCaptured(url.uri);
 				onCloseCamera();
@@ -59,33 +61,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			cameraRef.current.stopRecording();
 		}
 	}, [isRecording, onVideoCaptured]);
-
-	useEffect(() => {
-		Animated.timing(animatedValue, {
-			toValue: isRecording ? 1 : 0,
-			duration: 300,
-			useNativeDriver: false,
-		}).start();
-	}, [isRecording, animatedValue]);
-
-	useEffect(() => {
-		if (isRecording) {
-			timerRef.current = setInterval(() => {
-				setRecordingTime((prev) => prev + 1);
-			}, 1000);
-		} else {
-			if (timerRef.current) {
-				clearInterval(timerRef.current);
-			}
-			setRecordingTime(0);
-		}
-
-		return () => {
-			if (timerRef.current) {
-				clearInterval(timerRef.current);
-			}
-		};
-	}, [isRecording]);
 
 	useEffect(() => {
 		if (isCameraReady) {
@@ -102,40 +77,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			);
 		}
 	}, [isCameraReady, slideAnimation]);
-
-	useEffect(() => {
-		let rotationDegree = 0;
-		switch (orientation) {
-			case "portrait":
-				rotationDegree = 0;
-				break;
-			case "portraitUpsideDown":
-				rotationDegree = 180;
-				break;
-			case "landscapeLeft":
-				rotationDegree = 90;
-				break;
-			case "landscapeRight":
-				rotationDegree = -90;
-				break;
-		}
-
-		Animated.timing(rotationAnimation, {
-			toValue: rotationDegree,
-			duration: 150,
-			useNativeDriver: true,
-			easing: Easing.ease,
-		}).start();
-	}, [orientation, rotationAnimation]);
-
-	const borderRadius = animatedValue.interpolate({
-		inputRange: [0, 1],
-		outputRange: [30, 12],
-	});
-	const scale = animatedValue.interpolate({
-		inputRange: [0, 1],
-		outputRange: [1, 0.6],
-	});
 
 	const onCloseCamera = () => {
 		isManualClosing.current = true;
@@ -162,25 +103,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			}
 			return newFacing;
 		});
-	};
-
-	const toggleRecording = () => {
-		setIsRecording((prev) => !prev);
-	};
-
-	const toggleFlash = () => {
-		setFlash((prev) => !prev);
-	};
-
-	const rotationStyle = {
-		transform: [
-			{
-				rotate: rotationAnimation.interpolate({
-					inputRange: [-90, 0, 90, 180],
-					outputRange: ["-90deg", "0deg", "90deg", "180deg"],
-				}),
-			},
-		],
 	};
 
 	const showFlash =
@@ -216,12 +138,8 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					mode="video"
 					flash={flash ? "on" : "off"}
 					enableTorch={flash}
-					onMountError={(error) => {
-						console.log("error", error);
-					}}
-					onCameraReady={() => {
-						setIsCameraReady(true);
-					}}
+					onMountError={console.log}
+					onCameraReady={() => setIsCameraReady(true)}
 					onResponsiveOrientationChanged={(orientation) => {
 						setOrientation(orientation.orientation);
 					}}
@@ -231,11 +149,11 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					<FlashButton
 						flash={flash}
 						showFlash={showFlash}
-						onToggleFlash={toggleFlash}
+						onToggleFlash={() => setFlash((prev) => !prev)}
 						rotationStyle={rotationStyle}
 					/>
 					<RecordButton
-						onToggleRecording={toggleRecording}
+						onToggleRecording={() => setIsRecording((prev) => !prev)}
 						borderRadius={borderRadius}
 						scale={scale}
 					/>
