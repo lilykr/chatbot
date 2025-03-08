@@ -39,6 +39,10 @@
 					{
 						"supportsBackgroundPlayback": true,
 						"supportsPictureInPicture": true
+					},
+					"expo-screen-orientation",
+					{
+						"initialOrientation": "DEFAULT"
 					}
 				]
 			]
