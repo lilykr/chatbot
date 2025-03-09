@@ -2,6 +2,7 @@ import type React from "react";
 import {
 	Dimensions,
 	Image,
+	Platform,
 	Pressable,
 	ScrollView,
 	StyleSheet,
@@ -12,7 +13,7 @@ import { colors } from "../../../constants/colors";
 import type { CarouselReply } from "../types/chat";
 
 const { width } = Dimensions.get("window");
-const CARD_WIDTH = width * 0.6;
+const CARD_WIDTH = Platform.OS === "ios" ? width * 0.6 : width * 0.7;
 
 interface CarouselProps {
 	items: CarouselReply[];

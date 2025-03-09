@@ -76,9 +76,6 @@ export default function VideoPlayer({ videoUri }: Props) {
 								width: (MAX_WIDTH_OR_HEIGHT * 3) / 4, // 4:3 ratio
 							}),
 					borderRadius: 15,
-					marginLeft: 6,
-					marginRight: 6,
-					marginTop: 6,
 				}}
 				player={player}
 				allowsFullscreen

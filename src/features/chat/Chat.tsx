@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback } from "react";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import type {
 	AvatarProps,
 	BubbleProps,
@@ -21,6 +21,7 @@ import {
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../constants/colors";
+import { font } from "../../constants/font";
 import { Camera } from "../camera/Camera";
 import { QuickReplies } from "./components/QuickReplies";
 import VideoPlayer from "./components/VideoPlayer";
@@ -68,24 +69,18 @@ export const Chat: React.FC = () => {
 					}}
 					wrapperStyle={{
 						left: { backgroundColor: "#221f20", padding: 8 },
-						right: { padding: 8 },
+						right: { padding: 8, backgroundColor: "transparent" },
 					}}
 					textStyle={{
 						left: {
 							marginBottom: 0,
 							color: "white",
-							fontFamily:
-								Platform.OS === "android"
-									? "Epilogue_400Regular"
-									: "Epilogue-Regular",
+							fontFamily: font.regular,
 						},
 						right: {
 							marginBottom: 0,
 							color: "white",
-							fontFamily:
-								Platform.OS === "android"
-									? "Epilogue_400Regular"
-									: "Epilogue-Regular",
+							fontFamily: font.regular,
 						},
 					}}
 				/>
@@ -99,13 +94,13 @@ export const Chat: React.FC = () => {
 			return (
 				<Avatar
 					imageStyle={{
-						left: { width: 25, height: 25 },
-						right: { width: 25, height: 25 },
+						left: { width: 27, height: 27 },
+						right: { width: 27, height: 27 },
 					}}
 					containerStyle={{
 						left: {
 							borderWidth: 1,
-							borderColor: "#918D8E",
+							borderColor: colors.lightGrey,
 							borderRadius: 100,
 						},
 					}}
@@ -152,15 +147,16 @@ export const Chat: React.FC = () => {
 						backgroundColor: colors.night,
 						borderRadius: 50,
 						borderWidth: 1,
-						borderColor: colors.white,
+						borderColor: isQuickReplies ? colors.lightGrey : colors.white,
 						borderTopWidth: 1,
+						borderTopColor: isQuickReplies ? colors.lightGrey : colors.white,
 						marginHorizontal: 15,
 						marginBottom: 10,
 					}}
 				/>
 			);
 		},
-		[],
+		[isQuickReplies],
 	);
 
 	const renderSend = useCallback(
@@ -174,10 +170,7 @@ export const Chat: React.FC = () => {
 					textStyle={{
 						color: colors.vibrantPurple,
 						fontSize: 16,
-						fontFamily:
-							Platform.OS === "android"
-								? "Epilogue_500Medium"
-								: "Epilogue-Medium",
+						fontFamily: font.medium,
 					}}
 					label="Envoyer"
 				/>

@@ -4,7 +4,8 @@ import {
 	Epilogue_800ExtraBold,
 	useFonts,
 } from "@expo-google-fonts/epilogue";
-import { Platform, Text as RNText, type TextProps } from "react-native";
+import { Text as RNText, type TextProps } from "react-native";
+import { font } from "../constants/font";
 
 type Props = TextProps & {
 	weight?: "regular" | "medium" | "bold";
@@ -26,18 +27,7 @@ export const Text = ({ weight = "regular", ...props }: Props) => {
 			{...props}
 			style={[
 				{
-					fontFamily:
-						weight === "regular"
-							? Platform.OS === "android"
-								? "Epilogue_400Regular"
-								: "Epilogue-Regular"
-							: weight === "medium"
-								? Platform.OS === "android"
-									? "Epilogue_500Medium"
-									: "Epilogue-Medium"
-								: Platform.OS === "android"
-									? "Epilogue_800ExtraBold"
-									: "Epilogue-ExtraBold",
+					fontFamily: font[weight],
 				},
 				props.style,
 			]}
