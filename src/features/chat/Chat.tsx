@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import type {
@@ -42,6 +43,10 @@ export const Chat: React.FC = () => {
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const keyboardHeight = useKeyboardHeight();
+
+	const handleLayout = useCallback(() => {
+		SplashScreen.hideAsync();
+	}, []);
 
 	const renderQuickReplies = useCallback(
 		(props: Readonly<QuickRepliesProps<DefaultIMessage>>) => {
@@ -188,6 +193,7 @@ export const Chat: React.FC = () => {
 					paddingBottom: safeAreaInsets.bottom,
 				},
 			]}
+			onLayout={handleLayout}
 		>
 			<GiftedChat
 				listViewProps={{
