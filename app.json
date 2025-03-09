@@ -26,35 +26,48 @@
 		"web": {
 			"favicon": "./assets/favicon.png"
 		},
-		"expo": {
-			"plugins": [
-				[
-					"expo-camera",
-					{
-						"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
-						"microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
-						"recordAudioAndroid": true
-					},
-					"expo-video",
-					{
-						"supportsBackgroundPlayback": true,
-						"supportsPictureInPicture": true
-					},
-					"expo-screen-orientation",
-					{
-						"initialOrientation": "DEFAULT"
-					},
-					"expo-font",
-					{
-						"fonts": [
-							"node_modules/@expo-google-fonts/epilogue/Epilogue_400Regular.ttf",
-							"node_modules/@expo-google-fonts/epilogue/Epilogue_500Medium.ttf",
-							"node_modules/@expo-google-fonts/epilogue/Epilogue_800ExtraBold.ttf"
-						]
-					}
-				]
+
+		"plugins": [
+			[
+				"expo-camera",
+				{
+					"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
+					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
+					"recordAudioAndroid": true
+				}
+			],
+			[
+				"expo-video",
+				{
+					"supportsBackgroundPlayback": true,
+					"supportsPictureInPicture": true
+				}
+			],
+			[
+				"expo-screen-orientation",
+				{
+					"initialOrientation": "DEFAULT"
+				}
+			],
+			[
+				"expo-font",
+				{
+					"fonts": [
+						"node_modules/@expo-google-fonts/epilogue/Epilogue_400Regular.ttf",
+						"node_modules/@expo-google-fonts/epilogue/Epilogue_500Medium.ttf",
+						"node_modules/@expo-google-fonts/epilogue/Epilogue_800ExtraBold.ttf"
+					]
+				}
+			],
+			[
+				"expo-splash-screen",
+				{
+					"backgroundColor": "#090607",
+					"image": "./assets/splash-icon.png",
+					"imageWidth": 200
+				}
 			]
-		},
+		],
 		"extra": {
 			"eas": {
 				"projectId": "bdc933d0-39b9-4dfb-9e9e-caca2b091286"
