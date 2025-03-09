@@ -1,7 +1,8 @@
+import { Image } from "react-native";
 import type { IMessage } from "../types/chat";
 
-export const AVATAR_URL =
-	"https://plus.unsplash.com/premium_photo-1681943258709-9137146aa2bf?q=80&w=2884&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+const localImage = require("../../../../assets/avatar.png");
+export const AVATAR_URL = Image.resolveAssetSource(localImage).uri;
 
 export const AVATAR_USER =
 	"https://media.licdn.com/dms/image/v2/C5603AQGUmxHYqgbv2Q/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516267491614?e=1746662400&v=beta&t=Lnb3HpfKwA5PlxrWX28h-kbsm7dfh4TFwz7U7zh28bQ";

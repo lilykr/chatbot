@@ -31,9 +31,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		borderWidth: 1,
 		maxWidth: 200,
-		paddingVertical: 7,
+		paddingVertical: 10,
 		paddingHorizontal: 12,
-		minHeight: 50,
 		borderRadius: 13,
 		margin: 3,
 	},
@@ -68,16 +67,15 @@ const diffReply = (currentReply: Reply) => (reply: Reply) =>
 	currentReply.value !== reply.value;
 
 // Default component from the gifted-chat library
-
 export function QuickReplies({
 	currentMessage,
 	nextMessage,
-	color = colors.vibrantPurple,
+	color = colors.white,
 	quickReplyStyle,
 	quickReplyTextStyle,
 	quickReplyContainerStyle,
 	onQuickReply,
-	sendText = "Send",
+	sendText,
 	renderQuickReplySend,
 }: QuickRepliesProps<IMessage>) {
 	if (!currentMessage?.quickReplies) return null;
@@ -141,7 +139,7 @@ export function QuickReplies({
 				<Carousel
 					items={currentMessage.quickReplies.values as CarouselReply[]}
 					onSelect={handleCarouselSelect}
-					color={color}
+					color={colors.white}
 				/>
 			</View>
 		);

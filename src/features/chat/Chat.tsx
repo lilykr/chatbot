@@ -3,11 +3,22 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useCallback } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import type {
+	AvatarProps,
 	BubbleProps,
+	ComposerProps,
 	IMessage as DefaultIMessage,
+	InputToolbarProps,
 	QuickRepliesProps,
+	SendProps,
 } from "react-native-gifted-chat";
-import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
+import {
+	Avatar,
+	Bubble,
+	Composer,
+	GiftedChat,
+	InputToolbar,
+	Send,
+} from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../constants/colors";
 import { Camera } from "../camera/Camera";
@@ -56,10 +67,12 @@ export const Chat: React.FC = () => {
 						},
 					}}
 					wrapperStyle={{
-						left: { backgroundColor: "#221f20" },
+						left: { backgroundColor: "#221f20", padding: 8 },
+						right: { padding: 8 },
 					}}
 					textStyle={{
 						left: {
+							marginBottom: 0,
 							color: "white",
 							fontFamily:
 								Platform.OS === "android"
@@ -67,6 +80,7 @@ export const Chat: React.FC = () => {
 									: "Epilogue-Regular",
 						},
 						right: {
+							marginBottom: 0,
 							color: "white",
 							fontFamily:
 								Platform.OS === "android"
@@ -74,6 +88,29 @@ export const Chat: React.FC = () => {
 									: "Epilogue-Regular",
 						},
 					}}
+				/>
+			);
+		},
+		[],
+	);
+
+	const renderAvatar = useCallback(
+		(props: Readonly<AvatarProps<DefaultIMessage>>) => {
+			return (
+				<Avatar
+					imageStyle={{
+						left: { width: 25, height: 25 },
+						right: { width: 25, height: 25 },
+					}}
+					containerStyle={{
+						left: {
+							borderWidth: 1,
+							borderColor: "#918D8E",
+							borderRadius: 100,
+						},
+					}}
+					currentMessage={props.currentMessage}
+					position={props.position}
 				/>
 			);
 		},
@@ -99,6 +136,53 @@ export const Chat: React.FC = () => {
 		(props: { currentMessage: DefaultIMessage }) => (
 			<VideoPlayer videoUri={props.currentMessage.video} />
 		),
+		[],
+	);
+
+	const renderComposer = useCallback((props: Readonly<ComposerProps>) => {
+		return <Composer {...props} textInputStyle={{ color: colors.white }} />;
+	}, []);
+
+	const renderInputToolbar = useCallback(
+		(props: Readonly<InputToolbarProps<DefaultIMessage>>) => {
+			return (
+				<InputToolbar
+					{...props}
+					containerStyle={{
+						backgroundColor: colors.night,
+						borderRadius: 50,
+						borderWidth: 1,
+						borderColor: colors.white,
+						borderTopWidth: 1,
+						marginHorizontal: 15,
+						marginBottom: 10,
+					}}
+				/>
+			);
+		},
+		[],
+	);
+
+	const renderSend = useCallback(
+		(props: Readonly<SendProps<DefaultIMessage>>) => {
+			return (
+				<Send
+					{...props}
+					containerStyle={{
+						marginHorizontal: 15,
+					}}
+					textStyle={{
+						color: colors.vibrantPurple,
+						fontSize: 16,
+						fontFamily:
+							Platform.OS === "android"
+								? "Epilogue_500Medium"
+								: "Epilogue-Medium",
+					}}
+					label="Envoyer"
+				/>
+			);
+		},
 		[],
 	);
 
@@ -129,45 +213,18 @@ export const Chat: React.FC = () => {
 				renderQuickReplies={renderQuickReplies}
 				onQuickReply={handleQuickReplySelection}
 				disableComposer={isQuickReplies}
-				showAvatarForEveryMessage={true}
 				renderActions={renderActions}
 				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
+				renderComposer={renderComposer}
+				timeTextStyle={{
+					left: { display: "none" },
+					right: { display: "none" },
+				}}
 				showUserAvatar={true}
 				renderBubble={renderMessageBubble}
-				// renderSend={() => (
-				// 	<Pressable
-				// 		style={{
-				// 			marginHorizontal: 15,
-				// 			marginBottom: 10,
-				// 		}}
-				// 	>
-				// 		<Text
-				// 			style={{
-				// 				color: colors.vibrantPurple,
-				// 				fontSize: 16,
-				// 				fontFamily:
-				// 					Platform.OS === "android"
-				// 						? "Epilogue_500Medium"
-				// 						: "Epilogue-Medium",
-				// 			}}
-				// 		>
-				// 			Envoyer
-				// 		</Text>
-				// 	</Pressable>
-				// )}
-				renderInputToolbar={(props) => (
-					<InputToolbar
-						{...props}
-						containerStyle={{
-							backgroundColor: colors.night,
-							borderRadius: 50,
-							borderWidth: 1,
-							borderColor: colors.white,
-							borderTopWidth: 1,
-							marginHorizontal: 15,
-						}}
-					/>
-				)}
+				renderAvatar={renderAvatar}
+				renderSend={renderSend}
+				renderInputToolbar={renderInputToolbar}
 			/>
 			{showCamera && (
 				<View style={StyleSheet.absoluteFill}>

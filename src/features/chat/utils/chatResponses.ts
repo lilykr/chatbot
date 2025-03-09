@@ -1,6 +1,14 @@
+import { Image } from "react-native";
 import type { Reply } from "react-native-gifted-chat";
 import { AVATAR_URL, AVATAR_USER } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
+
+const friendly = require("../../../../assets/friendly.png");
+export const FRIENDLY_URL = Image.resolveAssetSource(friendly).uri;
+const creative = require("../../../../assets/creative.png");
+export const CREATIVE_URL = Image.resolveAssetSource(creative).uri;
+const formal = require("../../../../assets/formal.png");
+export const FORMAL_URL = Image.resolveAssetSource(formal).uri;
 
 export const getPersonalitySelectionMessage = (): IMessage => ({
 	_id: Math.round(Math.random() * 1000000),
@@ -19,8 +27,7 @@ export const getPersonalitySelectionMessage = (): IMessage => ({
 				title: "Formelle",
 				description:
 					"Une assistante personnelle, toujours prête à vous aider avec discrétion et efficacité.",
-				image:
-					"https://images.unsplash.com/photo-1491336477066-31156b5e4f35?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+				image: FORMAL_URL,
 				caption: "Professionnelle et efficace",
 			},
 			{
@@ -28,8 +35,7 @@ export const getPersonalitySelectionMessage = (): IMessage => ({
 				title: "Conviviale",
 				description:
 					"Une amie bienveillante qui vous accompagne dans vos souvenirs avec enthousiasme.",
-				image:
-					"https://images.unsplash.com/photo-1586011978320-228b9817faf1?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+				image: FRIENDLY_URL,
 				caption: "Chaleureuse et amicale",
 			},
 			{
@@ -37,8 +43,7 @@ export const getPersonalitySelectionMessage = (): IMessage => ({
 				title: "Créative",
 				description:
 					"Une artiste dans l'âme qui apporte une touche d'originalité à vos souvenirs.",
-				image:
-					"https://plus.unsplash.com/premium_photo-1681488007344-c75b0cf8b0cd?q=80&w=2960&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+				image: CREATIVE_URL,
 				caption: "Inspirante et originale",
 			},
 		],

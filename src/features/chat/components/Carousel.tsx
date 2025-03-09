@@ -8,10 +8,11 @@ import {
 	View,
 } from "react-native";
 import { Text } from "../../../components/Text";
+import { colors } from "../../../constants/colors";
 import type { CarouselReply } from "../types/chat";
 
 const { width } = Dimensions.get("window");
-const CARD_WIDTH = width * 0.8;
+const CARD_WIDTH = width * 0.6;
 
 interface CarouselProps {
 	items: CarouselReply[];
@@ -22,7 +23,7 @@ interface CarouselProps {
 export const Carousel: React.FC<CarouselProps> = ({
 	items,
 	onSelect,
-	color = "#007AFF",
+	color,
 }) => {
 	return (
 		<View style={styles.container}>
@@ -46,12 +47,15 @@ export const Carousel: React.FC<CarouselProps> = ({
 								style={styles.image}
 								resizeMode="cover"
 							/>
+							<View style={styles.overlay} />
 							<View style={styles.captionOverlay}>
 								<Text style={styles.caption}>{item.caption}</Text>
 							</View>
 						</View>
 						<View style={styles.content}>
-							<Text style={[styles.title, { color }]}>{item.title}</Text>
+							<Text style={[styles.title, { color }]} weight="bold">
+								{item.title}
+							</Text>
 							<Text style={styles.description} numberOfLines={3}>
 								{item.description}
 							</Text>
@@ -76,17 +80,11 @@ const styles = StyleSheet.create({
 	card: {
 		width: CARD_WIDTH,
 		height: CARD_WIDTH * 1.1,
-		backgroundColor: "white",
-		borderRadius: 15,
+		backgroundColor: colors.night,
+		borderRadius: 25,
 		marginRight: 15,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.25,
-		shadowRadius: 3.84,
-		elevation: 5,
+		borderWidth: 1,
+		borderColor: colors.white,
 		overflow: "hidden",
 	},
 	imageContainer: {
@@ -94,20 +92,27 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: CARD_WIDTH,
-		height: CARD_WIDTH * 0.75,
-		backgroundColor: "#f0f0f0",
+		height: CARD_WIDTH * 0.65,
+	},
+	overlay: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		backgroundColor: "rgba(0, 0, 0, 0.3)",
 	},
 	captionOverlay: {
 		position: "absolute",
 		bottom: 10,
 		left: 10,
-		backgroundColor: "rgba(0, 0, 0, 0.6)",
+		backgroundColor: colors.darkGrey,
 		padding: 5,
 		borderRadius: 4,
 	},
 	caption: {
-		fontSize: 12,
-		color: "#fff",
+		fontSize: 10,
+		color: colors.white,
 	},
 	content: {
 		padding: 15,
@@ -115,13 +120,11 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: 18,
-		fontWeight: "600",
 		marginBottom: 8,
 	},
 	description: {
 		fontSize: 14,
-		color: "#666",
-		marginBottom: 8,
+		color: colors.white,
 		flex: 1,
 	},
 });
