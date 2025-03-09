@@ -9,17 +9,17 @@
 		"newArchEnabled": true,
 		"splash": {
 			"image": "./assets/splash-icon.png",
-			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"resizeMode": "contain"
 		},
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "com.lilykr.chatbot"
+			"bundleIdentifier": "com.lilykr.chatbot",
+			"backgroundColor": "#080607"
 		},
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
+				"backgroundColor": "#080607"
 			},
 			"package": "com.lilykr.chatbot"
 		},
@@ -43,6 +43,14 @@
 					"expo-screen-orientation",
 					{
 						"initialOrientation": "DEFAULT"
+					},
+					"expo-font",
+					{
+						"fonts": [
+							"node_modules/@expo-google-fonts/epilogue/Epilogue_400Regular.ttf",
+							"node_modules/@expo-google-fonts/epilogue/Epilogue_500Medium.ttf",
+							"node_modules/@expo-google-fonts/epilogue/Epilogue_800ExtraBold.ttf"
+						]
 					}
 				]
 			]
