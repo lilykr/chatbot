@@ -8,9 +8,9 @@ import {
 	Platform,
 	SafeAreaView,
 	StyleSheet,
-	Text,
 	View,
 } from "react-native";
+import { Text } from "../../components/Text";
 import { CloseButton } from "./components/CloseButton";
 import { FlashButton } from "./components/FlashButton";
 import { FlipCameraButton } from "./components/FlipCameraButton";
@@ -138,6 +138,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					mode="video"
 					flash={flash ? "on" : "off"}
 					enableTorch={flash}
+					//TODO: alert
 					onMountError={console.log}
 					onCameraReady={() => setIsCameraReady(true)}
 					onResponsiveOrientationChanged={(orientation) => {

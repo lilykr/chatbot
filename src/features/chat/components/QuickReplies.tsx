@@ -4,13 +4,14 @@ import { type ReactNode, useCallback, useMemo, useState } from "react";
 import {
 	type StyleProp,
 	StyleSheet,
-	Text,
 	type TextStyle,
 	TouchableOpacity,
 	View,
 	type ViewStyle,
 } from "react-native";
 import { type Reply, StylePropType } from "react-native-gifted-chat";
+import { Text } from "../../../components/Text";
+import { colors } from "../../../constants/colors";
 import type { CarouselReply, IMessage } from "../types/chat";
 import { Carousel } from "./Carousel";
 
@@ -71,7 +72,7 @@ const diffReply = (currentReply: Reply) => (reply: Reply) =>
 export function QuickReplies({
 	currentMessage,
 	nextMessage,
-	color = "black",
+	color = colors.vibrantPurple,
 	quickReplyStyle,
 	quickReplyTextStyle,
 	quickReplyContainerStyle,

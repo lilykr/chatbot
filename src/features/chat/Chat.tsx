@@ -1,12 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCallback } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import type {
+	BubbleProps,
 	IMessage as DefaultIMessage,
 	QuickRepliesProps,
 } from "react-native-gifted-chat";
-import { GiftedChat } from "react-native-gifted-chat";
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { colors } from "../../constants/colors";
 import { Camera } from "../camera/Camera";
 import { QuickReplies } from "./components/QuickReplies";
 import VideoPlayer from "./components/VideoPlayer";
@@ -37,6 +40,46 @@ export const Chat: React.FC = () => {
 		[],
 	);
 
+	const renderMessageBubble = useCallback(
+		(props: Readonly<BubbleProps<DefaultIMessage>>) => {
+			return (
+				<Bubble
+					{...props}
+					customWrapper={{
+						right: LinearGradient,
+					}}
+					customWrapperProps={{
+						right: {
+							colors: ["#C26E73", "#AC1ED6"],
+							start: { x: 0, y: 0 },
+							end: { x: 1, y: 1 },
+						},
+					}}
+					wrapperStyle={{
+						left: { backgroundColor: "#221f20" },
+					}}
+					textStyle={{
+						left: {
+							color: "white",
+							fontFamily:
+								Platform.OS === "android"
+									? "Epilogue_400Regular"
+									: "Epilogue-Regular",
+						},
+						right: {
+							color: "white",
+							fontFamily:
+								Platform.OS === "android"
+									? "Epilogue_400Regular"
+									: "Epilogue-Regular",
+						},
+					}}
+				/>
+			);
+		},
+		[],
+	);
+
 	const renderActions = useCallback(() => {
 		if (isQuickReplies) return null;
 
@@ -45,7 +88,7 @@ export const Chat: React.FC = () => {
 				<Ionicons
 					name="camera"
 					size={24}
-					color="black"
+					color={colors.white}
 					style={{ marginBottom: 10, marginLeft: 12 }}
 				/>
 			</Pressable>
@@ -90,6 +133,41 @@ export const Chat: React.FC = () => {
 				renderActions={renderActions}
 				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
 				showUserAvatar={true}
+				renderBubble={renderMessageBubble}
+				// renderSend={() => (
+				// 	<Pressable
+				// 		style={{
+				// 			marginHorizontal: 15,
+				// 			marginBottom: 10,
+				// 		}}
+				// 	>
+				// 		<Text
+				// 			style={{
+				// 				color: colors.vibrantPurple,
+				// 				fontSize: 16,
+				// 				fontFamily:
+				// 					Platform.OS === "android"
+				// 						? "Epilogue_500Medium"
+				// 						: "Epilogue-Medium",
+				// 			}}
+				// 		>
+				// 			Envoyer
+				// 		</Text>
+				// 	</Pressable>
+				// )}
+				renderInputToolbar={(props) => (
+					<InputToolbar
+						{...props}
+						containerStyle={{
+							backgroundColor: colors.night,
+							borderRadius: 50,
+							borderWidth: 1,
+							borderColor: colors.white,
+							borderTopWidth: 1,
+							marginHorizontal: 15,
+						}}
+					/>
+				)}
 			/>
 			{showCamera && (
 				<View style={StyleSheet.absoluteFill}>
@@ -106,6 +184,6 @@ export const Chat: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "white",
+		backgroundColor: colors.night,
 	},
 });
