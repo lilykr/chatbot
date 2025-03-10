@@ -2,9 +2,9 @@
 
 ### Screenshots
 
-![Preview1](./screenshot_1.PNG | width=200)
-![Preview2](./screenshot_2.jpeg | width=200)
-![Preview3](./screenshot_3.PNG | width=200)
+<img src="./screenshot_1.PNG" width="200" style="margin-right: 20px">
+<img src="./screenshot_2.jpeg" width="200" style="margin-right: 20px">
+<img src="./screenshot_3.PNG" width="200">
 
 
 ### Technical choices
