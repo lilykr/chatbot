@@ -1,6 +1,12 @@
 import { type CameraOrientation, CameraView } from "expo-camera";
 import type React from "react";
-import { type LegacyRef, useEffect, useRef, useState } from "react";
+import {
+	type LegacyRef,
+	useEffect,
+	useRef,
+	useState,
+	useCallback,
+} from "react";
 import {
 	Animated,
 	Dimensions,
@@ -19,6 +25,7 @@ import { useCameraPermissions } from "./hooks/useCameraPermissions";
 import { useOrientationAnimation } from "./hooks/useOrientationAnimation";
 import { useRecordingAnimation } from "./hooks/useRecordingAnimation";
 import { useRecordingTimer } from "./hooks/useRecordingTimer";
+import * as Device from "expo-device";
 
 interface CameraProps {
 	onClose: () => void;
@@ -78,7 +85,7 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		}
 	}, [isCameraReady, slideAnimation]);
 
-	const onCloseCamera = () => {
+	const onCloseCamera = useCallback(() => {
 		isManualClosing.current = true;
 		Animated.timing(slideAnimation, {
 			toValue: Dimensions.get("window").height,
@@ -88,14 +95,9 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 		}).start(() => {
 			onClose();
 		});
-	};
+	}, [slideAnimation, onClose]);
 
-	if (!hasPermissions) {
-		requestPermissions();
-		return null;
-	}
-
-	const toggleCameraFacing = () => {
+	const toggleCameraFacing = useCallback(() => {
 		setCameraFacing((prev) => {
 			const newFacing = prev === "front" ? "back" : "front";
 			if (newFacing === "front" && flash) {
@@ -103,7 +105,30 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 			}
 			return newFacing;
 		});
-	};
+	}, [flash]);
+
+	const onToggleFlash = useCallback(() => setFlash((prev) => !prev), []);
+
+	const onToggleRecording = useCallback(
+		() => setIsRecording((prev) => !prev),
+		[],
+	);
+
+	const onMountError = useCallback(() => alert("Error mounting camera"), []);
+
+	const onCameraReady = useCallback(() => setIsCameraReady(true), []);
+
+	const onOrientationChanged = useCallback(
+		(orientation: { orientation: CameraOrientation }) => {
+			setOrientation(orientation.orientation);
+		},
+		[],
+	);
+
+	if (!hasPermissions) {
+		requestPermissions();
+		return null;
+	}
 
 	const showFlash =
 		cameraFacing === "back" &&
@@ -138,23 +163,20 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 					mode="video"
 					flash={flash ? "on" : "off"}
 					enableTorch={flash}
-					//TODO: alert
-					onMountError={console.log}
-					onCameraReady={() => setIsCameraReady(true)}
-					onResponsiveOrientationChanged={(orientation) => {
-						setOrientation(orientation.orientation);
-					}}
+					onMountError={onMountError}
+					onCameraReady={onCameraReady}
+					onResponsiveOrientationChanged={onOrientationChanged}
 				/>
 
 				<View style={styles.controls}>
 					<FlashButton
 						flash={flash}
 						showFlash={showFlash}
-						onToggleFlash={() => setFlash((prev) => !prev)}
+						onToggleFlash={onToggleFlash}
 						rotationStyle={rotationStyle}
 					/>
 					<RecordButton
-						onToggleRecording={() => setIsRecording((prev) => !prev)}
+						onToggleRecording={onToggleRecording}
 						borderRadius={borderRadius}
 						scale={scale}
 					/>
