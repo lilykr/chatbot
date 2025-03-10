@@ -41,6 +41,7 @@ export const Carousel: React.FC<CarouselProps> = ({
 						key={`${item.value}-${index}`}
 						style={styles.card}
 						onPress={() => onSelect(item)}
+						testID={`carousel_item_${item.value}`}
 					>
 						<View style={styles.imageContainer}>
 							<Image

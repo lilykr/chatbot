@@ -127,6 +127,7 @@ export function QuickReplies({
 							selected && { backgroundColor: color },
 						]}
 						key={`${reply.value}-${index}`}
+						testID={`quick_reply_${reply.value}`}
 					>
 						<Text
 							numberOfLines={10}

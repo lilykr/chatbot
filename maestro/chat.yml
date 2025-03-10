@@ -1,0 +1,19 @@
+appId: com.lilykr.chatbot
+---
+- launchApp
+- assertVisible: "Benny"
+- tapOn:
+    id: "quick_reply_feminine"
+- assertVisible: "Féminin"
+- tapOn:
+    id: "carousel_item_formelle"
+- assertVisible: "Formelle"
+- tapOn:
+    id: "Tapez un message"
+- inputText: "Super"
+- tapOn:
+    id: "GC_SEND_TOUCHABLE"
+- assertVisible: "Super"
+- tapOn:
+    point: "50%,39%"
+

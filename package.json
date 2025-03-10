@@ -10,7 +10,8 @@
 		"web": "expo start --web",
 		"lint": "biome check . --formatter-enabled=true --linter-enabled=true --organize-imports-enabled=true --diagnostic-level error --write",
 		"typecheck": "tsc --project tsconfig.json --noEmit --pretty",
-		"prebuild": "expo prebuild --clean"
+		"prebuild": "expo prebuild --clean",
+		"e2e": "maestro test maestro/chat.yaml"
 	},
 	"dependencies": {
 		"@expo-google-fonts/epilogue": "^0.2.3",
