@@ -73,8 +73,16 @@ export const Chat: React.FC = () => {
 						},
 					}}
 					wrapperStyle={{
-						left: { backgroundColor: "#221f20", padding: 8 },
-						right: { padding: 8, backgroundColor: "transparent" },
+						left: {
+							backgroundColor: "#221f20",
+							padding: 8,
+							borderCurve: "circular",
+						},
+						right: {
+							padding: 8,
+							backgroundColor: "transparent",
+							borderCurve: "circular",
+						},
 					}}
 					textStyle={{
 						left: {
@@ -157,6 +165,7 @@ export const Chat: React.FC = () => {
 						borderTopColor: isQuickReplies ? colors.lightGrey : colors.white,
 						marginHorizontal: 15,
 						marginBottom: 10,
+						borderCurve: "circular",
 					}}
 				/>
 			);

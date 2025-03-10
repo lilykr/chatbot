@@ -15,39 +15,6 @@ import { colors } from "../../../constants/colors";
 import type { CarouselReply, IMessage } from "../types/chat";
 import { Carousel } from "./Carousel";
 
-const styles = StyleSheet.create({
-	container: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		maxWidth: 300,
-	},
-	carouselContainer: {
-		width: "100%",
-		maxWidth: "100%",
-		alignSelf: "flex-start",
-	},
-	quickReply: {
-		justifyContent: "center",
-		alignItems: "center",
-		borderWidth: 1,
-		maxWidth: 200,
-		paddingVertical: 10,
-		paddingHorizontal: 12,
-		borderRadius: 13,
-		margin: 3,
-	},
-	quickReplyText: {
-		overflow: "visible",
-	},
-	sendLink: {
-		borderWidth: 0,
-	},
-	sendLinkText: {
-		fontWeight: "600",
-		fontSize: 17,
-	},
-});
-
 export interface QuickRepliesProps<TMessage extends IMessage = IMessage> {
 	nextMessage?: TMessage | undefined;
 	currentMessage: TMessage;
@@ -197,3 +164,37 @@ QuickReplies.propTypes = {
 	renderQuickReplySend: PropTypes.func,
 	quickReplyStyle: StylePropType,
 };
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: "row",
+		flexWrap: "wrap",
+		maxWidth: 300,
+	},
+	carouselContainer: {
+		width: "100%",
+		maxWidth: "100%",
+		alignSelf: "flex-start",
+	},
+	quickReply: {
+		justifyContent: "center",
+		alignItems: "center",
+		borderWidth: 1,
+		maxWidth: 200,
+		paddingVertical: 10,
+		paddingHorizontal: 12,
+		borderRadius: 13,
+		margin: 3,
+		borderCurve: "circular",
+	},
+	quickReplyText: {
+		overflow: "visible",
+	},
+	sendLink: {
+		borderWidth: 0,
+	},
+	sendLinkText: {
+		fontWeight: "600",
+		fontSize: 17,
+	},
+});
