@@ -4863,6 +4863,11 @@ react-native-communications@^2.2.1:
   resolved "https://registry.yarnpkg.com/react-native-communications/-/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"
   integrity sha512-5+C0X9mopI0+qxyQHzOPEi5v5rxNBQjxydPPiKMQSlX1RBIcJ8uTcqUPssQ9Mo8p6c1IKIWJUSqCj4jAmD0qVQ==
 
+react-native-error-boundary@1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/react-native-error-boundary/-/react-native-error-boundary-1.2.9.tgz#ac504db7c0eeb95ec06a22d50de3674059a651bd"
+  integrity sha512-G2C4hUpRjwVgQ1efQ6fVfxDvThG/Qhyr/uXhwvMqvIjqlpndvpuNyJc5wOeYfn/ePtgin30Pk7KhmxuHAkyiSQ==
+
 react-native-get-random-values@~1.11.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/react-native-get-random-values/-/react-native-get-random-values-1.11.0.tgz#1ca70d1271f4b08af92958803b89dccbda78728d"
