@@ -2,19 +2,19 @@
 
 ### Screenshots
 
-![Preview1](./screenshot_1.PNG)
-![Preview2](./screenshot_2.jpeg)
-![Preview3](./screenshot_3.PNG)
+![Preview1](./screenshot_1.PNG | width=200)
+![Preview2](./screenshot_2.jpeg | width=200)
+![Preview3](./screenshot_3.PNG | width=200)
 
 
 ### Technical choices
 
-Mobile framework: **Expo**
+- Mobile framework: **Expo**
 
 Battle tested, great DX ecosystem, extensive and well maintained packages and plugins libraries
 
 
-Language safety: **Typescript**
+- Language safety: **Typescript**
 
 Strict mode, important to avoid type mistakes and consistency
 
@@ -22,15 +22,15 @@ Linting and formatting: **Biome.js**
 
 Battle tested, faster than Eslint and Prettier, easier configuration, two tools in one
 
-Chat UI library: **React Native Gifted Chat**
+- Chat UI library: **React Native Gifted Chat**
 
 Albeit not amazing, still the best open source solution out there
 
-Testing: **Maestro**
+- Testing: **Maestro**
 
 Battle tested, easy yaml testing flow definition with great DX (maestro studio)
 
-Deployment: **Expo EAS internal testing**
+- Deployment: **Expo EAS internal testing**
 
 Quick and easy to setup for simple distribution for simple user testing (unlike ios Testflight and Android Google Play Console)
 
