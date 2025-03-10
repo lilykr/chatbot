@@ -3,8 +3,8 @@
 ### Screenshots
 
 <p align="center">
-<img src="./screenshot_1.PNG" width="200" style="margin-right: 20px">
-<img src="./screenshot_2.jpeg" width="200" style="margin-right: 20px">
+<img src="./screenshot_1.PNG" width="200" style="margin-right: 60px">
+<img src="./screenshot_2.jpeg" width="200" style="margin-right: 60px">
 <img src="./screenshot_3.PNG" width="200">
 </p>
 
