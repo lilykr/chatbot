@@ -16,6 +16,8 @@
 	"dependencies": {
 		"@expo-google-fonts/epilogue": "^0.2.3",
 		"@expo/metro-runtime": "~4.0.1",
+		"@react-native-community/slider": "4.5.5",
+		"@shopify/react-native-skia": "1.5.0",
 		"expo": "~52.0.37",
 		"expo-av": "~15.0.2",
 		"expo-camera": "~16.0.17",
