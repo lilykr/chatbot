@@ -1,7 +1,7 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import { WaveMesh4 } from "./WaveMesh4";
+import { WaveMesh5 } from "./WaveMesh5";
 
 export function VoiceMode() {
 	useEffect(() => {
@@ -22,7 +22,8 @@ export function VoiceMode() {
 					maxScale={1}
 				/> */}
 				{/* <WaveMesh3 radius={150} pointCount={2500} color="#FF00FF" /> */}
-				<WaveMesh4 radius={100} pointCount={1000} color="#FF00FF" />
+				{/* <WaveMesh4 radius={100} pointCount={1000} color="#FF00FF" /> */}
+				<WaveMesh5 radius={100} pointCount={2500} color="#FF00FF" />
 			</View>
 		</View>
 	);
