@@ -4,12 +4,9 @@ import { StyleSheet, useWindowDimensions } from "react-native";
 import {
 	Easing,
 	type SharedValue,
-	cancelAnimation,
 	runOnUI,
 	useDerivedValue,
 	useSharedValue,
-	withRepeat,
-	withTiming,
 } from "react-native-reanimated";
 
 interface Point3D {
@@ -54,95 +51,67 @@ export function WaveMesh({
 	const centerX = width / 2;
 	const centerY = height / 2;
 
-	const progress1 = useSharedValue(0);
-	const progress2 = useSharedValue(0);
-	const progress3 = useSharedValue(0);
+	// Use a global clock that continuously runs
+	const clock = useSharedValue(0);
 
-	const rotationX = useSharedValue(0);
-	const rotationY = useSharedValue(0);
-	const rotationZ = useSharedValue(0);
-
-	const updateAnimations = useCallback(() => {
-		"worklet";
-		// Cancel all existing animations first
-		cancelAnimation(progress1);
-		cancelAnimation(progress2);
-		cancelAnimation(progress3);
-		cancelAnimation(rotationX);
-		cancelAnimation(rotationY);
-		cancelAnimation(rotationZ);
-
-		// Reset values
-		progress1.value = 0;
-		progress2.value = 0;
-		progress3.value = 0;
-		rotationX.value = 0;
-		rotationY.value = 0;
-		rotationZ.value = 0;
-
-		// Start new animations
-		progress1.value = withRepeat(
-			withTiming(1, createTimingConfig(waveSpeed.value)),
-			-1,
-			false,
-		);
-		progress2.value = withRepeat(
-			withTiming(1, createTimingConfig(waveSpeed.value * 1.5)),
-			-1,
-			false,
-		);
-		progress3.value = withRepeat(
-			withTiming(1, createTimingConfig(waveSpeed.value * 0.7)),
-			-1,
-			false,
-		);
-
-		rotationX.value = withRepeat(
-			withTiming(Math.PI * 2, createTimingConfig(rotationSpeed.value)),
-			-1,
-			false,
-		);
-		rotationY.value = withRepeat(
-			withTiming(Math.PI * 2, createTimingConfig(rotationSpeed.value * 0.8)),
-			-1,
-			false,
-		);
-		rotationZ.value = withRepeat(
-			withTiming(Math.PI * 2, createTimingConfig(rotationSpeed.value * 0.6)),
-			-1,
-			false,
-		);
-	}, [
-		progress1,
-		progress2,
-		progress3,
-		rotationX,
-		rotationY,
-		rotationZ,
-		waveSpeed,
-		rotationSpeed,
-	]);
-
-	// Watch for speed changes using useDerivedValue
-	useDerivedValue(() => {
-		const ws = waveSpeed.value;
-		const rs = rotationSpeed.value;
-		updateAnimations();
-	}, [updateAnimations, waveSpeed, rotationSpeed]);
-
-	// Initial setup only
-	// biome-ignore lint/correctness/useExhaustiveDependencies: not needed
+	// Replace the updateAnimations function with this setup
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		runOnUI(updateAnimations)();
-		return () => {
-			progress1.value = 0;
-			progress2.value = 0;
-			progress3.value = 0;
-			rotationX.value = 0;
-			rotationY.value = 0;
-			rotationZ.value = 0;
-		};
-	}, [updateAnimations]);
+		const interval = setInterval(() => {
+			runOnUI(() => {
+				"worklet";
+				clock.value += 1 / 60; // Increment by approximate frame time
+			})();
+		}, 16); // ~60fps
+
+		return () => clearInterval(interval);
+	}, []);
+
+	// Derive all animation values from the clock
+	const progress1 = useDerivedValue(() => {
+		return (clock.value % (waveSpeed.value / 1000)) / (waveSpeed.value / 1000);
+	});
+
+	const progress2 = useDerivedValue(() => {
+		return (
+			(clock.value % ((waveSpeed.value * 1.5) / 1000)) /
+			((waveSpeed.value * 1.5) / 1000)
+		);
+	});
+
+	const progress3 = useDerivedValue(() => {
+		return (
+			(clock.value % ((waveSpeed.value * 0.7) / 1000)) /
+			((waveSpeed.value * 0.7) / 1000)
+		);
+	});
+
+	const rotationX = useDerivedValue(() => {
+		return (
+			((clock.value % (rotationSpeed.value / 1000)) /
+				(rotationSpeed.value / 1000)) *
+			Math.PI *
+			2
+		);
+	});
+
+	const rotationY = useDerivedValue(() => {
+		return (
+			((clock.value % ((rotationSpeed.value * 0.8) / 1000)) /
+				((rotationSpeed.value * 0.8) / 1000)) *
+			Math.PI *
+			2
+		);
+	});
+
+	const rotationZ = useDerivedValue(() => {
+		return (
+			((clock.value % ((rotationSpeed.value * 0.6) / 1000)) /
+				((rotationSpeed.value * 0.6) / 1000)) *
+			Math.PI *
+			2
+		);
+	});
 
 	// Memoize sphere points generation
 	const spherePoints = useMemo(() => {
