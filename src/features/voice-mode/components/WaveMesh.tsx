@@ -42,8 +42,23 @@ export function WaveMesh({
 	const centerX = width / 2;
 	const centerY = height / 2;
 
-	// Use a global clock that continuously runs
-	const clock = useSharedValue(0);
+	// Add these shared values to track total rotation
+	const totalRotationX = useSharedValue(0);
+	const totalRotationY = useSharedValue(0);
+	const totalRotationZ = useSharedValue(0);
+
+	// Track the previous time for more accurate calculation
+	const lastTime = useSharedValue(Date.now());
+
+	// Add these shared values to smoothly track all effective speeds
+	const effectiveRotationSpeed = useSharedValue(rotationSpeed.value);
+	const effectiveWaveSpeed = useSharedValue(waveSpeed.value);
+	const effectiveWaveIntensity = useSharedValue(waveIntensity.value);
+
+	// Add phase tracking for wave animations to avoid discontinuities
+	const phase1 = useSharedValue(0);
+	const phase2 = useSharedValue(0);
+	const phase3 = useSharedValue(0);
 
 	// Replace the updateAnimations function with this setup
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -51,58 +66,88 @@ export function WaveMesh({
 		const interval = setInterval(() => {
 			runOnUI(() => {
 				"worklet";
-				clock.value += 1 / 60; // Increment by approximate frame time
+				const now = Date.now();
+				const deltaTime = Math.min((now - lastTime.value) / 1000, 0.05);
+				lastTime.value = now;
+
+				// Use different interpolation factors for speeding up vs slowing down
+				// Faster transitions when accelerating (low to high volume)
+				const speedUpFactor = 0.15; // Much faster acceleration (3x the original)
+				const slowDownFactor = 0.05; // Keep the original slow deceleration
+
+				// Adaptive interpolation based on direction of change
+				const rotationSpeedDelta =
+					rotationSpeed.value - effectiveRotationSpeed.value;
+				const waveSpeedDelta = waveSpeed.value - effectiveWaveSpeed.value;
+				const waveIntensityDelta =
+					waveIntensity.value - effectiveWaveIntensity.value;
+
+				// For rotation speed: faster adaptation when speeding up (lower values = faster rotation)
+				const rotationFactor =
+					rotationSpeedDelta < 0 ? speedUpFactor : slowDownFactor;
+				// For wave speed: faster adaptation when speeding up (lower values = faster waves)
+				const waveSpeedFactor =
+					waveSpeedDelta < 0 ? speedUpFactor : slowDownFactor;
+				// For wave intensity: faster adaptation when increasing intensity
+				const intensityFactor =
+					waveIntensityDelta > 0 ? speedUpFactor : slowDownFactor;
+
+				// Apply the appropriate interpolation factors
+				effectiveRotationSpeed.value += rotationSpeedDelta * rotationFactor;
+				effectiveWaveSpeed.value += waveSpeedDelta * waveSpeedFactor;
+				effectiveWaveIntensity.value += waveIntensityDelta * intensityFactor;
+
+				// Safety floors
+				const safeRotationSpeed = Math.max(effectiveRotationSpeed.value, 1000);
+				const safeWaveSpeed = Math.max(effectiveWaveSpeed.value, 1000);
+
+				// Calculate continuous phases for wave animations
+				const phaseIncrement1 =
+					(2 * Math.PI * deltaTime) / (safeWaveSpeed / 1000);
+				const phaseIncrement2 =
+					(2 * Math.PI * deltaTime) / ((safeWaveSpeed * 1.5) / 1000);
+				const phaseIncrement3 =
+					(2 * Math.PI * deltaTime) / ((safeWaveSpeed * 0.7) / 1000);
+
+				// Update continuous phases
+				phase1.value = (phase1.value + phaseIncrement1) % (2 * Math.PI);
+				phase2.value = (phase2.value + phaseIncrement2) % (2 * Math.PI);
+				phase3.value = (phase3.value + phaseIncrement3) % (2 * Math.PI);
+
+				// Rotation calculations with rate limiting
+				const maxRotationPerFrame = Math.PI / 10; // More conservative limit
+
+				const xIncrement =
+					(2 * Math.PI * deltaTime) / (safeRotationSpeed / 1000);
+				const yIncrement =
+					(2 * Math.PI * deltaTime) / ((safeRotationSpeed * 0.8) / 1000);
+				const zIncrement =
+					(2 * Math.PI * deltaTime) / ((safeRotationSpeed * 0.6) / 1000);
+
+				totalRotationX.value +=
+					Math.min(Math.abs(xIncrement), maxRotationPerFrame) *
+					Math.sign(xIncrement);
+				totalRotationY.value +=
+					Math.min(Math.abs(yIncrement), maxRotationPerFrame) *
+					Math.sign(yIncrement);
+				totalRotationZ.value +=
+					Math.min(Math.abs(zIncrement), maxRotationPerFrame) *
+					Math.sign(zIncrement);
 			})();
-		}, 16); // ~60fps
+		}, 16);
 
 		return () => clearInterval(interval);
 	}, []);
 
-	// Derive all animation values from the clock
-	const progress1 = useDerivedValue(() => {
-		return (clock.value % (waveSpeed.value / 1000)) / (waveSpeed.value / 1000);
-	});
+	// Replace the progress calculations with phase-based values
+	const progress1 = useDerivedValue(() => phase1.value / (2 * Math.PI));
+	const progress2 = useDerivedValue(() => phase2.value / (2 * Math.PI));
+	const progress3 = useDerivedValue(() => phase3.value / (2 * Math.PI));
 
-	const progress2 = useDerivedValue(() => {
-		return (
-			(clock.value % ((waveSpeed.value * 1.5) / 1000)) /
-			((waveSpeed.value * 1.5) / 1000)
-		);
-	});
-
-	const progress3 = useDerivedValue(() => {
-		return (
-			(clock.value % ((waveSpeed.value * 0.7) / 1000)) /
-			((waveSpeed.value * 0.7) / 1000)
-		);
-	});
-
-	const rotationX = useDerivedValue(() => {
-		return (
-			((clock.value % (rotationSpeed.value / 1000)) /
-				(rotationSpeed.value / 1000)) *
-			Math.PI *
-			2
-		);
-	});
-
-	const rotationY = useDerivedValue(() => {
-		return (
-			((clock.value % ((rotationSpeed.value * 0.8) / 1000)) /
-				((rotationSpeed.value * 0.8) / 1000)) *
-			Math.PI *
-			2
-		);
-	});
-
-	const rotationZ = useDerivedValue(() => {
-		return (
-			((clock.value % ((rotationSpeed.value * 0.6) / 1000)) /
-				((rotationSpeed.value * 0.6) / 1000)) *
-			Math.PI *
-			2
-		);
-	});
+	// Replace your rotation derived values with these
+	const rotationX = useDerivedValue(() => totalRotationX.value);
+	const rotationY = useDerivedValue(() => totalRotationY.value);
+	const rotationZ = useDerivedValue(() => totalRotationZ.value);
 
 	// Memoize sphere points generation
 	const spherePoints = useMemo(() => {
@@ -185,7 +230,7 @@ export function WaveMesh({
 			const rotatedY = x * Math.sin(angle) + y * Math.cos(angle);
 			return (
 				Math.sin(rotatedY * Math.PI * 2 + progress * Math.PI * 2) *
-				waveIntensity.value
+				effectiveWaveIntensity.value
 			);
 		};
 
