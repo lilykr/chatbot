@@ -5,8 +5,8 @@ import {
 	type SkPath,
 	Skia,
 } from "@shopify/react-native-skia";
-import { useCallback, useEffect, useMemo } from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { useCallback, useEffect } from "react";
+import { type LayoutChangeEvent, StyleSheet } from "react-native";
 import {
 	type SharedValue,
 	runOnUI,
@@ -36,6 +36,8 @@ interface WaveMeshProps {
 	colorThreshold?: number;
 	crossSize?: number;
 	shape?: ShapeType; // New prop for shape configuration
+	width?: number; // Add width prop
+	height?: number; // Add height prop
 }
 
 export function WaveMesh({
@@ -48,10 +50,16 @@ export function WaveMesh({
 	colorThreshold = 0.2,
 	crossSize = 3.5,
 	shape = "star",
+	width, // Accept width prop
+	height, // Accept height prop
 }: WaveMeshProps) {
-	const { width, height } = useWindowDimensions();
-	const centerX = width / 2;
-	const centerY = height / 2;
+	// Use provided dimensions or default to 0 (will be measured)
+	const canvasWidth = useSharedValue(width || 0);
+	const canvasHeight = useSharedValue(height || 0);
+
+	// Calculate center based on canvas dimensions
+	const centerX = useDerivedValue(() => canvasWidth.value / 2);
+	const centerY = useDerivedValue(() => canvasHeight.value / 2);
 
 	// Add these shared values to track total rotation
 	const totalRotationX = useSharedValue(0);
@@ -70,6 +78,23 @@ export function WaveMesh({
 	const phase1 = useSharedValue(0);
 	const phase2 = useSharedValue(0);
 	const phase3 = useSharedValue(0);
+
+	// Handle canvas layout to get dimensions if not provided
+	const onCanvasLayout = useCallback(
+		(event: LayoutChangeEvent) => {
+			const { width: layoutWidth, height: layoutHeight } =
+				event.nativeEvent.layout;
+
+			// Only update if dimensions weren't provided as props
+			if (!width) {
+				canvasWidth.value = layoutWidth;
+			}
+			if (!height) {
+				canvasHeight.value = layoutHeight;
+			}
+		},
+		[width, height, canvasWidth, canvasHeight],
+	);
 
 	// Replace the updateAnimations function with this setup
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -160,8 +185,9 @@ export function WaveMesh({
 	const rotationY = useDerivedValue(() => totalRotationY.value);
 	const rotationZ = useDerivedValue(() => totalRotationZ.value);
 
-	// Memoize sphere points generation
-	const spherePoints = useMemo(() => {
+	// Memoize sphere points generation - now using centerX and centerY as derived values
+	const spherePoints = useDerivedValue(() => {
+		"worklet";
 		const phi = Math.PI * (3 - Math.sqrt(5));
 		const pointsArray = new Array(pointCount).fill(0);
 
@@ -174,8 +200,8 @@ export function WaveMesh({
 			const z = Math.sin(theta) * radiusAtY;
 
 			return {
-				x: x * radius + centerX,
-				y: y * radius + centerY,
+				x: x * radius + centerX.value,
+				y: y * radius + centerY.value,
 				z: z * radius,
 				originalX: x * radius,
 				originalY: y * radius,
@@ -245,7 +271,7 @@ export function WaveMesh({
 			);
 		};
 
-		for (const point of spherePoints) {
+		for (const point of spherePoints.value) {
 			const wave1 = calculateWave(point, progress1.value, 0);
 			const wave2 = calculateWave(point, progress2.value, Math.PI / 3);
 			const wave3 = calculateWave(point, progress3.value, -Math.PI / 4);
@@ -257,8 +283,10 @@ export function WaveMesh({
 				point.originalZ,
 			);
 
-			const x = rotated.x + centerX + totalOffset * (point.originalX / radius);
-			const y = rotated.y + centerY + totalOffset * (point.originalY / radius);
+			const x =
+				rotated.x + centerX.value + totalOffset * (point.originalX / radius);
+			const y =
+				rotated.y + centerY.value + totalOffset * (point.originalY / radius);
 
 			const normalizedZ = (rotated.z + radius) / (2 * radius);
 			const contrast = 3.5;
@@ -376,7 +404,7 @@ export function WaveMesh({
 	const pathStyle = shape === "circle" ? "fill" : "stroke";
 
 	return (
-		<Canvas style={styles.canvas}>
+		<Canvas style={styles.canvas} onLayout={onCanvasLayout}>
 			<Group>
 				<Path
 					path={basePathValue}
@@ -391,7 +419,7 @@ export function WaveMesh({
 					style={pathStyle}
 					strokeWidth={0.9}
 					strokeCap="round"
-					opacity={0.9}
+					opacity={0.95}
 				/>
 			</Group>
 		</Canvas>

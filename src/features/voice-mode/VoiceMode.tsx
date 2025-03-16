@@ -1,12 +1,17 @@
 import { Audio } from "expo-av";
-import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import {
 	useDerivedValue,
 	useSharedValue,
 	withSpring,
 } from "react-native-reanimated";
-import { VolumeProgressBar } from "./components/VolumeProgressBar";
+import { IconButton } from "../../components/IconButton";
+import { DebugVolume } from "./components/DebugVolume";
+import SpeechRecognition, {
+	startSpeechRecognition,
+	stopSpeechRecognition,
+} from "./components/SpeechRecognition";
 import { WaveMesh } from "./components/WaveMesh";
 
 // Define volume constants with more dramatic range
@@ -17,9 +22,14 @@ const VOLUME_RANGE = MAX_VOLUME - MIN_VOLUME;
 // Add volume amplification factor
 const VOLUME_AMPLIFICATION = 1.5; // Amplify input volume for more dramatic changes
 
+// Add this constant at the top with other constants
+const enableDebug = false; // You can toggle this to show/hide debug controls
+
 export const VoiceMode = () => {
 	const [recording, setRecording] = useState<Audio.Recording | null>(null);
 	const [isManualMode, setIsManualMode] = useState(true);
+	const [isRecognizing, setIsRecognizing] = useState(false);
+	const [currentVolume, setCurrentVolume] = useState(0);
 	const volume = useSharedValue(0);
 
 	// Derive animated values for wave properties with MORE DRAMATIC progression
@@ -127,36 +137,41 @@ export const VoiceMode = () => {
 		};
 	}, [isManualMode]); // Only re-run when isManualMode changes
 
-	const setManualVolume = (value: number) => {
-		// Make manual volume more dramatic too
-		const normalizedVolume = MIN_VOLUME + (value / 10) * VOLUME_RANGE;
+	// Handle volume changes from speech recognition
+	const handleVolumeChange = useCallback((newVolume: number) => {
+		setCurrentVolume(newVolume);
+	}, []);
 
-		volume.value = withSpring(normalizedVolume, {
-			mass: 0.3,
-			damping: 9,
-			stiffness: 120,
-		});
-	};
+	// Update the volume based on speech recognition
+	useEffect(() => {
+		if (isRecognizing) {
+			// Map the currentVolume (0-1) to our volume range
+			const normalizedVolume = MIN_VOLUME + currentVolume * VOLUME_RANGE;
 
-	// Handle toggle of manual mode
-	const handleManualModeToggle = (value: boolean) => {
-		// First stop any existing recording
-		if (recording) {
-			recording
-				.stopAndUnloadAsync()
-				.then(() => {
-					setRecording(null);
-					// Then update the mode
-					setIsManualMode(value);
-				})
-				.catch((err) => {
-					console.error("Error stopping recording during toggle", err);
-					// Still update the mode even if there was an error
-					setIsManualMode(value);
-				});
+			// Use more responsive spring for faster reactions
+			volume.value = withSpring(normalizedVolume, {
+				mass: 0.3, // Reduced mass for faster response
+				damping: 9, // Less damping for more bounce
+				stiffness: 120, // Increased stiffness for faster response
+			});
 		} else {
-			// No recording to stop, just update the mode
-			setIsManualMode(value);
+			// When not recognizing, set to minimum volume
+			volume.value = withSpring(MIN_VOLUME, {
+				mass: 0.5,
+				damping: 12,
+				stiffness: 100,
+			});
+		}
+	}, [currentVolume, isRecognizing, volume]);
+
+	// Handle toggle of speech recognition
+	const handleToggleSpeechRecognition = async () => {
+		if (isRecognizing) {
+			stopSpeechRecognition();
+			setIsRecognizing(false);
+		} else {
+			const started = await startSpeechRecognition();
+			setIsRecognizing(started);
 		}
 	};
 
@@ -167,34 +182,20 @@ export const VoiceMode = () => {
 				waveSpeed={waveSpeed}
 				rotationSpeed={rotationSpeed}
 			/>
+			<SpeechRecognition
+				isRecognizing={isRecognizing}
+				onVolumeChange={handleVolumeChange}
+			/>
 			<View style={styles.overlay}>
-				<View style={styles.controls}>
-					<View style={styles.switchContainer}>
-						<Text style={styles.switchLabel}>Manual Mode</Text>
-						<Switch
-							value={isManualMode}
-							onValueChange={handleManualModeToggle}
-							trackColor={{ false: "#666", true: "#FF00FF" }}
-						/>
-					</View>
-					{isManualMode && (
-						<View style={styles.buttonContainer}>
-							{Array.from({ length: 10 }, (_, i) => {
-								const buttonValue = i + 1;
-								return (
-									<Pressable
-										key={`volume-${buttonValue}`}
-										style={styles.button}
-										onPress={() => setManualVolume(buttonValue)}
-									>
-										<Text style={styles.buttonText}>{buttonValue}</Text>
-									</Pressable>
-								);
-							})}
-						</View>
-					)}
-				</View>
-				<VolumeProgressBar volume={volume} />
+				{enableDebug && (
+					<DebugVolume
+						volume={volume}
+						isManualMode={!isRecognizing}
+						onManualModeToggle={() => {}}
+						onVolumeChange={() => {}}
+					/>
+				)}
+				<IconButton onPress={handleToggleSpeechRecognition} />
 			</View>
 		</View>
 	);
@@ -212,37 +213,5 @@ const styles = StyleSheet.create({
 		right: 0,
 		alignItems: "center",
 		gap: 20,
-	},
-	controls: {
-		alignItems: "center",
-		gap: 10,
-	},
-	switchContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		gap: 10,
-	},
-	switchLabel: {
-		color: "white",
-		fontSize: 16,
-	},
-	buttonContainer: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "center",
-		gap: 8,
-		paddingHorizontal: 20,
-	},
-	button: {
-		width: 30,
-		height: 30,
-		borderRadius: 15,
-		backgroundColor: "rgba(255, 0, 255, 0.2)",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	buttonText: {
-		color: "white",
-		fontSize: 14,
 	},
 });
