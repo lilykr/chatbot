@@ -1,84 +1,84 @@
 {
-	"expo": {
-		"name": "chatbot",
-		"slug": "chatbot",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/icon.png",
-		"userInterfaceStyle": "light",
-		"newArchEnabled": true,
-		"splash": {
-			"image": "./assets/splash-icon.png",
-			"resizeMode": "contain"
-		},
-		"ios": {
-			"supportsTablet": true,
-			"bundleIdentifier": "com.lilykr.chatbot",
-			"backgroundColor": "#080607"
-		},
-		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#080607"
-			},
-			"package": "com.lilykr.chatbot"
-		},
-		"web": {
-			"favicon": "./assets/favicon.png"
-		},
-
-		"plugins": [
-			[
-				"expo-camera",
-				{
-					"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
-					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
-					"recordAudioAndroid": true
-				}
-			],
-			[
-				"expo-video",
-				{
-					"supportsBackgroundPlayback": true,
-					"supportsPictureInPicture": true
-				}
-			],
-			[
-				"expo-screen-orientation",
-				{
-					"initialOrientation": "DEFAULT"
-				}
-			],
-			[
-				"expo-font",
-				{
-					"fonts": [
-						"node_modules/@expo-google-fonts/epilogue/Epilogue_400Regular.ttf",
-						"node_modules/@expo-google-fonts/epilogue/Epilogue_500Medium.ttf",
-						"node_modules/@expo-google-fonts/epilogue/Epilogue_800ExtraBold.ttf"
-					]
-				}
-			],
-			[
-				"expo-splash-screen",
-				{
-					"backgroundColor": "#090607",
-					"image": "./assets/splash-icon.png",
-					"imageWidth": 200
-				}
-			],
-			[
-				"expo-av",
-				{
-					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
-				}
-			]
-		],
-		"extra": {
-			"eas": {
-				"projectId": "bdc933d0-39b9-4dfb-9e9e-caca2b091286"
-			}
-		},
-		"owner": "lilykr"
-	}
+  "expo": {
+    "name": "chatbot",
+    "slug": "chatbot",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lilykr.chatbot",
+      "backgroundColor": "#080607"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#080607"
+      },
+      "package": "com.lilykr.chatbot"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
+          "microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/epilogue/Epilogue_400Regular.ttf",
+            "node_modules/@expo-google-fonts/epilogue/Epilogue_500Medium.ttf",
+            "node_modules/@expo-google-fonts/epilogue/Epilogue_800ExtraBold.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#090607",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
+        }
+      ],
+      "expo-speech-recognition"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bdc933d0-39b9-4dfb-9e9e-caca2b091286"
+      }
+    },
+    "owner": "lilykr"
+  }
 }
