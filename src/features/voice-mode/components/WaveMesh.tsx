@@ -1,4 +1,10 @@
-import { Canvas, Group, Path, Skia } from "@shopify/react-native-skia";
+import {
+	Canvas,
+	Group,
+	Path,
+	type SkPath,
+	Skia,
+} from "@shopify/react-native-skia";
 import { useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import {
@@ -17,6 +23,9 @@ interface Point3D {
 	originalZ: number;
 }
 
+// Add shape type to props
+type ShapeType = "circle" | "cross" | "star";
+
 interface WaveMeshProps {
 	radius?: number;
 	pointCount?: number;
@@ -26,6 +35,7 @@ interface WaveMeshProps {
 	rotationSpeed: SharedValue<number>;
 	colorThreshold?: number;
 	crossSize?: number;
+	shape?: ShapeType; // New prop for shape configuration
 }
 
 export function WaveMesh({
@@ -37,6 +47,7 @@ export function WaveMesh({
 	rotationSpeed,
 	colorThreshold = 0.2,
 	crossSize = 4,
+	shape = "star",
 }: WaveMeshProps) {
 	const { width, height } = useWindowDimensions();
 	const centerX = width / 2;
@@ -288,21 +299,64 @@ export function WaveMesh({
 		rotationZ,
 	]);
 
+	// Function to draw different shapes on the path
+	const drawShape = useCallback(
+		(
+			path: SkPath,
+			x: number,
+			y: number,
+			size: number,
+			shapeType: ShapeType,
+		) => {
+			"worklet";
+			const halfSize = size / 2;
+
+			switch (shapeType) {
+				case "circle":
+					// Draw a circle
+					path.addCircle(x, y, halfSize);
+					break;
+
+				case "cross":
+					// Draw a cross (current implementation)
+					path.moveTo(x - halfSize, y);
+					path.lineTo(x + halfSize, y);
+					path.moveTo(x, y - halfSize);
+					path.lineTo(x, y + halfSize);
+					break;
+
+				case "star":
+					// Draw a 4-pointed star
+					// biome-ignore lint/correctness/noSwitchDeclarations: <explanation>
+					const innerSize = halfSize * 0.4; // Inner radius of the star
+
+					// Main points
+					path.moveTo(x, y - halfSize); // Top
+					path.lineTo(x + innerSize, y - innerSize); // Top-right inner
+					path.lineTo(x + halfSize, y); // Right
+					path.lineTo(x + innerSize, y + innerSize); // Bottom-right inner
+					path.lineTo(x, y + halfSize); // Bottom
+					path.lineTo(x - innerSize, y + innerSize); // Bottom-left inner
+					path.lineTo(x - halfSize, y); // Left
+					path.lineTo(x - innerSize, y - innerSize); // Top-left inner
+					path.close(); // Back to top
+					break;
+			}
+		},
+		[],
+	);
+
 	const basePathValue = useDerivedValue(() => {
 		"worklet";
 		const path = Skia.Path.Make();
 
 		for (const { x, y, opacity } of pathCalculation.value) {
 			const lineLength = opacity * crossSize;
-			const halfLength = lineLength / 2;
-			path.moveTo(x - halfLength, y);
-			path.lineTo(x + halfLength, y);
-			path.moveTo(x, y - halfLength);
-			path.lineTo(x, y + halfLength);
+			drawShape(path, x, y, lineLength, shape);
 		}
 
 		return path;
-	}, [pathCalculation, crossSize]);
+	}, [pathCalculation, crossSize, shape, drawShape]);
 
 	const whitePathValue = useDerivedValue(() => {
 		"worklet";
@@ -311,16 +365,15 @@ export function WaveMesh({
 		for (const { x, y, whiteness } of pathCalculation.value) {
 			if (whiteness > 0) {
 				const lineLength = whiteness * (crossSize * 0.8);
-				const halfLength = lineLength / 2;
-				path.moveTo(x - halfLength, y);
-				path.lineTo(x + halfLength, y);
-				path.moveTo(x, y - halfLength);
-				path.lineTo(x, y + halfLength);
+				drawShape(path, x, y, lineLength, shape);
 			}
 		}
 
 		return path;
-	}, [pathCalculation, crossSize]);
+	}, [pathCalculation, crossSize, shape, drawShape]);
+
+	// Adjust the style based on shape type
+	const pathStyle = shape === "circle" ? "fill" : "stroke";
 
 	return (
 		<Canvas style={styles.canvas}>
@@ -328,14 +381,14 @@ export function WaveMesh({
 				<Path
 					path={basePathValue}
 					color={color}
-					style="stroke"
+					style={pathStyle}
 					strokeWidth={1}
 					strokeCap="round"
 				/>
 				<Path
 					path={whitePathValue}
 					color="white"
-					style="stroke"
+					style={pathStyle}
 					strokeWidth={0.9}
 					strokeCap="round"
 					opacity={0.9}
