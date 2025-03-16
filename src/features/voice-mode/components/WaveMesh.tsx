@@ -2,7 +2,6 @@ import { Canvas, Group, Path, Skia } from "@shopify/react-native-skia";
 import { useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import {
-	Easing,
 	type SharedValue,
 	runOnUI,
 	useDerivedValue,
@@ -28,14 +27,6 @@ interface WaveMeshProps {
 	colorThreshold?: number;
 	crossSize?: number;
 }
-
-const createTimingConfig = (duration: number) => {
-	"worklet";
-	return {
-		duration,
-		easing: Easing.linear,
-	};
-};
 
 export function WaveMesh({
 	radius = 120,
