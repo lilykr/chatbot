@@ -26,16 +26,18 @@ interface WaveMesh5Props {
 	waveSpeed?: number;
 	rotationSpeed?: number;
 	colorThreshold?: number;
+	crossSize?: number;
 }
 
 export function WaveMesh5({
-	radius = 100,
-	pointCount = 1000,
+	radius = 120,
+	pointCount = 2000,
 	color = "#FF00FF",
 	waveIntensity = 15,
 	waveSpeed = 2000,
 	rotationSpeed = 20000,
-	colorThreshold = 0.3,
+	colorThreshold = 0.2,
+	crossSize = 4,
 }: WaveMesh5Props) {
 	const { width, height } = useWindowDimensions();
 	const centerX = width / 2;
@@ -158,34 +160,36 @@ export function WaveMesh5({
 
 	// Add color interpolation helper
 	const interpolateColor = useCallback(
-		(baseColor: string, opacity: number) => {
+		(
+			baseColor: string,
+			opacity: number,
+		): { opacity: number; whiteness: number } => {
 			"worklet";
-			const r = Number.parseInt(baseColor.slice(1, 3), 16);
-			const g = Number.parseInt(baseColor.slice(3, 5), 16);
-			const b = Number.parseInt(baseColor.slice(5, 7), 16);
-
 			if (opacity > colorThreshold) {
 				const t = (opacity - colorThreshold) / (1 - colorThreshold);
-				const targetR = r + (255 - r) * 0.7;
-				const targetG = g + (255 - g) * 0.7;
-				const targetB = b + (255 - b) * 0.7;
-
-				const newR = Math.round(r + (targetR - r) * t);
-				const newG = Math.round(g + (targetG - g) * t);
-				const newB = Math.round(b + (targetB - b) * t);
-
-				return `#${newR.toString(16).padStart(2, "0")}${newG.toString(16).padStart(2, "0")}${newB.toString(16).padStart(2, "0")}`;
+				return {
+					opacity,
+					whiteness: t * 0.7, // 0.7 matches the original whiteness factor
+				};
 			}
 
-			return baseColor;
+			return {
+				opacity,
+				whiteness: 0,
+			};
 		},
 		[colorThreshold],
 	);
 
-	// Create a derived value for the entire path
-	const pathValue = useDerivedValue(() => {
+	// Create a single derived value for all calculations
+	const pathCalculation = useDerivedValue(() => {
 		"worklet";
-		const path = Skia.Path.Make();
+		const points: Array<{
+			x: number;
+			y: number;
+			opacity: number;
+			whiteness: number;
+		}> = [];
 
 		const rotatePoint = (x: number, y: number, z: number) => {
 			// Rotate around X axis
@@ -219,8 +223,8 @@ export function WaveMesh5({
 			);
 		};
 
-		// biome-ignore lint/complexity/noForEach: <explanation>
-		spherePoints.forEach((point) => {
+		// Calculate all points and their properties once
+		for (const point of spherePoints) {
 			const wave1 = calculateWave(point, progress1.value, 0);
 			const wave2 = calculateWave(point, progress2.value, Math.PI / 3);
 			const wave3 = calculateWave(point, progress3.value, -Math.PI / 4);
@@ -237,34 +241,89 @@ export function WaveMesh5({
 
 			// Calculate opacity based on Z position
 			const normalizedZ = (rotated.z + radius) / (2 * radius);
-			const contrast = 2.5;
-			const minOpacity = 0.05;
+			const contrast = 3.5;
+			const minOpacity = 0.02;
 			const maxOpacity = 1;
 			const opacity = Math.max(
 				minOpacity,
 				normalizedZ ** contrast * maxOpacity,
 			);
 
-			// Get color based on opacity
-			const pointColor = interpolateColor(color, opacity);
+			const { opacity: finalOpacity, whiteness } = interpolateColor(
+				color,
+				opacity,
+			);
 
-			// Create a tiny line for each point (more efficient than circles)
-			path.moveTo(x, y);
-			path.lineTo(x + 1, y + 1);
-		});
+			if (finalOpacity > 0.05) {
+				points.push({
+					x,
+					y,
+					opacity: finalOpacity,
+					whiteness,
+				});
+			}
+		}
+
+		return points;
+	}, [spherePoints, color, radius, centerX, centerY, waveIntensity]);
+
+	// Derive base path
+	const basePathValue = useDerivedValue(() => {
+		"worklet";
+		const path = Skia.Path.Make();
+
+		for (const { x, y, opacity } of pathCalculation.value) {
+			const lineLength = opacity * crossSize;
+			const halfLength = lineLength / 2;
+			// Horizontal line
+			path.moveTo(x - halfLength, y);
+			path.lineTo(x + halfLength, y);
+			// Vertical line
+			path.moveTo(x, y - halfLength);
+			path.lineTo(x, y + halfLength);
+		}
 
 		return path;
-	}, [spherePoints, color, radius, centerX, centerY, waveIntensity]);
+	}, [pathCalculation, crossSize]);
+
+	// Derive white path
+	const whitePathValue = useDerivedValue(() => {
+		"worklet";
+		const path = Skia.Path.Make();
+
+		for (const { x, y, whiteness } of pathCalculation.value) {
+			if (whiteness > 0) {
+				const lineLength = whiteness * (crossSize * 0.8);
+				const halfLength = lineLength / 2;
+				// Horizontal line
+				path.moveTo(x - halfLength, y);
+				path.lineTo(x + halfLength, y);
+				// Vertical line
+				path.moveTo(x, y - halfLength);
+				path.lineTo(x, y + halfLength);
+			}
+		}
+
+		return path;
+	}, [pathCalculation, crossSize]);
 
 	return (
 		<Canvas style={styles.canvas}>
 			<Group>
 				<Path
-					path={pathValue}
+					path={basePathValue}
 					color={color}
 					style="stroke"
 					strokeWidth={1}
 					strokeCap="round"
+				/>
+				<Path
+					path={whitePathValue}
+					color="white"
+					style="stroke"
+					strokeWidth={0.9}
+					strokeCap="round"
+					opacity={0.9}
 				/>
 			</Group>
 		</Canvas>
