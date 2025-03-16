@@ -1,43 +1,48 @@
-import { StyleSheet, View, Switch, Pressable, Text } from "react-native";
-import { WaveMesh } from "./components/WaveMesh";
-import { VolumeProgressBar } from "./components/VolumeProgressBar";
 import { Audio } from "expo-av";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import {
+	useDerivedValue,
 	useSharedValue,
 	withSpring,
-	useDerivedValue,
 } from "react-native-reanimated";
+import { VolumeProgressBar } from "./components/VolumeProgressBar";
+import { WaveMesh } from "./components/WaveMesh";
 
 export const VoiceMode = () => {
 	const [recording, setRecording] = useState<Audio.Recording | null>(null);
 	const [isManualMode, setIsManualMode] = useState(true);
 	const volume = useSharedValue(0);
 
-	// Derive animated values for wave properties
+	// Derive animated values for wave properties with LINEAR progression
 	const waveIntensity = useDerivedValue(() => {
-		// Almost no wave movement at low volume
+		// Use linear interpolation instead of exponential
 		const minIntensity = 2;
-		const maxIntensity = 40;
-		const intensityFactor = Math.exp(volume.value * 2.5) / Math.exp(2.5);
-		return minIntensity + (maxIntensity - minIntensity) * intensityFactor;
+		const maxIntensity = 30; // Slightly reduced max to avoid extreme values
+
+		// Simple linear interpolation
+		return minIntensity + (maxIntensity - minIntensity) * volume.value;
 	});
 
 	const waveSpeed = useDerivedValue(() => {
-		// Very slow waves at low volume
+		// Linear interpolation for wave speed
 		const minSpeed = 8000; // Slower base speed
 		const maxSpeed = 1000; // Faster max speed
-		const speedFactor = Math.exp(volume.value * 2.5) / Math.exp(2.5);
-		return minSpeed - (minSpeed - maxSpeed) * speedFactor;
+
+		// Linear mapping of volume to speed
+		return minSpeed - (minSpeed - maxSpeed) * volume.value;
 	});
 
 	const rotationSpeed = useDerivedValue(() => {
-		// return 5000;
 		const minSpeed = 100000; // Much slower base speed (100 seconds per rotation)
-		const maxSpeed = 5000; // Fast max speed (5 seconds per rotation)
-		// Use exponential curve for more dramatic effect
-		const speedFactor = Math.exp(volume.value * 3) / Math.exp(3);
-		return minSpeed - (minSpeed - maxSpeed) * speedFactor;
+		const maxSpeed = 10000; // Less extreme max speed (10 seconds per rotation)
+
+		// Linear mapping with adjusted curve to make middle values more impactful
+		// This gives a slight curve while avoiding the dramatic exponential effect
+		const linearFactor = volume.value;
+		const adjustedFactor = linearFactor * (1.3 - 0.3 * linearFactor); // Subtle curve adjustment
+
+		return minSpeed - (minSpeed - maxSpeed) * adjustedFactor;
 	});
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
