@@ -3,14 +3,13 @@ import { useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import {
 	Easing,
+	type SharedValue,
+	cancelAnimation,
+	runOnUI,
 	useDerivedValue,
 	useSharedValue,
 	withRepeat,
 	withTiming,
-	type SharedValue,
-	runOnUI,
-	runOnJS,
-	cancelAnimation,
 } from "react-native-reanimated";
 
 interface Point3D {
@@ -132,6 +131,7 @@ export function WaveMesh({
 	}, [updateAnimations, waveSpeed, rotationSpeed]);
 
 	// Initial setup only
+	// biome-ignore lint/correctness/useExhaustiveDependencies: not needed
 	useEffect(() => {
 		runOnUI(updateAnimations)();
 		return () => {
@@ -169,10 +169,7 @@ export function WaveMesh({
 	}, [radius, pointCount, centerX, centerY]);
 
 	const interpolateColor = useCallback(
-		(
-			baseColor: string,
-			opacity: number,
-		): { opacity: number; whiteness: number } => {
+		(opacity: number): { opacity: number; whiteness: number } => {
 			"worklet";
 			if (opacity > colorThreshold) {
 				const t = (opacity - colorThreshold) / (1 - colorThreshold);
@@ -256,10 +253,7 @@ export function WaveMesh({
 				normalizedZ ** contrast * maxOpacity,
 			);
 
-			const { opacity: finalOpacity, whiteness } = interpolateColor(
-				color,
-				opacity,
-			);
+			const { opacity: finalOpacity, whiteness } = interpolateColor(opacity);
 
 			if (finalOpacity > 0.05) {
 				points.push({
