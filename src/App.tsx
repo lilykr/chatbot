@@ -6,6 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "./constants/colors";
 import { Chat } from "./features/chat/Chat";
 import ErrorBoundary from "react-native-error-boundary";
+import { VoiceMode } from "./features/voice-mode/VoiceMode";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,7 +15,8 @@ export function App() {
 		<ErrorBoundary>
 			<StatusBar style="light" backgroundColor={colors.night} />
 			<SafeAreaProvider>
-				<Chat />
+				{/* <Chat /> */}
+				<VoiceMode />
 			</SafeAreaProvider>
 		</ErrorBoundary>
 	);

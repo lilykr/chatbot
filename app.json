@@ -66,6 +66,12 @@
 					"image": "./assets/splash-icon.png",
 					"imageWidth": 200
 				}
+			],
+			[
+				"expo-av",
+				{
+					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
+				}
 			]
 		],
 		"extra": {
