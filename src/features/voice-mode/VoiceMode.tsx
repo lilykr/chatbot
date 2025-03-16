@@ -1,8 +1,8 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
+// import { WaveMesh6 } from "./WaveMesh6";
 import { WaveMesh5 } from "./WaveMesh5";
-
 export function VoiceMode() {
 	useEffect(() => {
 		SplashScreen.hideAsync();
@@ -23,7 +23,8 @@ export function VoiceMode() {
 				/> */}
 				{/* <WaveMesh3 radius={150} pointCount={2500} color="#FF00FF" /> */}
 				{/* <WaveMesh4 radius={100} pointCount={1000} color="#FF00FF" /> */}
-				<WaveMesh5 radius={100} pointCount={2500} color="#FF00FF" />
+				<WaveMesh5 color="#FF00FF" />
+				{/* <WaveMesh6 radius={100} pointCount={2500} color="#FF00FF" /> */}
 			</View>
 		</View>
 	);
