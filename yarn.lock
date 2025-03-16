@@ -5951,11 +5951,6 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-whisper.rn@^0.4.0-rc.11:
-  version "0.4.0-rc.11"
-  resolved "https://registry.yarnpkg.com/whisper.rn/-/whisper.rn-0.4.0-rc.11.tgz#2a5dc0b8bfd7a6eeefd896ea3a859162304ff944"
-  integrity sha512-MYBQ/1tJiDx7FlzxGPQKGatLiq7rxIb8x02QtVBmbuD4+V6ZHnG9VixCzsrusNkmRnPWj5ep64nl8vgQXAmECA==
-
 wonka@^6.3.2:
   version "6.3.5"
   resolved "https://registry.yarnpkg.com/wonka/-/wonka-6.3.5.tgz#33fa54ea700ff3e87b56fe32202112a9e8fea1a2"

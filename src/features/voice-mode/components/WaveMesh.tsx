@@ -7,6 +7,10 @@ import {
 	useSharedValue,
 	withRepeat,
 	withTiming,
+	type SharedValue,
+	runOnUI,
+	runOnJS,
+	cancelAnimation,
 } from "react-native-reanimated";
 
 interface Point3D {
@@ -18,27 +22,35 @@ interface Point3D {
 	originalZ: number;
 }
 
-interface WaveMesh5Props {
+interface WaveMeshProps {
 	radius?: number;
 	pointCount?: number;
 	color?: string;
-	waveIntensity?: number;
-	waveSpeed?: number;
-	rotationSpeed?: number;
+	waveIntensity: SharedValue<number>;
+	waveSpeed: SharedValue<number>;
+	rotationSpeed: SharedValue<number>;
 	colorThreshold?: number;
 	crossSize?: number;
 }
+
+const createTimingConfig = (duration: number) => {
+	"worklet";
+	return {
+		duration,
+		easing: Easing.linear,
+	};
+};
 
 export function WaveMesh({
 	radius = 120,
 	pointCount = 2000,
 	color = "#FF00FF",
-	waveIntensity = 15,
-	waveSpeed = 2000,
-	rotationSpeed = 20000,
+	waveIntensity,
+	waveSpeed,
+	rotationSpeed,
 	colorThreshold = 0.2,
 	crossSize = 4,
-}: WaveMesh5Props) {
+}: WaveMeshProps) {
 	const { width, height } = useWindowDimensions();
 	const centerX = width / 2;
 	const centerY = height / 2;
@@ -51,26 +63,17 @@ export function WaveMesh({
 	const rotationY = useSharedValue(0);
 	const rotationZ = useSharedValue(0);
 
-	// Memoize animation configurations
-	const animations = useMemo(
-		() => ({
-			wave1: {
-				duration: waveSpeed,
-				easing: Easing.linear,
-			},
-			wave2: {
-				duration: waveSpeed * 1.5,
-				easing: Easing.linear,
-			},
-			wave3: {
-				duration: waveSpeed * 0.7,
-				easing: Easing.linear,
-			},
-		}),
-		[waveSpeed],
-	);
+	const updateAnimations = useCallback(() => {
+		"worklet";
+		// Cancel all existing animations first
+		cancelAnimation(progress1);
+		cancelAnimation(progress2);
+		cancelAnimation(progress3);
+		cancelAnimation(rotationX);
+		cancelAnimation(rotationY);
+		cancelAnimation(rotationZ);
 
-	useEffect(() => {
+		// Reset values
 		progress1.value = 0;
 		progress2.value = 0;
 		progress3.value = 0;
@@ -78,43 +81,59 @@ export function WaveMesh({
 		rotationY.value = 0;
 		rotationZ.value = 0;
 
-		const animation1 = withRepeat(withTiming(1, animations.wave1), -1, false);
-		const animation2 = withRepeat(withTiming(1, animations.wave2), -1, false);
-		const animation3 = withRepeat(withTiming(1, animations.wave3), -1, false);
-
-		progress1.value = animation1;
-		progress2.value = animation2;
-		progress3.value = animation3;
-
-		const baseRotationDuration = rotationSpeed;
+		// Start new animations
+		progress1.value = withRepeat(
+			withTiming(1, createTimingConfig(waveSpeed.value)),
+			-1,
+			false,
+		);
+		progress2.value = withRepeat(
+			withTiming(1, createTimingConfig(waveSpeed.value * 1.5)),
+			-1,
+			false,
+		);
+		progress3.value = withRepeat(
+			withTiming(1, createTimingConfig(waveSpeed.value * 0.7)),
+			-1,
+			false,
+		);
 
 		rotationX.value = withRepeat(
-			withTiming(Math.PI * 2, {
-				duration: baseRotationDuration,
-				easing: Easing.linear,
-			}),
+			withTiming(Math.PI * 2, createTimingConfig(rotationSpeed.value)),
 			-1,
 			false,
 		);
-
 		rotationY.value = withRepeat(
-			withTiming(Math.PI * 2, {
-				duration: baseRotationDuration * 0.8,
-				easing: Easing.linear,
-			}),
+			withTiming(Math.PI * 2, createTimingConfig(rotationSpeed.value * 0.8)),
 			-1,
 			false,
 		);
-
 		rotationZ.value = withRepeat(
-			withTiming(Math.PI * 2, {
-				duration: baseRotationDuration * 0.6,
-				easing: Easing.linear,
-			}),
+			withTiming(Math.PI * 2, createTimingConfig(rotationSpeed.value * 0.6)),
 			-1,
 			false,
 		);
+	}, [
+		progress1,
+		progress2,
+		progress3,
+		rotationX,
+		rotationY,
+		rotationZ,
+		waveSpeed,
+		rotationSpeed,
+	]);
 
+	// Watch for speed changes using useDerivedValue
+	useDerivedValue(() => {
+		const ws = waveSpeed.value;
+		const rs = rotationSpeed.value;
+		updateAnimations();
+	}, [updateAnimations, waveSpeed, rotationSpeed]);
+
+	// Initial setup only
+	useEffect(() => {
+		runOnUI(updateAnimations)();
 		return () => {
 			progress1.value = 0;
 			progress2.value = 0;
@@ -123,16 +142,7 @@ export function WaveMesh({
 			rotationY.value = 0;
 			rotationZ.value = 0;
 		};
-	}, [
-		animations,
-		progress1,
-		progress2,
-		progress3,
-		rotationX,
-		rotationY,
-		rotationZ,
-		rotationSpeed,
-	]);
+	}, [updateAnimations]);
 
 	// Memoize sphere points generation
 	const spherePoints = useMemo(() => {
@@ -158,7 +168,6 @@ export function WaveMesh({
 		});
 	}, [radius, pointCount, centerX, centerY]);
 
-	// Add color interpolation helper
 	const interpolateColor = useCallback(
 		(
 			baseColor: string,
@@ -169,10 +178,9 @@ export function WaveMesh({
 				const t = (opacity - colorThreshold) / (1 - colorThreshold);
 				return {
 					opacity,
-					whiteness: t * 0.7, // 0.7 matches the original whiteness factor
+					whiteness: t * 0.7,
 				};
 			}
-
 			return {
 				opacity,
 				whiteness: 0,
@@ -181,7 +189,6 @@ export function WaveMesh({
 		[colorThreshold],
 	);
 
-	// Create a single derived value for all calculations
 	const pathCalculation = useDerivedValue(() => {
 		"worklet";
 		const points: Array<{
@@ -192,6 +199,7 @@ export function WaveMesh({
 		}> = [];
 
 		const rotatePoint = (x: number, y: number, z: number) => {
+			"worklet";
 			// Rotate around X axis
 			const cosX = Math.cos(rotationX.value);
 			const sinX = Math.sin(rotationX.value);
@@ -214,16 +222,16 @@ export function WaveMesh({
 		};
 
 		const calculateWave = (point: Point3D, progress: number, angle: number) => {
+			"worklet";
 			const x = point.originalX / radius;
 			const y = point.originalY / radius;
 			const rotatedY = x * Math.sin(angle) + y * Math.cos(angle);
 			return (
 				Math.sin(rotatedY * Math.PI * 2 + progress * Math.PI * 2) *
-				waveIntensity
+				waveIntensity.value
 			);
 		};
 
-		// Calculate all points and their properties once
 		for (const point of spherePoints) {
 			const wave1 = calculateWave(point, progress1.value, 0);
 			const wave2 = calculateWave(point, progress2.value, Math.PI / 3);
@@ -239,7 +247,6 @@ export function WaveMesh({
 			const x = rotated.x + centerX + totalOffset * (point.originalX / radius);
 			const y = rotated.y + centerY + totalOffset * (point.originalY / radius);
 
-			// Calculate opacity based on Z position
 			const normalizedZ = (rotated.z + radius) / (2 * radius);
 			const contrast = 3.5;
 			const minOpacity = 0.02;
@@ -265,9 +272,23 @@ export function WaveMesh({
 		}
 
 		return points;
-	}, [spherePoints, color, radius, centerX, centerY, waveIntensity]);
+	}, [
+		spherePoints,
+		color,
+		radius,
+		centerX,
+		centerY,
+		waveIntensity,
+		waveSpeed,
+		rotationSpeed,
+		progress1,
+		progress2,
+		progress3,
+		rotationX,
+		rotationY,
+		rotationZ,
+	]);
 
-	// Derive base path
 	const basePathValue = useDerivedValue(() => {
 		"worklet";
 		const path = Skia.Path.Make();
@@ -275,10 +296,8 @@ export function WaveMesh({
 		for (const { x, y, opacity } of pathCalculation.value) {
 			const lineLength = opacity * crossSize;
 			const halfLength = lineLength / 2;
-			// Horizontal line
 			path.moveTo(x - halfLength, y);
 			path.lineTo(x + halfLength, y);
-			// Vertical line
 			path.moveTo(x, y - halfLength);
 			path.lineTo(x, y + halfLength);
 		}
@@ -286,7 +305,6 @@ export function WaveMesh({
 		return path;
 	}, [pathCalculation, crossSize]);
 
-	// Derive white path
 	const whitePathValue = useDerivedValue(() => {
 		"worklet";
 		const path = Skia.Path.Make();
@@ -295,10 +313,8 @@ export function WaveMesh({
 			if (whiteness > 0) {
 				const lineLength = whiteness * (crossSize * 0.8);
 				const halfLength = lineLength / 2;
-				// Horizontal line
 				path.moveTo(x - halfLength, y);
 				path.lineTo(x + halfLength, y);
-				// Vertical line
 				path.moveTo(x, y - halfLength);
 				path.lineTo(x, y + halfLength);
 			}

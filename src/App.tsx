@@ -8,7 +8,7 @@ import { Chat } from "./features/chat/Chat";
 import ErrorBoundary from "react-native-error-boundary";
 import { VoiceMode } from "./features/voice-mode/VoiceMode";
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.hideAsync();
 
 export function App() {
 	return (
