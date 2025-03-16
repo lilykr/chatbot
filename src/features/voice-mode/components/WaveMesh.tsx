@@ -46,7 +46,7 @@ export function WaveMesh({
 	waveSpeed,
 	rotationSpeed,
 	colorThreshold = 0.2,
-	crossSize = 4,
+	crossSize = 3.5,
 	shape = "star",
 }: WaveMeshProps) {
 	const { width, height } = useWindowDimensions();
