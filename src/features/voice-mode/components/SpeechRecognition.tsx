@@ -4,6 +4,7 @@ import {
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
+import { font } from "../../../constants/font";
 
 // Create a module-level variable for volume that can be accessed by other components
 let currentVolumeLevel = 0;
@@ -96,10 +97,6 @@ const SpeechRecognition = ({
 
 const styles = StyleSheet.create({
 	transcriptContainer: {
-		// position: "absolute",
-		// left: 20,
-		// right: 20,
-		// top: "50%",
 		flex: 1,
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 		padding: 15,
@@ -108,8 +105,10 @@ const styles = StyleSheet.create({
 	},
 	transcriptText: {
 		color: "white",
-		fontSize: 18,
+		fontSize: 22,
+		lineHeight: 28,
 		textAlign: "center",
+		fontFamily: font.medium,
 	},
 });
 
