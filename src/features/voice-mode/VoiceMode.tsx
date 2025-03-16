@@ -166,7 +166,6 @@ export const VoiceMode = () => {
 				waveIntensity={waveIntensity}
 				waveSpeed={waveSpeed}
 				rotationSpeed={rotationSpeed}
-				shape="star" // You can change this to "circle", "cross", or "star"
 			/>
 			<View style={styles.overlay}>
 				<View style={styles.controls}>
