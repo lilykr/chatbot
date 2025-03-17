@@ -10,7 +10,7 @@ import { WaveMesh } from "./components/WaveMesh";
 import { useVolumeControl } from "./hooks/useVolumeControl";
 
 // Add this constant at the top with other constants
-const enableDebug = false; // You can toggle this to show/hide debug controls
+const enableDebug = true; // You can toggle this to show/hide debug controls
 
 export const VoiceMode = () => {
 	// Create the shared values in the component
@@ -25,7 +25,7 @@ export const VoiceMode = () => {
 		// Apply non-linear mapping for more dramatic changes
 		const amplifiedVolume = volume.value ** 1.5; // Apply exponential curve
 		return minIntensity + (maxIntensity - minIntensity) * amplifiedVolume;
-	});
+	}, []);
 
 	const waveSpeed = useDerivedValue(() => {
 		// Increase speed range for more dramatic effect
@@ -35,7 +35,7 @@ export const VoiceMode = () => {
 		// Apply non-linear mapping for more dramatic changes
 		const amplifiedVolume = volume.value ** 1.3;
 		return minSpeed - (minSpeed - maxSpeed) * amplifiedVolume;
-	});
+	}, []);
 
 	const rotationSpeed = useDerivedValue(() => {
 		const minSpeed = 150000; // Even slower base speed
@@ -44,11 +44,21 @@ export const VoiceMode = () => {
 		// Apply more dramatic curve
 		const amplifiedVolume = volume.value ** 1.4;
 		return minSpeed - (minSpeed - maxSpeed) * amplifiedVolume;
-	});
+	}, []);
 
 	// Pass the volume shared value to the hook
-	const { isRecognizing, setRecognizingState, handleVolumeChange } =
-		useVolumeControl({ volume });
+	const {
+		isManualMode,
+		isRecognizing,
+		toggleManualMode,
+		setRecognizingState,
+		handleManualVolumeChange,
+	} = useVolumeControl({ volume });
+
+	// Handle speech recognition end
+	const handleSpeechEnd = (transcript: string) => {
+		console.log("Speech recognition ended with transcript:", transcript);
+	};
 
 	// Handle toggle of speech recognition
 	const handleToggleSpeechRecognition = async () => {
@@ -70,15 +80,15 @@ export const VoiceMode = () => {
 			/>
 			<SpeechRecognition
 				isRecognizing={isRecognizing}
-				onVolumeChange={handleVolumeChange}
+				onEnd={handleSpeechEnd}
 			/>
 			<View style={styles.overlay}>
 				{enableDebug && (
 					<DebugVolume
 						volume={volume}
-						isManualMode={!isRecognizing}
-						onManualModeToggle={() => {}}
-						onVolumeChange={() => {}}
+						isManualMode={isManualMode}
+						onManualModeToggle={toggleManualMode}
+						onVolumeChange={handleManualVolumeChange}
 					/>
 				)}
 				<IconButton onPress={handleToggleSpeechRecognition} />

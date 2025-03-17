@@ -1,9 +1,9 @@
 {
 	"name": "chatbot",
 	"version": "1.0.0",
-	"main": "expo-router/entry",
+	"main": "index",
 	"scripts": {
-		"postinstall": "patch-package",
+		"postinstall": "patch-package && yarn setup-skia-web",
 		"start": "expo start --dev-client",
 		"android": "expo run:android",
 		"ios": "expo run:ios",

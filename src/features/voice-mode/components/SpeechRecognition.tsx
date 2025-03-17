@@ -6,12 +6,6 @@ import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { font } from "../../../constants/font";
 
-// Create a module-level variable for volume that can be accessed by other components
-let currentVolumeLevel = 0;
-
-// Create a callback that components can use to get the current volume
-export const getVolumeLevel = () => currentVolumeLevel;
-
 export const startSpeechRecognition = async () => {
 	try {
 		const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
@@ -25,10 +19,6 @@ export const startSpeechRecognition = async () => {
 			lang: "en-US",
 			interimResults: true,
 			continuous: true,
-			volumeChangeEventOptions: {
-				enabled: true,
-				intervalMillis: 50, // More frequent updates for smoother animation
-			},
 		});
 
 		return true;
@@ -41,18 +31,18 @@ export const startSpeechRecognition = async () => {
 export const stopSpeechRecognition = (
 	onTranscriptComplete?: (transcript: string) => void,
 ) => {
+	// Stop speech recognition
 	ExpoSpeechRecognitionModule.stop();
 
-	// The final transcript will be handled in the component via the event listeners
-	// The callback allows the parent component to access the final transcript
+	// The callback will be called by the component via the onEnd prop
 };
 
 const SpeechRecognition = ({
 	isRecognizing,
-	onVolumeChange,
+	onEnd,
 }: {
 	isRecognizing: boolean;
-	onVolumeChange?: (volume: number) => void;
+	onEnd?: (transcript: string) => void;
 }) => {
 	const [transcript, setTranscript] = useState("");
 
@@ -62,22 +52,15 @@ const SpeechRecognition = ({
 		setTranscript(newTranscript);
 	});
 
-	useSpeechRecognitionEvent("volumechange", (event) => {
-		// Map the volume value (-2 to 10) to a 0-1 scale for the wave animation
-		// Anything below 0 is essentially inaudible
-		const normalizedVolume = Math.max(0, event.value) / 10;
-		currentVolumeLevel = normalizedVolume;
-
-		// Call the callback if provided
-		if (onVolumeChange) {
-			onVolumeChange(normalizedVolume);
-		}
-	});
-
 	// Handle end event to show alert with final transcript
 	useSpeechRecognitionEvent("end", () => {
 		if (isRecognizing && transcript) {
 			Alert.alert("Transcription Complete", transcript, [{ text: "OK" }]);
+
+			// Call the onEnd callback with the final transcript
+			if (onEnd) {
+				onEnd(transcript);
+			}
 		}
 	});
 
@@ -87,6 +70,13 @@ const SpeechRecognition = ({
 			ExpoSpeechRecognitionModule.abort();
 		};
 	}, []);
+
+	// Expose the current transcript to parent components
+	useEffect(() => {
+		if (!isRecognizing && transcript && onEnd) {
+			onEnd(transcript);
+		}
+	}, [isRecognizing, transcript, onEnd]);
 
 	return (
 		<View style={styles.transcriptContainer}>

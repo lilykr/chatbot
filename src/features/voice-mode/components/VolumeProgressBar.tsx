@@ -1,5 +1,4 @@
 import { Canvas, RoundedRect } from "@shopify/react-native-skia";
-import { StyleSheet } from "react-native";
 import { type SharedValue, useDerivedValue } from "react-native-reanimated";
 
 interface VolumeProgressBarProps {
@@ -7,6 +6,7 @@ interface VolumeProgressBarProps {
 	height?: number;
 	color?: string;
 	backgroundColor?: string;
+	width?: number;
 }
 
 export function VolumeProgressBar({
@@ -14,19 +14,22 @@ export function VolumeProgressBar({
 	height = 4,
 	color = "#FF00FF",
 	backgroundColor = "rgba(255, 255, 255, 0.2)",
+	width = 100,
 }: VolumeProgressBarProps) {
+	// Calculate progress as a percentage based on volume (0-1)
 	const progress = useDerivedValue(() => {
 		"worklet";
-		return volume.value * 100;
-	}, [volume]);
+		// Ensure volume is treated as a value between 0 and 1
+		return Math.min(Math.max(volume.value, 0), 1) * width;
+	}, [volume, width]);
 
 	return (
-		<Canvas style={[styles.canvas, { height }]}>
+		<Canvas style={{ height, width }}>
 			{/* Background bar */}
 			<RoundedRect
 				x={0}
 				y={0}
-				width={100}
+				width={width}
 				height={height}
 				r={height / 2}
 				color={backgroundColor}
@@ -43,9 +46,3 @@ export function VolumeProgressBar({
 		</Canvas>
 	);
 }
-
-const styles = StyleSheet.create({
-	canvas: {
-		width: 100,
-	},
-});

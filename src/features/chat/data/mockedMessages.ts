@@ -1,8 +1,13 @@
-import { Image } from "react-native";
+import { Platform } from "react-native";
 import type { IMessage } from "../types/chat";
 
 const localImage = require("../../../../assets/avatar.png");
-export const AVATAR_URL = Image.resolveAssetSource(localImage).uri;
+
+// For web, we need to access the default property of the imported image
+export const AVATAR_URL = Platform.select({
+	web: "/assets/avatar.png", // Make sure this path matches your public assets directory
+	default: localImage,
+});
 
 export const AVATAR_USER =
 	"https://media.licdn.com/dms/image/v2/C5603AQGUmxHYqgbv2Q/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516267491614?e=1746662400&v=beta&t=Lnb3HpfKwA5PlxrWX28h-kbsm7dfh4TFwz7U7zh28bQ";

@@ -1,14 +1,27 @@
-import { Image } from "react-native";
+import { Platform } from "react-native";
 import type { Reply } from "react-native-gifted-chat";
 import { AVATAR_URL, AVATAR_USER } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
 
 const friendly = require("../../../../assets/friendly.png");
-export const FRIENDLY_URL = Image.resolveAssetSource(friendly).uri;
 const creative = require("../../../../assets/creative.png");
-export const CREATIVE_URL = Image.resolveAssetSource(creative).uri;
 const formal = require("../../../../assets/formal.png");
-export const FORMAL_URL = Image.resolveAssetSource(formal).uri;
+
+// Use Platform.select for all image URLs
+export const FRIENDLY_URL = Platform.select({
+	web: "/assets/friendly.png",
+	default: friendly,
+});
+
+export const CREATIVE_URL = Platform.select({
+	web: "/assets/creative.png",
+	default: creative,
+});
+
+export const FORMAL_URL = Platform.select({
+	web: "/assets/formal.png",
+	default: formal,
+});
 
 export const getPersonalitySelectionMessage = (): IMessage => ({
 	_id: Math.round(Math.random() * 1000000),

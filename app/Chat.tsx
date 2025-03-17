@@ -31,7 +31,7 @@ import { useCamera } from "../src/features/chat/hooks/useCamera";
 import { useChatMessages } from "../src/features/chat/hooks/useChatMessages";
 import { useKeyboardHeight } from "../src/features/chat/hooks/useKeyboardHeight";
 
-export const Chat: React.FC = () => {
+export default function Chat() {
 	const {
 		messages,
 		listRef,
@@ -244,7 +244,7 @@ export const Chat: React.FC = () => {
 			)}
 		</View>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	container: {
