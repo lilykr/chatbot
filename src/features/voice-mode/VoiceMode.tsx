@@ -1,11 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import { useDerivedValue, useSharedValue } from "react-native-reanimated";
-import { IconButton } from "../../components/IconButton";
 import { DebugVolume } from "./components/DebugVolume";
 import SpeechRecognition, {
 	startSpeechRecognition,
 	stopSpeechRecognition,
 } from "./components/SpeechRecognition";
+import { VoiceControlButtons } from "./components/VoiceControlButtons";
 import { WaveMesh } from "./components/WaveMesh";
 import { useVolumeControl } from "./hooks/useVolumeControl";
 
@@ -91,7 +91,7 @@ export const VoiceMode = () => {
 						onVolumeChange={handleManualVolumeChange}
 					/>
 				)}
-				<IconButton onPress={handleToggleSpeechRecognition} />
+				<VoiceControlButtons onPress={handleToggleSpeechRecognition} />
 			</View>
 		</View>
 	);

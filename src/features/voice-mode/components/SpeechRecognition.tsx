@@ -1,13 +1,28 @@
 import {
 	ExpoSpeechRecognitionModule,
+	getSupportedLocales,
+	isRecognitionAvailable,
 	useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, Platform, StyleSheet, Text, View } from "react-native";
 import { font } from "../../../constants/font";
+
+export type SupportedLanguage = "en-US";
 
 export const startSpeechRecognition = async () => {
 	try {
+		// Check if speech recognition is available
+		const recognitionAvailable = isRecognitionAvailable();
+		if (!recognitionAvailable) {
+			Alert.alert(
+				"Speech Recognition Error",
+				"Speech recognition is not available on this device.",
+				[{ text: "OK" }],
+			);
+			return false;
+		}
+
 		const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
 		if (!result.granted) {
 			console.warn("Speech recognition permissions not granted", result);
@@ -19,9 +34,12 @@ export const startSpeechRecognition = async () => {
 			return false;
 		}
 
+		// Always use English
+		const lang: SupportedLanguage = "en-US";
+
 		// Start speech recognition
 		ExpoSpeechRecognitionModule.start({
-			lang: "en-US",
+			lang,
 			interimResults: true,
 			continuous: true,
 		});
@@ -55,6 +73,59 @@ const SpeechRecognition = ({
 	onEnd?: (transcript: string) => void;
 }) => {
 	const [transcript, setTranscript] = useState("");
+	const [isEnglishAvailable, setIsEnglishAvailable] = useState<boolean | null>(
+		null,
+	);
+	const [isLoading, setIsLoading] = useState(true);
+	const isWeb = Platform.OS === "web";
+
+	// Check if English is available (skip on web)
+	useEffect(() => {
+		const checkEnglishAvailability = async () => {
+			// On web, just assume English is available
+			if (isWeb) {
+				setIsEnglishAvailable(true);
+				setIsLoading(false);
+				return;
+			}
+
+			setIsLoading(true);
+			try {
+				const recognitionAvailable = isRecognitionAvailable();
+				if (!recognitionAvailable) {
+					setIsEnglishAvailable(false);
+					return;
+				}
+
+				// Try to get supported locales
+				try {
+					const supportedLocales = await getSupportedLocales();
+					const allLocales = [
+						...supportedLocales.locales,
+						...supportedLocales.installedLocales,
+					];
+
+					// Check if English is available
+					const hasEnglish = allLocales.some((locale) =>
+						locale.startsWith("en"),
+					);
+
+					setIsEnglishAvailable(hasEnglish);
+				} catch (error) {
+					// If getSupportedLocales fails, assume English is available
+					// This happens on older Android versions
+					setIsEnglishAvailable(true);
+				}
+			} catch (error) {
+				console.error("Failed to check language availability", error);
+				setIsEnglishAvailable(false);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		checkEnglishAvailability();
+	}, [isWeb]);
 
 	// Set up speech recognition event listeners
 	useSpeechRecognitionEvent("result", (event) => {
@@ -88,9 +159,43 @@ const SpeechRecognition = ({
 		}
 	}, [isRecognizing, transcript, onEnd]);
 
+	const renderLanguageInfo = () => {
+		// Don't show language info on web or when transcription has started
+		if (isWeb || transcript) {
+			return null;
+		}
+
+		if (isLoading) {
+			return (
+				<Text style={styles.languageText}>
+					Checking language availability...
+				</Text>
+			);
+		}
+
+		if (isEnglishAvailable === false) {
+			return (
+				<Text style={styles.languageText}>
+					Voice recognition not available on this device
+				</Text>
+			);
+		}
+
+		if (isEnglishAvailable === true) {
+			return (
+				<Text style={styles.languageText}>Available language: English</Text>
+			);
+		}
+
+		return null;
+	};
+
 	return (
 		<View style={styles.transcriptContainer}>
-			<Text style={styles.transcriptText}>{transcript || "Listening..."}</Text>
+			<Text style={styles.transcriptText}>
+				{transcript || <Text style={{ opacity: 0.8 }}>Listening...</Text>}
+			</Text>
+			{renderLanguageInfo()}
 		</View>
 	);
 };
@@ -109,6 +214,13 @@ const styles = StyleSheet.create({
 		lineHeight: 28,
 		textAlign: "center",
 		fontFamily: font.medium,
+	},
+	languageText: {
+		color: "white",
+		fontSize: 14,
+		marginTop: 10,
+		opacity: 0.8,
+		fontFamily: font.regular,
 	},
 });
 
