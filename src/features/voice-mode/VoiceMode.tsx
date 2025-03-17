@@ -39,7 +39,7 @@ export const VoiceMode = () => {
 
 	const rotationSpeed = useDerivedValue(() => {
 		const minSpeed = 150000; // Even slower base speed
-		const maxSpeed = 500; // Even faster max speed
+		const maxSpeed = 1000; // Even faster max speed
 
 		// Apply more dramatic curve
 		const amplifiedVolume = volume.value ** 1.4;

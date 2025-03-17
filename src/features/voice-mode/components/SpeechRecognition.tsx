@@ -11,6 +11,11 @@ export const startSpeechRecognition = async () => {
 		const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
 		if (!result.granted) {
 			console.warn("Speech recognition permissions not granted", result);
+			Alert.alert(
+				"Permission Error",
+				"Speech recognition permissions were not granted. Please enable microphone access in your device settings.",
+				[{ text: "OK" }],
+			);
 			return false;
 		}
 
@@ -24,6 +29,11 @@ export const startSpeechRecognition = async () => {
 		return true;
 	} catch (error) {
 		console.error("Failed to start speech recognition", error);
+		Alert.alert(
+			"Speech Recognition Error",
+			`Failed to start speech recognition: ${error instanceof Error ? error.message : String(error)}`,
+			[{ text: "OK" }],
+		);
 		return false;
 	}
 };
