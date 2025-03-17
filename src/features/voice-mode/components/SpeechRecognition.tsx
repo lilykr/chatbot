@@ -5,8 +5,9 @@ import {
 	useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
-import { Alert, Platform, StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { font } from "../../../constants/font";
+import { showAlert } from "../../../utils/alert";
 
 export type SupportedLanguage = "en-US";
 
@@ -15,7 +16,7 @@ export const startSpeechRecognition = async () => {
 		// Check if speech recognition is available
 		const recognitionAvailable = isRecognitionAvailable();
 		if (!recognitionAvailable) {
-			Alert.alert(
+			showAlert(
 				"Speech Recognition Error",
 				"Speech recognition is not available on this device.",
 				[{ text: "OK" }],
@@ -26,7 +27,7 @@ export const startSpeechRecognition = async () => {
 		const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
 		if (!result.granted) {
 			console.warn("Speech recognition permissions not granted", result);
-			Alert.alert(
+			showAlert(
 				"Permission Error",
 				"Speech recognition permissions were not granted. Please enable microphone access in your device settings.",
 				[{ text: "OK" }],
@@ -34,12 +35,9 @@ export const startSpeechRecognition = async () => {
 			return false;
 		}
 
-		// Always use English
-		const lang: SupportedLanguage = "en-US";
-
-		// Start speech recognition
+		// Start speech recognition with English
 		ExpoSpeechRecognitionModule.start({
-			lang,
+			lang: "en-US",
 			interimResults: true,
 			continuous: true,
 		});
@@ -47,7 +45,7 @@ export const startSpeechRecognition = async () => {
 		return true;
 	} catch (error) {
 		console.error("Failed to start speech recognition", error);
-		Alert.alert(
+		showAlert(
 			"Speech Recognition Error",
 			`Failed to start speech recognition: ${error instanceof Error ? error.message : String(error)}`,
 			[{ text: "OK" }],
@@ -61,7 +59,6 @@ export const stopSpeechRecognition = (
 ) => {
 	// Stop speech recognition
 	ExpoSpeechRecognitionModule.stop();
-
 	// The callback will be called by the component via the onEnd prop
 };
 
@@ -78,8 +75,10 @@ const SpeechRecognition = ({
 	);
 	const [isLoading, setIsLoading] = useState(true);
 	const isWeb = Platform.OS === "web";
+	const [previousRecognizingState, setPreviousRecognizingState] =
+		useState(false);
 
-	// Check if English is available (skip on web)
+	// Check if English is available
 	useEffect(() => {
 		const checkEnglishAvailability = async () => {
 			// On web, just assume English is available
@@ -94,10 +93,10 @@ const SpeechRecognition = ({
 				const recognitionAvailable = isRecognitionAvailable();
 				if (!recognitionAvailable) {
 					setIsEnglishAvailable(false);
+					setIsLoading(false);
 					return;
 				}
 
-				// Try to get supported locales
 				try {
 					const supportedLocales = await getSupportedLocales();
 					const allLocales = [
@@ -109,11 +108,9 @@ const SpeechRecognition = ({
 					const hasEnglish = allLocales.some((locale) =>
 						locale.startsWith("en"),
 					);
-
 					setIsEnglishAvailable(hasEnglish);
 				} catch (error) {
 					// If getSupportedLocales fails, assume English is available
-					// This happens on older Android versions
 					setIsEnglishAvailable(true);
 				}
 			} catch (error) {
@@ -133,17 +130,45 @@ const SpeechRecognition = ({
 		setTranscript(newTranscript);
 	});
 
-	// Handle end event to show alert with final transcript
+	// Handle end event to show alert with final transcript and reset
 	useSpeechRecognitionEvent("end", () => {
 		if (isRecognizing && transcript) {
-			Alert.alert("Transcription Complete", transcript, [{ text: "OK" }]);
+			showAlert("Transcription Complete", transcript, [{ text: "OK" }]);
 
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
 				onEnd(transcript);
 			}
+
+			// Reset transcript when recognition ends
+			setTranscript("");
 		}
 	});
+
+	// Track changes in isRecognizing to detect when user stops recognition
+	useEffect(() => {
+		// If we were recognizing before and now we're not, and we have a transcript
+		if (previousRecognizingState && !isRecognizing && transcript) {
+			// Show alert with the transcript
+			showAlert("Transcription Complete", transcript, [{ text: "OK" }]);
+
+			// Call the onEnd callback with the final transcript
+			if (onEnd) {
+				onEnd(transcript);
+			}
+
+			// Reset transcript
+			setTranscript("");
+		}
+
+		// If we weren't recognizing before and now we are, reset transcript
+		if (!previousRecognizingState && isRecognizing) {
+			setTranscript("");
+		}
+
+		// Update previous state
+		setPreviousRecognizingState(isRecognizing);
+	}, [isRecognizing, previousRecognizingState, transcript, onEnd]);
 
 	// Clean up when the component unmounts
 	useEffect(() => {
@@ -152,19 +177,8 @@ const SpeechRecognition = ({
 		};
 	}, []);
 
-	// Expose the current transcript to parent components
-	useEffect(() => {
-		if (!isRecognizing && transcript && onEnd) {
-			onEnd(transcript);
-		}
-	}, [isRecognizing, transcript, onEnd]);
-
-	const renderLanguageInfo = () => {
-		// Don't show language info on web or when transcription has started
-		if (isWeb || transcript) {
-			return null;
-		}
-
+	const renderContent = () => {
+		// If we're loading, show loading message
 		if (isLoading) {
 			return (
 				<Text style={styles.languageText}>
@@ -173,6 +187,7 @@ const SpeechRecognition = ({
 			);
 		}
 
+		// If English is not available, show error message
 		if (isEnglishAvailable === false) {
 			return (
 				<Text style={styles.languageText}>
@@ -181,23 +196,25 @@ const SpeechRecognition = ({
 			);
 		}
 
-		if (isEnglishAvailable === true) {
+		// If recognition is active
+		if (isRecognizing) {
+			// If there's a transcript, show it
+			if (transcript) {
+				return <Text style={styles.transcriptText}>{transcript}</Text>;
+			}
+			// Otherwise show "Listening..."
 			return (
-				<Text style={styles.languageText}>Available language: English</Text>
+				<Text style={styles.transcriptText}>
+					<Text style={{ opacity: 0.8 }}>Listening...</Text>
+				</Text>
 			);
 		}
 
-		return null;
+		// Default state: show available language
+		return <Text style={styles.languageText}>Available language: English</Text>;
 	};
 
-	return (
-		<View style={styles.transcriptContainer}>
-			<Text style={styles.transcriptText}>
-				{transcript || <Text style={{ opacity: 0.8 }}>Listening...</Text>}
-			</Text>
-			{renderLanguageInfo()}
-		</View>
-	);
+	return <View style={styles.transcriptContainer}>{renderContent()}</View>;
 };
 
 const styles = StyleSheet.create({
@@ -207,6 +224,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		borderRadius: 10,
 		alignItems: "center",
+		justifyContent: "center",
 	},
 	transcriptText: {
 		color: "white",
@@ -218,9 +236,9 @@ const styles = StyleSheet.create({
 	languageText: {
 		color: "white",
 		fontSize: 14,
-		marginTop: 10,
 		opacity: 0.8,
 		fontFamily: font.regular,
+		textAlign: "center",
 	},
 });
 
