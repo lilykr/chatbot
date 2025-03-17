@@ -10,7 +10,7 @@ import { WaveMesh } from "./components/WaveMesh";
 import { useVolumeControl } from "./hooks/useVolumeControl";
 
 // Add this constant at the top with other constants
-const enableDebug = true; // You can toggle this to show/hide debug controls
+const enableDebug = false; // You can toggle this to show/hide debug controls
 
 export const VoiceMode = () => {
 	// Create the shared values in the component

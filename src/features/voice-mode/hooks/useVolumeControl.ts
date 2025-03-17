@@ -8,8 +8,12 @@ const MIN_VOLUME = 0.2;
 const MAX_VOLUME = 1.0; // Increase to maximum for more dramatic effect
 const VOLUME_RANGE = MAX_VOLUME - MIN_VOLUME;
 
-// Add volume amplification factor
-const VOLUME_AMPLIFICATION = 1.5; // Amplify input volume for more dramatic changes
+// Add volume amplification factor - increase for web
+const MOBILE_VOLUME_AMPLIFICATION = 1.5; // Amplify input volume for mobile
+const WEB_VOLUME_AMPLIFICATION = 3.5; // Higher amplification for web audio
+
+// Web audio tends to have lower input levels, so we'll add a base boost
+const WEB_VOLUME_BASE_BOOST = 0.07; // Add this to web audio before amplification
 
 interface UseVolumeControlProps {
 	volume: SharedValue<number>;
@@ -106,9 +110,9 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 				audioContextRef.current = new AudioContextClass();
 				analyserRef.current = audioContextRef.current.createAnalyser();
 
-				// Configure analyser
-				analyserRef.current.fftSize = 256;
-				analyserRef.current.smoothingTimeConstant = 0.8;
+				// Configure analyser - use smaller FFT size for more responsive volume detection
+				analyserRef.current.fftSize = 128; // Smaller FFT size (was 256)
+				analyserRef.current.smoothingTimeConstant = 0.5; // Less smoothing for more responsive changes (was 0.8)
 
 				// Request microphone access
 				const stream = await navigator.mediaDevices.getUserMedia({
@@ -205,9 +209,17 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 
 			const average = sum / length;
 
-			// Convert to 0-1 range and apply amplification
+			// Convert to 0-1 range and apply amplification with base boost for web
 			let rawVolume = average / 255;
-			rawVolume = Math.min(rawVolume * VOLUME_AMPLIFICATION, 1);
+
+			// Add base boost to increase the minimum volume level on web
+			rawVolume = Math.min(rawVolume + WEB_VOLUME_BASE_BOOST, 1);
+
+			// Apply higher amplification for web
+			rawVolume = Math.min(rawVolume * WEB_VOLUME_AMPLIFICATION, 1);
+
+			// Apply non-linear curve to emphasize changes (exponential curve)
+			rawVolume = rawVolume ** 0.7; // Values less than 1 emphasize changes in lower volumes
 
 			// Normalize to our defined range
 			const normalizedVolume = MIN_VOLUME + rawVolume * VOLUME_RANGE;
@@ -277,7 +289,10 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 									);
 
 									// Amplify the raw volume for more dramatic changes
-									rawVolume = Math.min(rawVolume * VOLUME_AMPLIFICATION, 1);
+									rawVolume = Math.min(
+										rawVolume * MOBILE_VOLUME_AMPLIFICATION,
+										1,
+									);
 
 									// Normalize to our defined range
 									const normalizedVolume =

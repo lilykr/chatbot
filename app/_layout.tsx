@@ -1,3 +1,9 @@
+import {
+	Epilogue_400Regular,
+	Epilogue_500Medium,
+	Epilogue_800ExtraBold,
+	useFonts,
+} from "@expo-google-fonts/epilogue";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -10,10 +16,22 @@ import { colors } from "../src/constants/colors";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+	const [fontsLoaded] = useFonts({
+		Epilogue_400Regular,
+		Epilogue_500Medium,
+		Epilogue_800ExtraBold,
+	});
+
 	useEffect(() => {
 		// Hide the splash screen when the component mounts
-		SplashScreen.hideAsync();
-	}, []);
+		if (fontsLoaded) {
+			SplashScreen.hideAsync();
+		}
+	}, [fontsLoaded]);
+
+	if (!fontsLoaded) {
+		return null;
+	}
 
 	return (
 		<ErrorBoundary>
