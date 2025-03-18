@@ -25,7 +25,6 @@ import { useCameraPermissions } from "./hooks/useCameraPermissions";
 import { useOrientationAnimation } from "./hooks/useOrientationAnimation";
 import { useRecordingAnimation } from "./hooks/useRecordingAnimation";
 import { useRecordingTimer } from "./hooks/useRecordingTimer";
-import * as Device from "expo-device";
 
 interface CameraProps {
 	onClose: () => void;

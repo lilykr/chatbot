@@ -1,18 +1,18 @@
 import { StyleSheet, View } from "react-native";
 import { useDerivedValue, useSharedValue } from "react-native-reanimated";
-import { DebugVolume } from "./components/DebugVolume";
+import { DebugVolume } from "../features/voice-mode/components/DebugVolume";
 import SpeechRecognition, {
 	startSpeechRecognition,
 	stopSpeechRecognition,
-} from "./components/SpeechRecognition";
-import { VoiceControlButtons } from "./components/VoiceControlButtons";
-import { WaveMesh } from "./components/WaveMesh";
-import { useVolumeControl } from "./hooks/useVolumeControl";
+} from "../features/voice-mode/components/SpeechRecognition";
+import { VoiceControlButtons } from "../features/voice-mode/components/VoiceControlButtons";
+import { WaveMesh } from "../features/voice-mode/components/WaveMesh";
+import { useVolumeControl } from "../features/voice-mode/hooks/useVolumeControl";
 
 // Add this constant at the top with other constants
 const enableDebug = false; // You can toggle this to show/hide debug controls
 
-export const VoiceMode = () => {
+export default function VoiceMode() {
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 
@@ -95,7 +95,7 @@ export const VoiceMode = () => {
 			</View>
 		</View>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	layout: {
