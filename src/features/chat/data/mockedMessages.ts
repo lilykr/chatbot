@@ -1,7 +1,7 @@
 import { Platform } from "react-native";
 import type { IMessage } from "../types/chat";
 
-const localImage = require("../../../../../assets/avatar.png");
+const localImage = require("../../../../assets/avatar.png");
 
 // For web, we need to access the default property of the imported image
 export const AVATAR_URL = Platform.select({

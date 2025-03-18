@@ -1,9 +1,9 @@
 import { StyleSheet, View } from "react-native";
-import { Text } from "../../components/Text";
-import { SearchBar } from "../../components/SearchBar";
-import { colors } from "../../constants/colors";
+import { Text } from "../components/Text";
+import { SearchBar } from "../components/SearchBar";
+import { colors } from "../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CardButton } from "../../components/CardButton";
+import { CardButton } from "../components/CardButton";
 import { Link } from "expo-router";
 
 export default function Homepage() {
@@ -17,14 +17,14 @@ export default function Homepage() {
 			</Text>
 			<SearchBar />
 			<View style={styles.buttonContainer}>
-				<Link href="/features/chat">
+				<Link href="/chat">
 					<CardButton
 						text="AI text writer"
 						backgroundColor={colors.night}
 						borderColor={colors.lightGrey}
 					/>
 				</Link>
-				<Link href="/features/voice-mode">
+				<Link href="/voiceMode">
 					<CardButton
 						text="AI Voice mode"
 						backgroundColor={colors.night}

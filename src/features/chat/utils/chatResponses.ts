@@ -3,9 +3,9 @@ import type { Reply } from "react-native-gifted-chat";
 import { AVATAR_URL, AVATAR_USER } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
 
-const friendly = require("../../../../../assets/friendly.png");
-const creative = require("../../../../../assets/creative.png");
-const formal = require("../../../../../assets/formal.png");
+const friendly = require("../../../../assets/friendly.png");
+const creative = require("../../../../assets/creative.png");
+const formal = require("../../../../assets/formal.png");
 
 // Use Platform.select for all image URLs
 export const FRIENDLY_URL = Platform.select({
