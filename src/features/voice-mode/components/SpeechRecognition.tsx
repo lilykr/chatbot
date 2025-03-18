@@ -6,8 +6,8 @@ import {
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
-import { font } from "../../../../constants/font";
-import { showAlert } from "../../../../utils/alert";
+import { font } from "../../../constants/font";
+import { showAlert } from "../../../utils/alert";
 
 export type SupportedLanguage = "en-US";
 

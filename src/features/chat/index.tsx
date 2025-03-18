@@ -21,8 +21,8 @@ import {
 	Send,
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "../../../constants/colors";
-import { font } from "../../../constants/font";
+import { colors } from "../../constants/colors";
+import { font } from "../../constants/font";
 import { Camera } from "../camera/Camera";
 import { QuickReplies } from "./components/QuickReplies";
 import VideoPlayer from "./components/VideoPlayer";

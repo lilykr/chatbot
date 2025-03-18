@@ -1,9 +1,9 @@
 import { StyleSheet, View } from "react-native";
-import { Text } from "../../../components/Text";
-import { SearchBar } from "../../../components/SearchBar";
-import { colors } from "../../../constants/colors";
+import { Text } from "../../components/Text";
+import { SearchBar } from "../../components/SearchBar";
+import { colors } from "../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CardButton } from "../../../components/CardButton";
+import { CardButton } from "../../components/CardButton";
 import { Link } from "expo-router";
 
 export default function Homepage() {
