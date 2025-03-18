@@ -16,7 +16,7 @@ import {
 	StyleSheet,
 	View,
 } from "react-native";
-import { Text } from "../../components/Text";
+import { Text } from "../../../components/Text";
 import { CloseButton } from "./components/CloseButton";
 import { FlashButton } from "./components/FlashButton";
 import { FlipCameraButton } from "./components/FlipCameraButton";

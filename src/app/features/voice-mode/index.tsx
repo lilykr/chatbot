@@ -12,7 +12,7 @@ import { useVolumeControl } from "./hooks/useVolumeControl";
 // Add this constant at the top with other constants
 const enableDebug = false; // You can toggle this to show/hide debug controls
 
-export const VoiceMode = () => {
+export default function VoiceMode() {
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 
@@ -95,7 +95,7 @@ export const VoiceMode = () => {
 			</View>
 		</View>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	layout: {

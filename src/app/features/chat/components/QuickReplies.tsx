@@ -10,8 +10,8 @@ import {
 	type ViewStyle,
 } from "react-native";
 import { type Reply, StylePropType } from "react-native-gifted-chat";
-import { Text } from "../../../components/Text";
-import { colors } from "../../../constants/colors";
+import { Text } from "../../../../components/Text";
+import { colors } from "../../../../constants/colors";
 import type { CarouselReply, IMessage } from "../types/chat";
 import { Carousel } from "./Carousel";
 
