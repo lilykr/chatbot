@@ -39,6 +39,7 @@ export const SearchBar = ({
 				clearButtonMode="while-editing"
 				autoCapitalize="none"
 				autoCorrect={false}
+				placeholderTextColor={colors.lightGrey}
 			/>
 		</View>
 	);
@@ -49,7 +50,6 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.night,
 		padding: 8,
 		borderRadius: 50,
-		marginHorizontal: 16,
 		marginVertical: 8,
 		flexDirection: "row",
 		alignItems: "center",
