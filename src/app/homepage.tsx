@@ -15,7 +15,12 @@ export default function Homepage() {
 			<SafeAreaView style={styles.layout}>
 				<Text
 					weight="medium"
-					style={{ color: "white", fontSize: 28, width: "70%" }}
+					style={{
+						color: "white",
+						fontSize: 28,
+						width: "70%",
+						paddingTop: 80,
+					}}
 				>
 					Create, explore, be inspired
 				</Text>
