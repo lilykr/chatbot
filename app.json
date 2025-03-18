@@ -2,6 +2,7 @@
 	"expo": {
 		"name": "chatbot",
 		"slug": "chatbot",
+		"scheme": "lilykr.chatbot",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -24,9 +25,9 @@
 			"package": "com.lilykr.chatbot"
 		},
 		"web": {
-			"favicon": "./assets/favicon.png"
+			"favicon": "./assets/favicon.png",
+			"bundler": "metro"
 		},
-
 		"plugins": [
 			[
 				"expo-camera",
@@ -72,7 +73,9 @@
 				{
 					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
 				}
-			]
+			],
+			"expo-speech-recognition",
+			"expo-router"
 		],
 		"extra": {
 			"eas": {
