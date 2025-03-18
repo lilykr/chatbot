@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import ErrorBoundary from "react-native-error-boundary";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
@@ -36,14 +37,16 @@ export default function RootLayout() {
 	return (
 		<ErrorBoundary>
 			<StatusBar style="light" backgroundColor={colors.night} />
-			<SafeAreaProvider>
-				<Stack
-					screenOptions={{
-						headerShown: false,
-						contentStyle: { backgroundColor: colors.night },
-					}}
-				/>
-			</SafeAreaProvider>
+			<GestureHandlerRootView>
+				<SafeAreaProvider>
+					<Stack
+						screenOptions={{
+							headerShown: false,
+							contentStyle: { backgroundColor: colors.night },
+						}}
+					/>
+				</SafeAreaProvider>
+			</GestureHandlerRootView>
 		</ErrorBoundary>
 	);
 }
