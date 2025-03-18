@@ -21,15 +21,15 @@ import {
 	Send,
 } from "react-native-gifted-chat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "../constants/colors";
-import { font } from "../constants/font";
-import { Camera } from "../features/camera/Camera";
-import { QuickReplies } from "../features/chat/components/QuickReplies";
-import VideoPlayer from "../features/chat/components/VideoPlayer";
-import { AVATAR_USER } from "../features/chat/data/mockedMessages";
-import { useCamera } from "../features/chat/hooks/useCamera";
-import { useChatMessages } from "../features/chat/hooks/useChatMessages";
-import { useKeyboardHeight } from "../features/chat/hooks/useKeyboardHeight";
+import { colors } from "../../constants/colors";
+import { font } from "../../constants/font";
+import { Camera } from "../camera/Camera";
+import { QuickReplies } from "./components/QuickReplies";
+import VideoPlayer from "./components/VideoPlayer";
+import { AVATAR_USER } from "./data/mockedMessages";
+import { useCamera } from "./hooks/useCamera";
+import { useChatMessages } from "./hooks/useChatMessages";
+import { useKeyboardHeight } from "./hooks/useKeyboardHeight";
 
 export default function Chat() {
 	const {

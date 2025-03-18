@@ -1,6 +1,6 @@
 import React from "react";
-import { VoiceMode } from "../features/voice-mode/VoiceMode";
+import { Homepage } from "../features/homepage/Homepage";
 
 export default function Home() {
-	return <VoiceMode />;
+	return <Homepage />;
 }
