@@ -78,10 +78,7 @@ export default function Chat() {
 			onLayout={handleLayout}
 		>
 			<MessageList
-				users={[
-					{ _id: 1, avatar: AVATAR_USER },
-					{ _id: 2, avatar: AI_AVATAR },
-				]}
+				users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
 				messages={messages}
 				listRef={messageListRef}
 			/>

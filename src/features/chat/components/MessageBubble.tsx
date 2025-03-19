@@ -6,6 +6,7 @@ import { font } from "../../../constants/font";
 import { Avatar } from "./Avatar";
 import VideoPlayer from "./VideoPlayer";
 import type { Message, User } from "./MessageList";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface MessageBubbleProps {
 	message: Message;
@@ -38,14 +39,24 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 				{message.video ? (
 					<VideoPlayer videoUri={message.video} />
 				) : (
-					<Text
-						style={[
-							styles.text,
-							position === "right" ? styles.rightText : styles.leftText,
-						]}
-					>
-						{message.content}
-					</Text>
+					<>
+						{position === "right" ? (
+							<LinearGradient
+								colors={["#C26E73", "#AC1ED6"]}
+								start={{ x: 0, y: 0 }}
+								end={{ x: 1, y: 1 }}
+								style={styles.gradient}
+							>
+								<Text style={[styles.text, styles.rightText]}>
+									{message.content}
+								</Text>
+							</LinearGradient>
+						) : (
+							<Text style={[styles.text, styles.leftText]}>
+								{message.content}
+							</Text>
+						)}
+					</>
 				)}
 			</View>
 
@@ -70,21 +81,30 @@ const styles = StyleSheet.create({
 	},
 	bubble: {
 		maxWidth: "70%",
-		paddingHorizontal: 12,
-		paddingVertical: 8,
-		borderRadius: 16,
+		borderRadius: 30,
 		borderCurve: "circular",
 	},
 	leftBubble: {
 		backgroundColor: colors.darkGrey,
 		marginLeft: 8,
+		paddingHorizontal: 18,
+		paddingVertical: 14,
+		borderBottomLeftRadius: 0,
 	},
 	rightBubble: {
 		backgroundColor: "transparent",
 		marginRight: 8,
+		overflow: "hidden",
+		borderBottomRightRadius: 0,
+	},
+	gradient: {
+		paddingHorizontal: 18,
+		paddingVertical: 14,
 	},
 	text: {
 		fontFamily: font.regular,
+		fontSize: 16,
+		lineHeight: 24,
 	},
 	leftText: {
 		color: colors.white,
