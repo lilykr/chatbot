@@ -25,7 +25,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 				position === "right" ? styles.rightContainer : styles.leftContainer,
 			]}
 		>
-			{position === "left" && <Avatar uri={user.avatar} position={position} />}
+			{position === "left" && (
+				<Avatar source={user.avatar} position={position} />
+			)}
 
 			<View
 				style={[
@@ -47,7 +49,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 				)}
 			</View>
 
-			{position === "right" && <Avatar uri={user.avatar} position={position} />}
+			{position === "right" && (
+				<Avatar source={user.avatar} position={position} />
+			)}
 		</View>
 	);
 };

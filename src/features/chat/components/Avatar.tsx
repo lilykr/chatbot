@@ -1,13 +1,18 @@
 import type React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import {
+	Image,
+	StyleSheet,
+	View,
+	type ImageSourcePropType,
+} from "react-native";
 import { colors } from "../../../constants/colors";
 
 interface AvatarProps {
-	uri?: string | undefined;
+	source: string | ImageSourcePropType | undefined;
 	position: "left" | "right";
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ uri, position }) => {
+export const Avatar: React.FC<AvatarProps> = ({ source, position }) => {
 	return (
 		<View
 			style={[
@@ -15,7 +20,10 @@ export const Avatar: React.FC<AvatarProps> = ({ uri, position }) => {
 				position === "left" ? styles.leftContainer : styles.rightContainer,
 			]}
 		>
-			<Image source={{ uri }} style={styles.image} />
+			<Image
+				source={typeof source === "string" ? { uri: source } : source}
+				style={styles.image}
+			/>
 		</View>
 	);
 };
