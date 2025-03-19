@@ -11,7 +11,8 @@
 		"lint": "biome check . --formatter-enabled=true --linter-enabled=true --organize-imports-enabled=true --diagnostic-level error --write",
 		"typecheck": "tsc --project tsconfig.json --noEmit --pretty",
 		"prebuild": "expo prebuild --clean",
-		"e2e": "maestro test maestro/chat.yml"
+		"e2e": "maestro test maestro/chat.yml",
+		"build:web": "npx expo export -p web"
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "^1.2.5",

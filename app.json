@@ -34,6 +34,12 @@
 		},
 		"plugins": [
 			[
+				"expo-router",
+				{
+					"origin": "https://lilykr-chatbot.expo.app"
+				}
+			],
+			[
 				"expo-camera",
 				{
 					"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
@@ -78,8 +84,7 @@
 					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
 				}
 			],
-			"expo-speech-recognition",
-			"expo-router"
+			"expo-speech-recognition"
 		],
 		"extra": {
 			"eas": {
