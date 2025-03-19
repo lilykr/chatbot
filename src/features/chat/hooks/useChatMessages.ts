@@ -4,7 +4,7 @@ import type {
 	IMessage as DefaultIMessage,
 	Reply,
 } from "react-native-gifted-chat";
-import { AVATAR_USER, mockedMessages } from "../data/mockedMessages";
+import { AVATAR_USER } from "../data/mockedMessages";
 import type { IMessage } from "../types/chat";
 import { appendToChat } from "../utils/appendToChat";
 import {
@@ -16,7 +16,7 @@ const QUICK_REPLY_DELAY = 500;
 const FOLLOW_UP_DELAY = 1000;
 
 export const useChatMessages = () => {
-	const [messages, setMessages] = useState<IMessage[]>(mockedMessages);
+	const [messages, setMessages] = useState<IMessage[]>([]);
 	const listRef = useRef<FlatList>(null);
 
 	const handleSend = useCallback((newMessages: DefaultIMessage[]) => {

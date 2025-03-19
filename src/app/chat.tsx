@@ -2,7 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import {
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	TextInput,
+	View,
+} from "react-native";
 import type {
 	AvatarProps,
 	BubbleProps,
@@ -30,16 +36,33 @@ import { AVATAR_USER } from "../features/chat/data/mockedMessages";
 import { useCamera } from "../features/chat/hooks/useCamera";
 import { useChatMessages } from "../features/chat/hooks/useChatMessages";
 import { useKeyboardHeight } from "../features/chat/hooks/useKeyboardHeight";
+import { useChat } from "@ai-sdk/react";
+import { fetch as expoFetch } from "expo/fetch";
+import { generateAPIUrl } from "../utils/generateAPIUrl";
+import { Text } from "../components/Text";
 
 export default function Chat() {
 	const {
-		messages,
 		listRef,
-		handleSend,
+		// handleSend,
 		handleVideoMessage,
 		handleQuickReplySelection,
 		isQuickReplies,
+		// messages
 	} = useChatMessages();
+
+	const { messages, error, handleInputChange, input, handleSubmit } = useChat({
+		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		// TODO: fix for PROD with https://docs.expo.dev/router/reference/api-routes/
+		api: "http://localhost:8081/api/chat",
+		onError: (error) => console.error(error, "ERROR"),
+		onResponse: (response) => console.log(response, "RESPONSE"),
+		streamProtocol: "data",
+		headers: {
+			Accept: "text/event-stream",
+		},
+	});
+
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const keyboardHeight = useKeyboardHeight();
@@ -62,16 +85,16 @@ export default function Chat() {
 			return (
 				<Bubble
 					{...props}
-					customWrapper={{
-						right: LinearGradient,
-					}}
-					customWrapperProps={{
-						right: {
-							colors: ["#C26E73", "#AC1ED6"],
-							start: { x: 0, y: 0 },
-							end: { x: 1, y: 1 },
-						},
-					}}
+					// customWrapper={{
+					// 	right: LinearGradient,
+					// }}
+					// customWrapperProps={{
+					// 	right: {
+					// 		colors: ["#C26E73", "#AC1ED6"],
+					// 		start: { x: 0, y: 0 },
+					// 		end: { x: 1, y: 1 },
+					// 	},
+					// }}
 					wrapperStyle={{
 						left: {
 							backgroundColor: "#221f20",
@@ -193,56 +216,99 @@ export default function Chat() {
 		[],
 	);
 
+	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
+
 	return (
 		<View
-			style={[
-				styles.container,
-				{
-					paddingTop: safeAreaInsets.top,
-					paddingBottom: safeAreaInsets.bottom,
-				},
-			]}
-			onLayout={handleLayout}
+			style={{
+				height: "95%",
+				display: "flex",
+				flexDirection: "column",
+				paddingHorizontal: 8,
+			}}
 		>
-			<GiftedChat
-				listViewProps={{
-					ref: listRef,
-					contentContainerStyle: {
-						paddingBottom: keyboardHeight,
-					},
-				}}
-				renderMessageVideo={renderMessageVideo}
-				messages={messages as DefaultIMessage[]}
-				onSend={handleSend}
-				user={{
-					_id: 1,
-					avatar: AVATAR_USER,
-				}}
-				renderQuickReplies={renderQuickReplies}
-				onQuickReply={handleQuickReplySelection}
-				disableComposer={isQuickReplies}
-				renderActions={renderActions}
-				placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
-				renderComposer={renderComposer}
-				timeTextStyle={{
-					left: { display: "none" },
-					right: { display: "none" },
-				}}
-				showUserAvatar={true}
-				renderBubble={renderMessageBubble}
-				renderAvatar={renderAvatar}
-				renderSend={renderSend}
-				renderInputToolbar={renderInputToolbar}
-			/>
-			{showCamera && (
-				<View style={StyleSheet.absoluteFill}>
-					<Camera
-						onClose={handleCloseCamera}
-						onVideoCaptured={handleVideoMessage}
-					/>
-				</View>
-			)}
+			<ScrollView style={{ flex: 1 }}>
+				{messages.map((m) => (
+					<View key={m.id} style={{ marginVertical: 8 }}>
+						<View>
+							<Text style={{ fontWeight: 700, color: "white" }}>{m.role}</Text>
+							<Text style={{ color: "white" }}>{m.content}</Text>
+						</View>
+					</View>
+				))}
+			</ScrollView>
+
+			<View style={{ marginTop: 8 }}>
+				<TextInput
+					style={{ backgroundColor: "white", padding: 8 }}
+					placeholder="Say something..."
+					value={input}
+					onChange={(e) =>
+						handleInputChange({
+							...e,
+							target: {
+								...e.target,
+								value: e.nativeEvent.text,
+							},
+						} as unknown as React.ChangeEvent<HTMLInputElement>)
+					}
+					onSubmitEditing={(e) => {
+						handleSubmit(e);
+						e.preventDefault();
+					}}
+					autoFocus={true}
+				/>
+			</View>
 		</View>
+		// <View
+		// 	style={[
+		// 		styles.container,
+		// 		{
+		// 			paddingTop: safeAreaInsets.top,
+		// 			paddingBottom: safeAreaInsets.bottom,
+		// 		},
+		// 	]}
+		// 	onLayout={handleLayout}
+		// >
+		// 	<GiftedChat
+		// 		listViewProps={{
+		// 			ref: listRef,
+		// 			contentContainerStyle: {
+		// 				paddingBottom: keyboardHeight,
+		// 			},
+		// 		}}
+		// 		renderMessageVideo={renderMessageVideo}
+		// 		messages={messages as DefaultIMessage[]}
+		// 		onSend={handleSend}
+		// 		user={{
+		// 			_id: 1,
+		// 			avatar: AVATAR_USER,
+		// 		}}
+		// 		renderQuickReplies={renderQuickReplies}
+		// 		onQuickReply={handleQuickReplySelection}
+		// 		disableComposer={isQuickReplies}
+		// 		renderActions={renderActions}
+		// 		placeholder={isQuickReplies ? "Faites votre choix" : "Tapez un message"}
+		// 		renderComposer={renderComposer}
+		// 		timeTextStyle={{
+		// 			left: { display: "none" },
+		// 			right: { display: "none" },
+		// 		}}
+		// 		showUserAvatar={true}
+		// 		renderBubble={renderMessageBubble}
+		// 		renderAvatar={renderAvatar}
+		// 		renderSend={renderSend}
+		// 		renderInputToolbar={renderInputToolbar}
+		// 	/>
+		// 	{showCamera && (
+		// 		<View style={StyleSheet.absoluteFill}>
+		// 			<Camera
+		// 				onClose={handleCloseCamera}
+		// 				onVideoCaptured={handleVideoMessage}
+		// 			/>
+		// 		</View>
+		// 	)}
+		// </View>
 	);
 }
 

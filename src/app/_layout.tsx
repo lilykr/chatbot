@@ -1,3 +1,6 @@
+import "@stardazed/streams-polyfill";
+import "../utils/polyfill.ts";
+
 import {
 	Epilogue_400Regular,
 	Epilogue_500Medium,
