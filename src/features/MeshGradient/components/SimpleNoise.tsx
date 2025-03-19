@@ -39,6 +39,31 @@ const G3 = 1.0 / 6.0;
 const F4 = /*#__PURE__*/ (Math.sqrt(5.0) - 1.0) / 4.0;
 const G4 = /*#__PURE__*/ (5.0 - Math.sqrt(5.0)) / 20.0;
 
+/**
+ * Builds a random permutation table.
+ * This is exported only for (internal) testing purposes.
+ * Do not rely on this export.
+ * @private
+ */
+export function buildPermutationTable(random: RandomFn): Uint8Array {
+	"worklet";
+	const tableSize = 512;
+	const p = new Uint8Array(tableSize);
+	for (let i = 0; i < tableSize / 2; i++) {
+		p[i] = i;
+	}
+	for (let i = 0; i < tableSize / 2 - 1; i++) {
+		const r = i + ~~(random() * (256 - i));
+		const aux = p[i];
+		p[i] = p[r];
+		p[r] = aux;
+	}
+	for (let i = 256; i < tableSize; i++) {
+		p[i] = p[i - 256];
+	}
+	return p;
+}
+
 // I'm really not sure why this | 0 (basically a coercion to int)
 // is making this faster but I get ~5 million ops/sec more on the
 // benchmarks across the board or a ~10% speedup.
@@ -554,29 +579,4 @@ export function createNoise4D(random: RandomFn = Math.random): NoiseFunction4D {
 		// Sum up and scale the result to cover the range [-1,1]
 		return 27.0 * (n0 + n1 + n2 + n3 + n4);
 	};
-}
-
-/**
- * Builds a random permutation table.
- * This is exported only for (internal) testing purposes.
- * Do not rely on this export.
- * @private
- */
-export function buildPermutationTable(random: RandomFn): Uint8Array {
-	"worklet";
-	const tableSize = 512;
-	const p = new Uint8Array(tableSize);
-	for (let i = 0; i < tableSize / 2; i++) {
-		p[i] = i;
-	}
-	for (let i = 0; i < tableSize / 2 - 1; i++) {
-		const r = i + ~~(random() * (256 - i));
-		const aux = p[i];
-		p[i] = p[r];
-		p[r] = aux;
-	}
-	for (let i = 256; i < tableSize; i++) {
-		p[i] = p[i - 256];
-	}
-	return p;
 }
