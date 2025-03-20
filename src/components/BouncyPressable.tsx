@@ -1,17 +1,24 @@
 import React, { useRef, type ReactNode } from "react";
-import { Animated, Pressable, StyleSheet, type ViewStyle } from "react-native";
+import {
+	Animated,
+	Pressable,
+	StyleSheet,
+	type ViewStyle,
+	type PressableProps,
+} from "react-native";
 
-interface BouncyButtonProps {
+type BouncyPressableProps = {
 	onPress?: (() => void) | undefined;
 	style?: ViewStyle;
 	children: ReactNode;
-}
+} & PressableProps;
 
-export const BouncyButton = ({
+export const BouncyPressable = ({
 	onPress,
 	style,
 	children,
-}: BouncyButtonProps) => {
+	...props
+}: BouncyPressableProps) => {
 	const scaleAnim = useRef(new Animated.Value(1)).current;
 
 	const handlePressIn = () => {
@@ -37,6 +44,7 @@ export const BouncyButton = ({
 			onPress={onPress}
 			onPressIn={handlePressIn}
 			onPressOut={handlePressOut}
+			{...props}
 		>
 			<Animated.View
 				style={[styles.container, style, { transform: [{ scale: scaleAnim }] }]}

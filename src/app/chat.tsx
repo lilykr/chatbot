@@ -12,9 +12,9 @@ import {
 	type Message,
 	MessageList,
 } from "../features/chat/components/MessageList";
-import { AVATAR_USER } from "../features/chat/data/mockedMessages";
 import { useCamera } from "../features/chat/hooks/useCamera";
 import { useKeyboardHeight } from "../features/chat/hooks/useKeyboardHeight";
+import { Header } from "../components/Header";
 
 const AI_AVATAR = require("../../assets/avatar.png");
 
@@ -60,9 +60,9 @@ export default function Chat() {
 	}, [input, handleSubmit]);
 
 	// Function to handle video capture
-	const onVideoCaptured = useCallback((videoUri: string) => {
-		// handleVideoMessage(videoUri);
-	}, []);
+	// const onVideoCaptured = useCallback((videoUri: string) => {
+	// 	// handleVideoMessage(videoUri);
+	// }, []);
 
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
@@ -77,6 +77,7 @@ export default function Chat() {
 			]}
 			onLayout={handleLayout}
 		>
+			<Header title="AI text writer" />
 			<MessageList
 				users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
 				messages={messages}
@@ -94,14 +95,14 @@ export default function Chat() {
 				onCameraPress={openCamera}
 			/>
 
-			{showCamera && (
+			{/* {showCamera && (
 				<View style={StyleSheet.absoluteFill}>
 					<Camera
 						onClose={handleCloseCamera}
 						onVideoCaptured={onVideoCaptured}
 					/>
 				</View>
-			)}
+			)} */}
 		</View>
 	);
 }

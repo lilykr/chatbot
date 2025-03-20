@@ -1,9 +1,9 @@
 import type React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, useAnimatedValue, View } from "react-native";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
-import { Text } from "../../../components/Text";
+import { SendButton } from "./SendButton";
 
 interface ComposerInputProps {
 	value: string;
@@ -30,30 +30,22 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					},
 				]}
 			>
-				{!isQuickReplies && (
-					<Pressable onPress={onCameraPress} style={styles.cameraButton}>
+				{/* <Pressable onPress={onCameraPress} style={styles.cameraButton}>
 						<Ionicons name="camera" size={24} color={colors.white} />
-					</Pressable>
-				)}
+					</Pressable> */}
 
 				<TextInput
 					style={styles.input}
 					value={value}
 					onChangeText={onChangeText}
-					placeholder={
-						isQuickReplies ? "Faites votre choix" : "Tapez un message"
-					}
+					placeholder={"Tapez un message"}
 					placeholderTextColor={colors.lightGrey}
 					multiline
 					onSubmitEditing={onSubmit}
 					editable={!isQuickReplies}
 				/>
 
-				{value.trim().length > 0 && (
-					<Pressable onPress={onSubmit} style={styles.sendButton}>
-						<Text style={styles.sendButtonText}>Envoyer</Text>
-					</Pressable>
-				)}
+				<SendButton onPress={onSubmit} isDisabled={value.trim().length === 0} />
 			</View>
 		</View>
 	);
@@ -75,6 +67,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 5,
 		paddingVertical: 5,
 		borderCurve: "circular",
+		height: 42,
 	},
 	cameraButton: {
 		marginLeft: 12,
@@ -87,14 +80,5 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		paddingVertical: 5,
 		fontSize: 16,
-	},
-	sendButton: {
-		paddingHorizontal: 15,
-		justifyContent: "center",
-	},
-	sendButtonText: {
-		color: colors.vibrantPurple,
-		fontSize: 16,
-		fontFamily: font.medium,
 	},
 });

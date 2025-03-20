@@ -26,6 +26,7 @@
 		"ai": "^4.1.61",
 		"expo": "~52.0.38",
 		"expo-av": "~15.0.2",
+		"expo-blur": "~14.0.3",
 		"expo-camera": "~16.0.17",
 		"expo-constants": "~17.0.8",
 		"expo-font": "~13.0.4",

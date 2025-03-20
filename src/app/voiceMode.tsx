@@ -8,6 +8,7 @@ import SpeechRecognition, {
 import { VoiceControlButtons } from "../features/voice-mode/components/VoiceControlButtons";
 import { WaveMesh } from "../features/voice-mode/components/WaveMesh";
 import { useVolumeControl } from "../features/voice-mode/hooks/useVolumeControl";
+import { Header } from "../components/Header";
 
 // Add this constant at the top with other constants
 const enableDebug = false; // You can toggle this to show/hide debug controls
@@ -73,6 +74,7 @@ export default function VoiceMode() {
 
 	return (
 		<View style={styles.layout}>
+			<Header title="AI Voice mode" />
 			<WaveMesh
 				waveIntensity={waveIntensity}
 				waveSpeed={waveSpeed}

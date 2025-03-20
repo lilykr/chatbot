@@ -65,7 +65,7 @@ export const MessageList: React.FC<MessageListProps> = ({
 	}, []);
 
 	return (
-		<View style={[styles.container, { paddingTop: safeAreaInsets.top }]}>
+		<View style={[styles.container]}>
 			<LegendList
 				ref={listRef}
 				data={messages}

@@ -1,7 +1,7 @@
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet } from "react-native";
-import { BouncyButton } from "./BouncyButton";
+import { BouncyPressable } from "../../../components/BouncyPressable";
 
 interface IconButtonProps {
 	onPress?: () => void;
@@ -9,7 +9,7 @@ interface IconButtonProps {
 
 export const VoiceControlButtons = ({ onPress }: IconButtonProps) => {
 	return (
-		<BouncyButton onPress={onPress} style={styles.buttonContainer}>
+		<BouncyPressable onPress={onPress} style={styles.buttonContainer}>
 			<LinearGradient
 				colors={["#f78f9e", "#ae3bd1"]}
 				start={{ x: 0, y: 0.5 }}
@@ -25,7 +25,7 @@ export const VoiceControlButtons = ({ onPress }: IconButtonProps) => {
 					<SimpleLineIcons name="microphone" size={28} color="white" />
 				</LinearGradient>
 			</LinearGradient>
-		</BouncyButton>
+		</BouncyPressable>
 	);
 };
 
