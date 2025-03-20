@@ -2,6 +2,7 @@ import type { ViewStyle, TextStyle } from "react-native";
 import { View, StyleSheet, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "./Text";
+import { BouncyPressable } from "./BouncyPressable";
 
 interface CardButtonProps {
 	text: string;
@@ -12,6 +13,7 @@ interface CardButtonProps {
 	textStyle?: TextStyle;
 	iconSize?: number;
 	iconColor?: string;
+	onPress: () => void;
 }
 
 export const CardButton = ({
@@ -23,38 +25,41 @@ export const CardButton = ({
 	textStyle,
 	iconSize = 24,
 	iconColor = "white",
+	onPress,
 }: CardButtonProps) => {
 	return (
-		<View
-			style={[
-				styles.card,
-				{
-					backgroundColor,
-					borderColor,
-				},
-				style,
-			]}
-		>
-			<Text
+		<BouncyPressable onPress={onPress}>
+			<View
 				style={[
-					styles.buttonText,
+					styles.card,
 					{
-						color: textColor,
-						fontSize: 18,
+						backgroundColor,
+						borderColor,
 					},
-					textStyle,
+					style,
 				]}
-				weight="medium"
 			>
-				{text}
-			</Text>
-			<Feather
-				name="arrow-up-right"
-				size={iconSize}
-				color={iconColor}
-				style={styles.arrow}
-			/>
-		</View>
+				<Text
+					style={[
+						styles.buttonText,
+						{
+							color: textColor,
+							fontSize: 18,
+						},
+						textStyle,
+					]}
+					weight="medium"
+				>
+					{text}
+				</Text>
+				<Feather
+					name="arrow-up-right"
+					size={iconSize}
+					color={iconColor}
+					style={styles.arrow}
+				/>
+			</View>
+		</BouncyPressable>
 	);
 };
 

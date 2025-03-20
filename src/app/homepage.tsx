@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,20 +26,18 @@ export default function Homepage() {
 				</Text>
 				<SearchBar />
 				<View style={styles.buttonContainer}>
-					<Link href="/chat">
-						<CardButton
-							text="AI text writer"
-							backgroundColor={colors.night}
-							borderColor={colors.lightGrey}
-						/>
-					</Link>
-					<Link href="/voiceMode">
-						<CardButton
-							text="AI Voice mode"
-							backgroundColor={colors.night}
-							borderColor={colors.lightGrey}
-						/>
-					</Link>
+					<CardButton
+						text="AI text writer"
+						backgroundColor={colors.night}
+						borderColor={colors.lightGrey}
+						onPress={() => router.push("/chat")}
+					/>
+					<CardButton
+						text="AI Voice mode"
+						backgroundColor={colors.night}
+						borderColor={colors.lightGrey}
+						onPress={() => router.push("/voiceMode")}
+					/>
 				</View>
 			</SafeAreaView>
 		</>
