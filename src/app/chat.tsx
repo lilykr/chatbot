@@ -1,7 +1,8 @@
 import { useChat } from "@ai-sdk/react";
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "../components/Text";
@@ -15,6 +16,7 @@ import {
 import { useCamera } from "../features/chat/hooks/useCamera";
 import { useKeyboardHeight } from "../features/chat/hooks/useKeyboardHeight";
 import { Header } from "../components/Header";
+import { titleSchema } from "./api/generate-title+api";
 
 const AI_AVATAR = require("../../assets/avatar.png");
 
@@ -31,6 +33,21 @@ export default function Chat() {
 		onError: (error) => console.error(error, "ERROR"),
 		onResponse: (response) => console.log(response, "RESPONSE"),
 		streamProtocol: "data",
+		headers: {
+			Accept: "text/event-stream",
+		},
+	});
+
+	const { object: titleObject, submit: generateTitle } = useObject({
+		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		api: "http://localhost:8081/api/generate-title",
+		schema: titleSchema,
+		onFinish: (result) => {
+			console.log("result", result);
+		},
+		onError: (error) => {
+			console.log("error", error);
+		},
 		headers: {
 			Accept: "text/event-stream",
 		},
@@ -54,10 +71,14 @@ export default function Chat() {
 		userId: msg.role === "user" ? 1 : 2,
 	}));
 
-	const handleInputSubmit = useCallback(() => {
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	const handleSubmitInput = useCallback(() => {
 		if (input.trim().length === 0) return;
 		handleSubmit();
-	}, [input, handleSubmit]);
+		if (aiMessages.length === 0) {
+			generateTitle({ messages: aiMessages });
+		}
+	}, [input, handleSubmit, aiMessages]);
 
 	// Function to handle video capture
 	// const onVideoCaptured = useCallback((videoUri: string) => {
@@ -77,7 +98,7 @@ export default function Chat() {
 			]}
 			onLayout={handleLayout}
 		>
-			<Header title="AI text writer" />
+			<Header title={titleObject?.title || "AI text writer"} />
 			<MessageList
 				users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
 				messages={messages}
@@ -91,7 +112,7 @@ export default function Chat() {
 						target: { value: text },
 					} as unknown as React.ChangeEvent<HTMLInputElement>)
 				}
-				onSubmit={handleInputSubmit}
+				onSubmit={handleSubmitInput}
 				onCameraPress={openCamera}
 			/>
 
