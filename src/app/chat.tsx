@@ -98,7 +98,7 @@ export default function Chat() {
 			]}
 			onLayout={handleLayout}
 		>
-			<Header title={titleObject?.title || "AI text writer"} />
+			<Header title={titleObject?.title || "AI chatbot"} />
 			<MessageList
 				users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
 				messages={messages}
