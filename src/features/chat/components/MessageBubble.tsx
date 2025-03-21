@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.darkGrey,
 		marginLeft: 8,
 		paddingHorizontal: 18,
-		paddingVertical: 6,
+		paddingVertical: 2,
 		borderBottomLeftRadius: 0,
 	},
 	rightBubble: {
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
 	},
 	gradient: {
 		paddingHorizontal: 18,
-		paddingVertical: 6,
+		paddingVertical: 2,
 	},
 	text: {
 		fontFamily: font.regular,

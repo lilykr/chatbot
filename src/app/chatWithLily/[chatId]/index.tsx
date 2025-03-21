@@ -1,20 +1,27 @@
 import { useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { Header } from "../../../components/Header";
-import { ChatSingleInput } from "../../../components/ChatSingleInput";
-import { ResponseDisplay } from "../../../components/ResponseDisplay";
-import { useCallback, useRef, useState } from "react";
+
+import { useCallback, useRef } from "react";
 import { useChat } from "@ai-sdk/react";
 import { fetch as expoFetch } from "expo/fetch";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { AI_AVATAR } from "../../chat/[chatId]";
+import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
+import { type type type type type type type HistoryItem, storage } from "../../../services/storage";
 
 export default function ChatWithLily() {
 	const { chatId } = useLocalSearchParams();
+
+  const initialChat = useRef(
+		storage.get("history")?.find((chat) => chat.id === chatId) as
+			| HistoryItem<"chat">
+			| undefined,
+	).current;
+
 
 	const messageListRef = useRef(null);
 	const safeAreaInsets = useSafeAreaInsets();
@@ -22,11 +29,13 @@ export default function ChatWithLily() {
 	const { messages, error, handleInputChange, input, handleSubmit, status } =
 		useChat({
 			fetch: expoFetch as unknown as typeof globalThis.fetch,
-			api: "http://localhost:8081/api/chat-with-lily",
+			api: "https://lilykr-chatbot.expo.app/api/chat-with-lily",
 			streamProtocol: "data",
 			headers: {
 				Accept: "text/event-stream",
 			},
+      initialMessages: initialChat?.value.messages ?? [],
+
 		});
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -46,21 +55,23 @@ export default function ChatWithLily() {
 			]}
 		>
 			<Header title={"Lisa-Lou's chatbot"} />
-			<MessageList
-				users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
-				messages={messages}
-				listRef={messageListRef}
-			/>
+			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
+				<MessageList
+					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
+					messages={messages}
+					listRef={messageListRef}
+				/>
 
-			<ComposerInput
-				value={input}
-				onChangeText={(text) =>
-					handleInputChange({
-						target: { value: text },
-					} as unknown as React.ChangeEvent<HTMLInputElement>)
-				}
-				onSubmit={handleSubmitInput}
-			/>
+				<ComposerInput
+					value={input}
+					onChangeText={(text) =>
+						handleInputChange({
+							target: { value: text },
+						} as unknown as React.ChangeEvent<HTMLInputElement>)
+					}
+					onSubmit={handleSubmitInput}
+				/>
+			</KeyboardAvoidingView>
 		</View>
 	);
 }

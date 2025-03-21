@@ -87,7 +87,6 @@ export default function Chat() {
 		SplashScreen.hideAsync();
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const handleSubmitInput = useCallback(() => {
 		if (input.trim().length === 0) return;
 		handleSubmit();
