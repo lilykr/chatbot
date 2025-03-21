@@ -2,6 +2,7 @@ import { vec } from "@shopify/react-native-skia";
 import React from "react";
 import {
 	Dimensions,
+	Image,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -20,6 +21,7 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
+import { LLK_AVATAR } from "../app/chatWithLily/[chatId]";
 
 const { width, height } = Dimensions.get("window");
 const CARD_WIDTH = 0.8 * width;
@@ -145,8 +147,10 @@ const AnimatedCard = () => {
 				<GestureDetector gesture={dragGesture}>
 					<AnimatedView style={[styles.card, animatedCard]}>
 						<AnimatedView style={[styles.imageContainer, animatedImage]}>
-							{/* <SkiaImage w={CARD_WIDTH} h={IMAGE_HEIGHT} /> */}
-							{/* <Blob h={IMAGE_HEIGHT} w={CARD_WIDTH} /> */}
+							<Image
+								source={LLK_AVATAR}
+								style={{ width: CARD_WIDTH, height: IMAGE_HEIGHT }}
+							/>
 						</AnimatedView>
 						<View style={styles.contentContainer}>
 							<Text style={styles.title}>Animated Card</Text>
@@ -184,7 +188,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "white",
 	},
 	card: {
 		borderRadius: 30,

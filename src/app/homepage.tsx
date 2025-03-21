@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CardButton } from "../components/CardButton";
 import { History } from "../components/History";
+import { RoundButton } from "../components/RoundButton";
 import { SearchBar } from "../components/SearchBar";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
@@ -14,6 +15,9 @@ export default function Homepage() {
 		<>
 			<MeshGradient />
 			<SafeAreaView style={styles.layout}>
+				<RoundButton onPress={() => router.push("/animated-card")}>
+					<Text>Animated Card</Text>
+				</RoundButton>
 				<Text
 					weight="semibold"
 					style={{
