@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { Platform, StyleSheet, type ViewStyle } from "react-native";
 import Animated, {
 	Easing,
-	runOnJS,
 	useAnimatedKeyboard,
 	useAnimatedStyle,
 	useDerivedValue,
@@ -80,9 +79,6 @@ export const KeyboardAvoidingView: React.FC<KeyboardAvoidingViewProps> = ({
 
 	const translateY = useDerivedValue(() => {
 		if (!enabled || !shouldHandleKeyboard) return 0;
-
-		// Log the keyboard height value
-		runOnJS(logKeyboardHeight)(keyboard.height.value);
 
 		// Calculate additional offset for keyboard opened state
 		const keyboardOffset =
