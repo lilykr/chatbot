@@ -9,7 +9,7 @@ import { useAnimatedKeyboard } from "react-native-reanimated";
 
 export const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
-	const keyboard = useAnimatedKeyboard({});
+	const keyboard = useAnimatedKeyboard();
 
 	useDerivedValue(() => {
 		if (keyboard.state.value === KeyboardState.OPEN) {

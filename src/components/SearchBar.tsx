@@ -1,8 +1,7 @@
-import { View, TextInput, StyleSheet } from "react-native";
-import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../constants/colors";
-import { BlurView } from "expo-blur";
 
 interface SearchBarProps {
 	onSearch?: (query: string) => void;
@@ -26,24 +25,24 @@ export const SearchBar = ({
 
 	return (
 		<View style={[styles.container, style]}>
-			<BlurView intensity={60} tint="dark" style={styles.blurContainer}>
-				<Ionicons
-					name="search"
-					size={23}
-					color={colors.lightGrey}
-					style={styles.searchIcon}
-				/>
-				<TextInput
-					style={styles.input}
-					placeholder={placeholder}
-					value={searchQuery}
-					onChangeText={handleSearch}
-					clearButtonMode="while-editing"
-					autoCapitalize="none"
-					autoCorrect={false}
-					placeholderTextColor={colors.lightGrey}
-				/>
-			</BlurView>
+			<View style={styles.overlay} />
+			<Ionicons
+				name="search"
+				size={23}
+				color={colors.lightGrey}
+				style={styles.searchIcon}
+			/>
+			<TextInput
+				keyboardAppearance="dark"
+				style={styles.input}
+				placeholder={placeholder}
+				value={searchQuery}
+				onChangeText={handleSearch}
+				clearButtonMode="while-editing"
+				autoCapitalize="none"
+				autoCorrect={false}
+				placeholderTextColor={colors.lightGrey}
+			/>
 		</View>
 	);
 };
@@ -55,11 +54,18 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: colors.lightGrey,
 		overflow: "hidden",
-	},
-	blurContainer: {
 		padding: 8,
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	overlay: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		backgroundColor: "black",
+		opacity: 0.5,
 	},
 	searchIcon: {
 		marginRight: 8,
