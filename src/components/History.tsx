@@ -8,6 +8,7 @@ import type { App } from "../types/apps";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
 const LOGO = require("../../assets/avatar.png");
+const LLK_AVATAR = require("../../assets/llk.png");
 
 const getHistoryTitle = (type: App["type"]) => {
 	switch (type) {
@@ -17,6 +18,8 @@ const getHistoryTitle = (type: App["type"]) => {
 			return "Voice Mode";
 		case "rant":
 			return "AI Rant";
+		case "chatWithLily":
+			return "Lisa-Lou's chatbot";
 		default:
 			return "";
 	}
@@ -26,6 +29,7 @@ const getHistoryContent = (item: App) => {
 	switch (item.type) {
 		case "chat":
 		case "voice":
+		case "chatWithLily":
 			return item.value.title;
 		case "rant":
 			return item.value.rantSubject;
@@ -60,7 +64,10 @@ export const History = () => {
 						onPress={() => handleChatPress(item.id)}
 					>
 						<View style={styles.historyContainer}>
-							<Image source={LOGO} style={styles.logo} />
+							<Image
+								source={item.type === "chatWithLily" ? LLK_AVATAR : LOGO}
+								style={styles.logo}
+							/>
 							<View style={styles.historyContent}>
 								<Text style={styles.historyTitle}>
 									{getHistoryTitle(item.type)}

@@ -8,6 +8,14 @@ export type ChatApp = {
 	};
 };
 
+export type ChatWithLilyApp = {
+	type: "chatWithLily";
+	value: {
+		title: string;
+		messages: UIMessage[];
+	};
+};
+
 export type VoiceModeApp = {
 	type: "voice";
 	value: {
@@ -24,4 +32,4 @@ export type RantApp = {
 	};
 };
 
-export type App = ChatApp | VoiceModeApp | RantApp;
+export type App = ChatApp | VoiceModeApp | RantApp | ChatWithLilyApp;

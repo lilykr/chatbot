@@ -41,7 +41,7 @@ export default function Homepage() {
 						<CardButton
 							text="Lisa-Lou's chatbot"
 							borderColor={colors.lightGrey}
-							onPress={() => router.push("/chatWithLily/[chatId]")}
+							onPress={() => router.push("/chatWithLily/new")}
 						/>
 						<CardButton
 							text="AI Voice mode"

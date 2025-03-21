@@ -14,17 +14,19 @@ import { colors } from "../constants/colors";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect, useRef } from "react";
-const LOGO = require("../../assets/avatar.png");
 
+const LOGO = require("../../assets/avatar.png");
+const LLK_AVATAR = require("../../assets/llk.png");
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCROLL_DURATION = 3000; // Duration for one complete scroll
 const LEFT_ELEMENTS_WIDTH = 72;
 interface HeaderProps {
 	title: string;
 	showBackButton?: boolean;
+	type?: "chat" | "chatWithLily" | "voice" | "rant";
 }
 
-export const Header = ({ title, showBackButton = true }: HeaderProps) => {
+export const Header = ({ title, showBackButton = true, type }: HeaderProps) => {
 	const safeAreaInsets = useSafeAreaInsets();
 	const scrollX = useRef(new Animated.Value(0)).current;
 	const titleWidth = useRef(0);
@@ -79,7 +81,10 @@ export const Header = ({ title, showBackButton = true }: HeaderProps) => {
 				</Pressable>
 			)}
 			<View style={styles.logoBorder}>
-				<Image source={LOGO} style={styles.logo} />
+				<Image
+					source={type === "chatWithLily" ? LLK_AVATAR : LOGO}
+					style={styles.logo}
+				/>
 			</View>
 			<View style={{ position: "relative" }}>
 				<View style={styles.titleContainer}>

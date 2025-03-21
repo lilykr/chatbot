@@ -1,29 +1,32 @@
-import { useLocalSearchParams } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { type FlatList, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../constants/colors";
 import { Header } from "../../../components/Header";
+import uuid from "react-native-uuid";
 
-import { useCallback, useRef } from "react";
-import { useChat } from "@ai-sdk/react";
+import { useCallback, useEffect, useRef } from "react";
+import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
 import { fetch as expoFetch } from "expo/fetch";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
-import { AI_AVATAR } from "../../chat/[chatId]";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { type type type type type type type HistoryItem, storage } from "../../../services/storage";
+import { type HistoryItem, storage } from "../../../services/storage";
+import { titleSchema } from "../../api/generate-title+api";
+import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+
+export const LLK_AVATAR = require("../../../../assets/llk.png");
 
 export default function ChatWithLily() {
 	const { chatId } = useLocalSearchParams();
 
-  const initialChat = useRef(
+	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
-			| HistoryItem<"chat">
+			| HistoryItem<"chatWithLily">
 			| undefined,
 	).current;
 
-
-	const messageListRef = useRef(null);
+	const messageListRef = useRef<FlatList>(null);
 	const safeAreaInsets = useSafeAreaInsets();
 
 	const { messages, error, handleInputChange, input, handleSubmit, status } =
@@ -34,15 +37,53 @@ export default function ChatWithLily() {
 			headers: {
 				Accept: "text/event-stream",
 			},
-      initialMessages: initialChat?.value.messages ?? [],
-
+			initialMessages: initialChat?.value.messages ?? [],
 		});
+
+	const {
+		object: titleObject,
+		submit: generateTitle,
+		isLoading: isGeneratingTitle,
+	} = useObject({
+		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		api: "https://lilykr-chatbot.expo.app/api/generate-title",
+		schema: titleSchema,
+		headers: {
+			Accept: "text/event-stream",
+		},
+		initialValue: { title: initialChat?.value.title },
+	});
+
+	useEffect(() => {
+		if (chatId === "new") {
+			router.setParams({ chatId: uuid.v4() });
+		}
+	}, [chatId]);
+
+	useEffect(() => {
+		setTimeout(() => {
+			messageListRef.current?.scrollToEnd();
+		}, 100);
+	}, []);
+
+	usePersistChat({
+		chatId: chatId as string,
+		messages,
+		status,
+		initialChat,
+		isGeneratingTitle,
+		title: titleObject?.title,
+		type: "chatWithLily",
+	});
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const handleSubmitInput = useCallback(async () => {
 		if (input.trim().length === 0) return;
 		handleSubmit();
-	}, [input]);
+		if (messages.length === 0) {
+			generateTitle({ messages: [{ role: "user", content: input }] });
+		}
+	}, [input, messages, generateTitle]);
 
 	return (
 		<View
@@ -54,10 +95,13 @@ export default function ChatWithLily() {
 				},
 			]}
 		>
-			<Header title={"Lisa-Lou's chatbot"} />
+			<Header
+				title={titleObject?.title ?? "Lisa-Lou's chatbot"}
+				type="chatWithLily"
+			/>
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
 				<MessageList
-					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
+					users={[{ _id: 1 }, { _id: 2, avatar: LLK_AVATAR }]}
 					messages={messages}
 					listRef={messageListRef}
 				/>

@@ -5,15 +5,23 @@ import { useEffect } from "react";
 import type { HistoryItem } from "../../../services/storage";
 
 export function usePersistChat(params: {
+	type: "chat" | "chatWithLily";
 	chatId: string;
 	messages: UIMessage[];
 	status: string;
-	initialChat: HistoryItem<"chat"> | undefined;
+	initialChat: HistoryItem<"chat" | "chatWithLily"> | undefined;
 	title: string | undefined;
 	isGeneratingTitle: boolean;
 }) {
-	const { chatId, messages, status, initialChat, title, isGeneratingTitle } =
-		params;
+	const {
+		chatId,
+		messages,
+		status,
+		initialChat,
+		title,
+		isGeneratingTitle,
+		type,
+	} = params;
 
 	useEffect(() => {
 		// Only save if the last message is from the assistant
@@ -48,12 +56,12 @@ export function usePersistChat(params: {
 				...history,
 				{
 					id: chatId as string,
-					type: "chat",
+					type: type,
 					value: { title: title ?? "New chat", messages },
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
 				},
 			]);
 		}
-	}, [initialChat, status, messages, title, chatId, isGeneratingTitle]);
+	}, [initialChat, status, messages, title, chatId, isGeneratingTitle, type]);
 }

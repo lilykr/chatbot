@@ -1,5 +1,11 @@
 import { createTypedStorage } from "../utils/createTypedStorage";
-import type { App, ChatApp, VoiceModeApp, RantApp } from "../types/apps";
+import type {
+	App,
+	ChatApp,
+	VoiceModeApp,
+	RantApp,
+	ChatWithLilyApp,
+} from "../types/apps";
 
 export type HistoryItem<T extends App["type"] = App["type"]> = (T extends "chat"
 	? ChatApp
@@ -7,7 +13,9 @@ export type HistoryItem<T extends App["type"] = App["type"]> = (T extends "chat"
 		? VoiceModeApp
 		: T extends "rant"
 			? RantApp
-			: App) & {
+			: T extends "chatWithLily"
+				? ChatWithLilyApp
+				: App) & {
 	id: string;
 	createdAt: number;
 	updatedAt: number;

@@ -81,6 +81,7 @@ export default function Chat() {
 		initialChat,
 		isGeneratingTitle,
 		title: titleObject?.title,
+		type: "chat",
 	});
 
 	const handleLayout = useCallback(() => {
