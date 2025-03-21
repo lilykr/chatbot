@@ -4,7 +4,8 @@ import "../utils/polyfill.ts";
 import {
 	Epilogue_400Regular,
 	Epilogue_500Medium,
-	Epilogue_800ExtraBold,
+	Epilogue_600SemiBold,
+	Epilogue_700Bold,
 	useFonts,
 } from "@expo-google-fonts/epilogue";
 import { Stack } from "expo-router";
@@ -23,7 +24,8 @@ export default function RootLayout() {
 	const [fontsLoaded] = useFonts({
 		Epilogue_400Regular,
 		Epilogue_500Medium,
-		Epilogue_800ExtraBold,
+		Epilogue_600SemiBold,
+		Epilogue_700Bold,
 	});
 
 	useEffect(() => {

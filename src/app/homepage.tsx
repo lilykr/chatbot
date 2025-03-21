@@ -15,12 +15,13 @@ export default function Homepage() {
 			<MeshGradient />
 			<SafeAreaView style={styles.layout}>
 				<Text
-					weight="medium"
+					weight="semibold"
 					style={{
 						color: "white",
 						fontSize: 28,
 						width: "70%",
 						paddingTop: 80,
+						marginBottom: 8,
 					}}
 				>
 					Create, explore, be inspired
@@ -77,6 +78,6 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		flexDirection: "row",
 		gap: 16,
-		marginTop: 24,
+		marginTop: 8,
 	},
 });
