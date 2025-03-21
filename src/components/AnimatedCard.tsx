@@ -31,6 +31,8 @@ const IMAGE_HEIGHT = 0.45 * CARD_HEIGHT;
 const c = vec(IMAGE_HEIGHT / 2, IMAGE_HEIGHT / 2);
 const r = c.x - 32;
 const AnimatedView = Animated.createAnimatedComponent(View);
+const AnimatedTouchableOpacity =
+	Animated.createAnimatedComponent(TouchableOpacity);
 const MAX_SWIPE = Math.ceil(CARD_WIDTH - 50);
 
 const AnimatedCard = () => {
@@ -141,6 +143,65 @@ const AnimatedCard = () => {
 			],
 		};
 	});
+
+	const animatedPrice = useAnimatedStyle(() => {
+		const translationX = interpolate(
+			rotateX.value,
+			[-MAX_SWIPE, MAX_SWIPE],
+			[-40, 40],
+			{
+				extrapolateLeft: Extrapolation.CLAMP,
+				extrapolateRight: Extrapolation.CLAMP,
+			},
+		);
+		const translationY = interpolate(
+			rotateY.value,
+			[-MAX_SWIPE, MAX_SWIPE],
+			[-30, 30],
+			{
+				extrapolateLeft: Extrapolation.CLAMP,
+				extrapolateRight: Extrapolation.CLAMP,
+			},
+		);
+		return {
+			transform: [
+				{ perspective: 1500 },
+				{ translateX: translationX },
+				{ translateY: translationY },
+				{ scale: withTiming(imageScale.value * 0.95) },
+			],
+		};
+	});
+
+	const animatedButton = useAnimatedStyle(() => {
+		const translationX = interpolate(
+			rotateX.value,
+			[-MAX_SWIPE, MAX_SWIPE],
+			[-50, 50],
+			{
+				extrapolateLeft: Extrapolation.CLAMP,
+				extrapolateRight: Extrapolation.CLAMP,
+			},
+		);
+		const translationY = interpolate(
+			rotateY.value,
+			[-MAX_SWIPE, MAX_SWIPE],
+			[-35, 35],
+			{
+				extrapolateLeft: Extrapolation.CLAMP,
+				extrapolateRight: Extrapolation.CLAMP,
+			},
+		);
+		return {
+			transform: [
+				{ perspective: 1500 },
+				{ translateX: translationX },
+				{ translateY: translationY },
+				{ scale: withTiming(imageScale.value * 0.9) },
+			],
+		};
+	});
+
 	return (
 		<GestureHandlerRootView style={styles.container}>
 			<View style={styles.container}>
@@ -160,18 +221,20 @@ const AnimatedCard = () => {
 							</Text>
 						</View>
 						<View style={styles.footer}>
-							<View style={styles.priceContainer}>
+							<AnimatedView style={[styles.priceContainer, animatedPrice]}>
 								<View style={styles.priceRow}>
 									<Text style={styles.priceLabel}>Total Price</Text>
 									{/* Check icon */}
 									<View style={styles.checkIcon} />
 								</View>
 								<Text style={styles.price}>$ 8.00</Text>
-							</View>
+							</AnimatedView>
 							<View style={styles.buttonContainer}>
-								<TouchableOpacity style={styles.button}>
+								<AnimatedTouchableOpacity
+									style={[styles.button, animatedButton]}
+								>
 									<Text style={styles.buttonText}>Add to cart</Text>
-								</TouchableOpacity>
+								</AnimatedTouchableOpacity>
 							</View>
 						</View>
 					</AnimatedView>
