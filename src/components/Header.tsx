@@ -133,16 +133,14 @@ const styles = StyleSheet.create({
 		borderRadius: 14,
 	},
 	titleContainer: {
-		flex: 1,
 		overflow: "hidden",
-		height: 22,
 		position: "absolute",
-		top: -8,
+		top: -10,
 	},
 	title: {
 		paddingRight: 32,
 		fontSize: 18,
+		lineHeight: 24,
 		color: "white",
-		left: 0,
 	},
 });
