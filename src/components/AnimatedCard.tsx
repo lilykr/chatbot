@@ -27,7 +27,7 @@ const { width, height } = Dimensions.get("window");
 const CARD_WIDTH = 0.8 * width;
 const CARD_HEIGHT = 0.7 * height;
 
-const IMAGE_HEIGHT = 0.45 * CARD_HEIGHT;
+const IMAGE_HEIGHT = 0.35 * CARD_HEIGHT;
 const c = vec(IMAGE_HEIGHT / 2, IMAGE_HEIGHT / 2);
 const r = c.x - 32;
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -210,7 +210,11 @@ const AnimatedCard = () => {
 						<AnimatedView style={[styles.imageContainer, animatedImage]}>
 							<Image
 								source={LLK_AVATAR}
-								style={{ width: CARD_WIDTH, height: IMAGE_HEIGHT }}
+								style={{
+									width: CARD_WIDTH,
+									height: IMAGE_HEIGHT,
+									resizeMode: "contain",
+								}}
 							/>
 						</AnimatedView>
 						<View style={styles.contentContainer}>

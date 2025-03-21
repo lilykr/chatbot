@@ -90,6 +90,7 @@ interface CoonsPatchMeshGradientProps {
 	lines?: boolean;
 	handles?: boolean;
 	play?: boolean;
+	square?: boolean;
 }
 
 const F = 10000;
@@ -103,6 +104,7 @@ export const CoonsPatchMeshGradient = ({
 	lines,
 	handles,
 	play,
+	square,
 }: CoonsPatchMeshGradientProps) => {
 	const { width, height } = useWindowDimensions();
 	const win = useMemo(
@@ -113,7 +115,7 @@ export const CoonsPatchMeshGradient = ({
 	const clock = useClock();
 	const image = useImage(require("../../../../assets/debug.png"));
 	const dx = width / cols;
-	const dy = dx; //100; // height / rows;
+	const dy = square ? dx : height / rows;
 	const C = dx / 3;
 
 	const defaultMesh = new Array(cols + 1)
