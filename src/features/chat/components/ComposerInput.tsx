@@ -36,6 +36,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					</Pressable> */}
 
 				<TextInput
+					keyboardAppearance="dark"
 					ref={inputRef}
 					autoFocus={true}
 					style={styles.input}

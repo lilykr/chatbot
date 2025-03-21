@@ -33,6 +33,7 @@ export const SearchBar = ({
 				style={styles.searchIcon}
 			/>
 			<TextInput
+				keyboardAppearance="dark"
 				style={styles.input}
 				placeholder={placeholder}
 				value={searchQuery}

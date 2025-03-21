@@ -68,7 +68,7 @@ export const MessageList: React.FC<MessageListProps> = ({
 					paddingBottom: keyboardHeight,
 					paddingHorizontal: 10,
 				}}
-				maintainVisibleContentPosition={true}
+				// maintainVisibleContentPosition={true}
 				alignItemsAtEnd={true}
 				maintainScrollAtEnd={true}
 			/>

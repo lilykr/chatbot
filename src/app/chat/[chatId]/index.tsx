@@ -30,7 +30,6 @@ storage.listen("history", (newValue) => {
 export default function Chat() {
 	const { chatId } = useLocalSearchParams();
 
-	console.log("chatId", chatId);
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<LegendListRef>(null);
@@ -69,10 +68,22 @@ export default function Chat() {
 	}, [chatId]);
 
 	useEffect(() => {
+		setTimeout(() => {
+			messageListRef.current?.scrollToEnd();
+		}, 100);
+	}, []);
+
+	useEffect(() => {
 		// Only save if the last message is from the assistant
 		if (messages.length === 0) return;
 		if (status === "streaming") return;
 		if (messages[messages.length - 1]?.role !== "assistant") return;
+
+		// Skip saving if number of messages hasn't changed from initialChat
+		// This assumes messages are only ever added, never edited or replaced
+		if (initialChat && initialChat.value.messages.length === messages.length) {
+			return;
+		}
 
 		const history = storage.get("history") ?? [];
 
@@ -83,8 +94,12 @@ export default function Chat() {
 					...initialChat.value,
 					messages,
 				},
+				updatedAt: Date.now(),
 			};
-			storage.set("history", (prev) => [...(prev ?? []), newChat]);
+			// Replace the existing chat instead of appending
+			storage.set("history", (prev) =>
+				(prev ?? []).map((item) => (item.id === chatId ? newChat : item)),
+			);
 		}
 		if (!initialChat) {
 			storage.set("history", [

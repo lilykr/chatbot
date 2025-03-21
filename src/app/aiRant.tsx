@@ -1,21 +1,21 @@
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
-import { useCallback, useState, useRef } from "react";
-import { experimental_useObject as useObject } from "@ai-sdk/react";
+import { useCallback, useRef, useState } from "react";
 
 import {
-	StyleSheet,
-	View,
-	TextInput,
-	ScrollView,
 	ActivityIndicator,
+	ScrollView,
+	StyleSheet,
+	TextInput,
+	View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BouncyPressable } from "../components/BouncyPressable";
+import { Header } from "../components/Header";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
-import { Header } from "../components/Header";
 import { rantSchema } from "./api/chat-rant+api";
-import { BouncyPressable } from "../components/BouncyPressable";
 
 export default function AIRant() {
 	const [input, setInput] = useState("");
@@ -112,6 +112,7 @@ export default function AIRant() {
 						</Text>
 						<View style={styles.inputWrapper}>
 							<TextInput
+								keyboardAppearance="dark"
 								style={styles.input}
 								value={input}
 								onChangeText={setInput}
