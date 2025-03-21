@@ -20,9 +20,9 @@ import { titleSchema } from "../../api/generate-title+api";
 const AI_AVATAR = require("../../../../assets/avatar.png");
 
 // storage.clearAll();
-// storage.listen("history", (newValue) => {
-// 	console.log("history changed", JSON.stringify(newValue, null, 2));
-// });
+storage.listen("history", (newValue) => {
+	console.log("history changed", JSON.stringify(newValue, null, 2));
+});
 
 export default function Chat() {
 	const { chatId } = useLocalSearchParams();

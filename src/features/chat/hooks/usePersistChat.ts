@@ -43,8 +43,7 @@ export function usePersistChat(params: {
 			storage.set("history", (prev) =>
 				(prev ?? []).map((item) => (item.id === chatId ? newChat : item)),
 			);
-		}
-		if (!initialChat) {
+		} else {
 			storage.set("history", [
 				...history,
 				{
