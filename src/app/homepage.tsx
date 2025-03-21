@@ -7,6 +7,7 @@ import { SearchBar } from "../components/SearchBar";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
 import { MeshGradient } from "../features/MeshGradient/MeshGradient";
+import { History } from "../components/History";
 
 export default function Homepage() {
 	return (
@@ -49,6 +50,7 @@ export default function Homepage() {
 						/>
 					</View>
 				</ScrollView>
+				<History />
 			</SafeAreaView>
 		</>
 	);
@@ -56,7 +58,6 @@ export default function Homepage() {
 
 const styles = StyleSheet.create({
 	layout: {
-		flex: 1,
 		marginHorizontal: 16,
 		zIndex: 1,
 	},

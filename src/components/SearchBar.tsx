@@ -26,7 +26,7 @@ export const SearchBar = ({
 
 	return (
 		<View style={[styles.container, style]}>
-			<BlurView intensity={80} tint="dark" style={styles.blurContainer}>
+			<BlurView intensity={60} tint="dark" style={styles.blurContainer}>
 				<Ionicons
 					name="search"
 					size={23}

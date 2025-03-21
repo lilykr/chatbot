@@ -37,7 +37,7 @@ export const CardButton = ({
 					style,
 				]}
 			>
-				<BlurView intensity={80} tint="dark" style={styles.card}>
+				<BlurView intensity={60} tint="dark" style={styles.card}>
 					<Text
 						style={[
 							styles.buttonText,
