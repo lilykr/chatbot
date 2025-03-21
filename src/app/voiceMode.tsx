@@ -36,11 +36,11 @@ export default function VoiceMode() {
 	// Derive animated values for wave properties with MORE DRAMATIC progression
 	const waveIntensity = useDerivedValue(() => {
 		// Increase the range for more dramatic effect
-		const minIntensity = 2;
+		const minIntensity = 5; // Increased from 2 for more baseline movement
 		const maxIntensity = 45; // Increased from 30 for more dramatic waves
 
-		// Apply non-linear mapping for more dramatic changes
-		const amplifiedVolume = volume.value ** 1.5; // Apply exponential curve
+		// More responsive at lower volumes using square root instead of power
+		const amplifiedVolume = Math.sqrt(volume.value);
 		return minIntensity + (maxIntensity - minIntensity) * amplifiedVolume;
 	}, []);
 
@@ -49,8 +49,8 @@ export default function VoiceMode() {
 		const minSpeed = 10000; // Slower base speed
 		const maxSpeed = 50; // Even faster max speed
 
-		// Apply non-linear mapping for more dramatic changes
-		const amplifiedVolume = volume.value ** 1.3;
+		// More responsive at lower volumes
+		const amplifiedVolume = Math.sqrt(volume.value);
 		return minSpeed - (minSpeed - maxSpeed) * amplifiedVolume;
 	}, []);
 
@@ -58,8 +58,8 @@ export default function VoiceMode() {
 		const minSpeed = 150000; // Even slower base speed
 		const maxSpeed = 1000; // Even faster max speed
 
-		// Apply more dramatic curve
-		const amplifiedVolume = volume.value ** 1.4;
+		// More responsive at lower volumes
+		const amplifiedVolume = Math.sqrt(volume.value);
 		return minSpeed - (minSpeed - maxSpeed) * amplifiedVolume;
 	}, []);
 
