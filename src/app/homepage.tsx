@@ -1,6 +1,6 @@
 import { Link, router } from "expo-router";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CardButton } from "../components/CardButton";
 import { SearchBar } from "../components/SearchBar";
@@ -25,20 +25,33 @@ export default function Homepage() {
 					Create, explore, be inspired
 				</Text>
 				<SearchBar />
-				<View style={styles.buttonContainer}>
-					<CardButton
-						text="AI text writer"
-						backgroundColor={colors.night}
-						borderColor={colors.lightGrey}
-						onPress={() => router.push("/chat")}
-					/>
-					<CardButton
-						text="AI Voice mode"
-						backgroundColor={colors.night}
-						borderColor={colors.lightGrey}
-						onPress={() => router.push("/voiceMode")}
-					/>
-				</View>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={styles.scrollContent}
+					style={styles.scrollView}
+				>
+					<View style={styles.buttonContainer}>
+						<CardButton
+							text="AI text writer"
+							backgroundColor={colors.night}
+							borderColor={colors.lightGrey}
+							onPress={() => router.push("/chat")}
+						/>
+						<CardButton
+							text="AI Voice mode"
+							backgroundColor={colors.night}
+							borderColor={colors.lightGrey}
+							onPress={() => router.push("/voiceMode")}
+						/>
+						<CardButton
+							text="AI Rant"
+							backgroundColor={colors.night}
+							borderColor={colors.lightGrey}
+							onPress={() => router.push("/aiRant")}
+						/>
+					</View>
+				</ScrollView>
 			</SafeAreaView>
 		</>
 	);
@@ -49,6 +62,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		marginHorizontal: 16,
 		zIndex: 1,
+	},
+	scrollContent: {
+		paddingRight: 16,
+	},
+	scrollView: {
+		marginHorizontal: -16, // Negates the parent's horizontal margin
+		paddingHorizontal: 16,
 	},
 	buttonContainer: {
 		flexDirection: "row",
