@@ -6,7 +6,6 @@ import Animated, {
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Header } from "../components/Header";
 import { DebugVolume } from "../features/voice-mode/components/DebugVolume";
 import SpeechRecognition, {
@@ -20,14 +19,12 @@ import { useVolumeControl } from "../features/voice-mode/hooks/useVolumeControl"
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 // Add this constant at the top with other constants
 const enableDebug = false; // You can toggle this to show/hide debug controls
-const FINAL_POINT_COUNT = 2000; // Target number of points
+const FINAL_POINT_COUNT = 1000; // Target number of points
 const INITIAL_POINT_COUNT = 200; // Starting with fewer points for fast initial render
 
 export default function VoiceMode() {
-	const safeAreaInsets = useSafeAreaInsets();
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
-	const [isLoading, setIsLoading] = useState(true);
 	const opacity = useSharedValue(0);
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
@@ -39,11 +36,11 @@ export default function VoiceMode() {
 	// Derive animated values for wave properties with MORE DRAMATIC progression
 	const waveIntensity = useDerivedValue(() => {
 		// Increase the range for more dramatic effect
-		const minIntensity = 2;
+		const minIntensity = 5; // Increased from 2 for more baseline movement
 		const maxIntensity = 45; // Increased from 30 for more dramatic waves
 
-		// Apply non-linear mapping for more dramatic changes
-		const amplifiedVolume = volume.value ** 1.5; // Apply exponential curve
+		// More responsive at lower volumes using square root instead of power
+		const amplifiedVolume = Math.sqrt(volume.value);
 		return minIntensity + (maxIntensity - minIntensity) * amplifiedVolume;
 	}, []);
 
@@ -52,8 +49,8 @@ export default function VoiceMode() {
 		const minSpeed = 10000; // Slower base speed
 		const maxSpeed = 50; // Even faster max speed
 
-		// Apply non-linear mapping for more dramatic changes
-		const amplifiedVolume = volume.value ** 1.3;
+		// More responsive at lower volumes
+		const amplifiedVolume = Math.sqrt(volume.value);
 		return minSpeed - (minSpeed - maxSpeed) * amplifiedVolume;
 	}, []);
 
@@ -61,8 +58,8 @@ export default function VoiceMode() {
 		const minSpeed = 150000; // Even slower base speed
 		const maxSpeed = 1000; // Even faster max speed
 
-		// Apply more dramatic curve
-		const amplifiedVolume = volume.value ** 1.4;
+		// More responsive at lower volumes
+		const amplifiedVolume = Math.sqrt(volume.value);
 		return minSpeed - (minSpeed - maxSpeed) * amplifiedVolume;
 	}, []);
 
@@ -105,9 +102,6 @@ export default function VoiceMode() {
 	const handleFirstRender = useCallback(() => {
 		if (renderedOnce.current) return;
 		renderedOnce.current = true;
-
-		// Hide loading indicator but keep the opacity at 0
-		setIsLoading(false);
 
 		// Increase the point count gradually
 		const increasePoints = () => {
