@@ -4,10 +4,11 @@ import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
-import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
+import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
@@ -104,7 +105,7 @@ export default function Chat() {
 			onLayout={handleLayout}
 		>
 			<Header title={titleObject?.title || "AI chatbot"} />
-			<KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
 				<MessageList
 					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
 					messages={messages}
