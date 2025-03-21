@@ -197,7 +197,7 @@ export const CoonsPatchMeshGradient = ({
 								<RectPatch
 									// biome-ignore lint/suspicious/noArrayIndexKey: Acceptable here
 									key={i}
-									r={r}
+									r={r as [number, number, number, number]}
 									mesh={mesh}
 									debug={!!debug}
 									lines={!!lines}
