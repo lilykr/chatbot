@@ -38,7 +38,6 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 				<TextInput
 					keyboardAppearance="dark"
 					ref={inputRef}
-					autoFocus={true}
 					style={styles.input}
 					value={value}
 					onChangeText={onChangeText}
