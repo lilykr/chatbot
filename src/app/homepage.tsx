@@ -1,13 +1,13 @@
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import React from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CardButton } from "../components/CardButton";
+import { History } from "../components/History";
 import { SearchBar } from "../components/SearchBar";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
 import { MeshGradient } from "../features/MeshGradient/MeshGradient";
-import { History } from "../components/History";
 
 export default function Homepage() {
 	return (
@@ -36,7 +36,7 @@ export default function Homepage() {
 						<CardButton
 							text="AI text writer"
 							borderColor={colors.lightGrey}
-							onPress={() => router.push("/chat/[chatId]")}
+							onPress={() => router.push("/chat/new")}
 						/>
 						<CardButton
 							text="AI Voice mode"

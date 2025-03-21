@@ -1,12 +1,12 @@
+import { LegendList, type LegendListRef } from "@legendapp/list";
+import type { UIMessage } from "ai";
 import type React from "react";
 import { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { LegendList, type LegendListRef } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MessageBubble } from "./MessageBubble";
-import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
 import { colors } from "../../../constants/colors";
-import type { UIMessage } from "ai";
+import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
+import { MessageBubble } from "./MessageBubble";
 
 export interface User {
 	_id: string | number;

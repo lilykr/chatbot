@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, FlatList } from "react-native";
-import { Text } from "./Text";
-import { colors } from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+import { colors } from "../constants/colors";
 import { storage } from "../services/storage";
-import { BouncyPressable } from "./BouncyPressable";
 import type { App } from "../types/apps";
+import { BouncyPressable } from "./BouncyPressable";
+import { Text } from "./Text";
 
 const getHistoryTitle = (type: App["type"]) => {
 	switch (type) {
@@ -39,13 +39,19 @@ export const History = () => {
 		router.push(`/chat/${id}`);
 	};
 
+	useEffect(() => {
+		storage.listen("history", (newHistory) => {
+			setHistories(newHistory);
+		});
+	}, []);
+
 	return (
 		<View style={styles.container}>
 			<Text weight="medium" style={styles.title}>
 				History
 			</Text>
 			<FlatList
-				data={histories}
+				data={histories?.sort((a, b) => b.updatedAt - a.updatedAt)}
 				renderItem={({ item, index }) => (
 					<BouncyPressable
 						key={index}

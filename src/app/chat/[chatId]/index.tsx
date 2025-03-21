@@ -1,29 +1,41 @@
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
+import type { LegendListRef } from "@legendapp/list";
+import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, type TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
 import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { useCamera } from "../../../features/chat/hooks/useCamera";
-import { useKeyboardHeight } from "../../../features/chat/hooks/useKeyboardHeight";
-import { titleSchema } from "../../api/generate-title+api";
 import { type HistoryItem, storage } from "../../../services/storage";
-import { router, useLocalSearchParams } from "expo-router";
-import { nanoid } from "nanoid";
+import { titleSchema } from "../../api/generate-title+api";
 
 const AI_AVATAR = require("../../../../assets/avatar.png");
 
+// storage.clearAll();
 storage.addOnValueChangedListener((key) => {
 	console.log("history changed", key);
 });
 
+storage.listen("history", (newValue) => {
+	console.log("history changed", JSON.stringify(newValue, null, 2));
+});
+
 export default function Chat() {
 	const { chatId } = useLocalSearchParams();
+
+	console.log("chatId", chatId);
+	const { showCamera, openCamera, handleCloseCamera } = useCamera();
+	const safeAreaInsets = useSafeAreaInsets();
+	const messageListRef = useRef<LegendListRef>(null);
+	const inputRef = useRef<TextInput>(null);
+
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
 			| HistoryItem<"chat">
@@ -43,23 +55,29 @@ export default function Chat() {
 
 	const { object: titleObject, submit: generateTitle } = useObject({
 		fetch: expoFetch as unknown as typeof globalThis.fetch,
-		api: "http://localhost:8081/api/generate-title",
+		api: "https://lilykr-chatbot.expo.app/api/generate-title",
 		schema: titleSchema,
 		headers: {
 			Accept: "text/event-stream",
 		},
-		initialValue: { title: initialChat?.value.title },
+		// initialValue: { title: initialChat?.value.title },
 	});
 
 	useEffect(() => {
-		if (!chatId) {
-			router.setParams({ chatId: nanoid() });
+		inputRef.current?.focus();
+	}, []);
+
+	useEffect(() => {
+		if (chatId === "new") {
+			router.setParams({ chatId: uuid.v4() });
 		}
 	}, [chatId]);
 
 	useEffect(() => {
+		// Only save if the last message is from the assistant
 		if (messages.length === 0) return;
 		if (status === "streaming") return;
+		if (messages[messages.length - 1]?.role !== "assistant") return;
 
 		const history = storage.get("history") ?? [];
 
@@ -87,11 +105,6 @@ export default function Chat() {
 		}
 	}, [initialChat, status, messages, titleObject?.title, chatId]);
 
-	const { showCamera, openCamera, handleCloseCamera } = useCamera();
-	const safeAreaInsets = useSafeAreaInsets();
-	const keyboardHeight = useKeyboardHeight();
-	const messageListRef = useRef(null);
-
 	const handleLayout = useCallback(() => {
 		SplashScreen.hideAsync();
 	}, []);
@@ -101,7 +114,7 @@ export default function Chat() {
 		if (input.trim().length === 0) return;
 		handleSubmit();
 		if (messages.length === 0) {
-			generateTitle({ messages });
+			generateTitle({ messages: [{ role: "user", content: input }] });
 		}
 	}, [input, handleSubmit, messages]);
 
@@ -131,6 +144,7 @@ export default function Chat() {
 			/>
 
 			<ComposerInput
+				inputRef={inputRef}
 				value={input}
 				onChangeText={(text) =>
 					handleInputChange({
