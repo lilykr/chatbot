@@ -1,15 +1,15 @@
+import type { UIMessage } from "ai";
+import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { Avatar } from "./Avatar";
-import VideoPlayer from "./VideoPlayer";
-import type { Message, User } from "./MessageList";
-import { LinearGradient } from "expo-linear-gradient";
+import type { User } from "./MessageList";
 
 interface MessageBubbleProps {
-	message: Message;
+	message: UIMessage;
 	user: User;
 	position: "left" | "right";
 }
@@ -36,27 +36,19 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 					position === "right" ? styles.rightBubble : styles.leftBubble,
 				]}
 			>
-				{message.video ? (
-					<VideoPlayer videoUri={message.video} />
+				{position === "right" ? (
+					<LinearGradient
+						colors={["#C26E73", "#AC1ED6"]}
+						start={{ x: 0, y: 0 }}
+						end={{ x: 1, y: 1 }}
+						style={styles.gradient}
+					>
+						<Text style={[styles.text, styles.rightText]}>
+							{message.content}
+						</Text>
+					</LinearGradient>
 				) : (
-					<>
-						{position === "right" ? (
-							<LinearGradient
-								colors={["#C26E73", "#AC1ED6"]}
-								start={{ x: 0, y: 0 }}
-								end={{ x: 1, y: 1 }}
-								style={styles.gradient}
-							>
-								<Text style={[styles.text, styles.rightText]}>
-									{message.content}
-								</Text>
-							</LinearGradient>
-						) : (
-							<Text style={[styles.text, styles.leftText]}>
-								{message.content}
-							</Text>
-						)}
-					</>
+					<Text style={[styles.text, styles.leftText]}>{message.content}</Text>
 				)}
 			</View>
 

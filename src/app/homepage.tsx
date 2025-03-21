@@ -36,7 +36,7 @@ export default function Homepage() {
 						<CardButton
 							text="AI text writer"
 							borderColor={colors.lightGrey}
-							onPress={() => router.push("/chat")}
+							onPress={() => router.push("/chat/[chatId]")}
 						/>
 						<CardButton
 							text="AI Voice mode"
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
 	scrollView: {
 		marginHorizontal: -16, // Negates the parent's horizontal margin
 		paddingHorizontal: 16,
+		minHeight: 200,
 	},
 	buttonContainer: {
 		flexDirection: "row",

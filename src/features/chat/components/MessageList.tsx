@@ -6,15 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MessageBubble } from "./MessageBubble";
 import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
 import { colors } from "../../../constants/colors";
-
-export interface Message {
-	id: string;
-	content: string;
-	role: string;
-	createdAt?: Date;
-	userId: string | number;
-	video?: string;
-}
+import type { UIMessage } from "ai";
 
 export interface User {
 	_id: string | number;
@@ -22,7 +14,7 @@ export interface User {
 }
 
 interface MessageListProps {
-	messages: Message[];
+	messages: UIMessage[];
 	users: User[];
 	listRef?: React.RefObject<LegendListRef>;
 }
@@ -47,8 +39,8 @@ export const MessageList: React.FC<MessageListProps> = ({
 	);
 
 	const renderItem = useCallback(
-		({ item }: { item: Message }) => {
-			const user = findUser(item.userId);
+		({ item }: { item: UIMessage }) => {
+			const user = findUser(item.role === "user" ? 1 : 2);
 			return (
 				<MessageBubble
 					message={item}
@@ -60,7 +52,7 @@ export const MessageList: React.FC<MessageListProps> = ({
 		[findUser],
 	);
 
-	const keyExtractor = useCallback((item: Message) => {
+	const keyExtractor = useCallback((item: UIMessage) => {
 		return item.id;
 	}, []);
 

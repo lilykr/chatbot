@@ -1,12 +1,18 @@
 import { MMKV } from "react-native-mmkv";
 
 type TypedStorage<T extends Record<string, unknown>> = {
-	set: <K extends keyof T>(key: K, value: T[K]) => void;
+	set: <K extends keyof T>(
+		key: K,
+		valueOrUpdater: T[K] | ((prev: T[K] | undefined) => T[K]),
+	) => void;
 	get: <K extends keyof T>(key: K) => T[K] | undefined;
 	delete: <K extends keyof T>(key: K) => void;
 	contains: <K extends keyof T>(key: K) => boolean;
 	clearAll: () => void;
 	getAllKeys: () => string[];
+	addOnValueChangedListener: (callback: (changedKey: keyof T) => void) => {
+		remove: () => void;
+	};
 };
 
 type StoredValue<T> = {
@@ -18,9 +24,51 @@ export const createTypedStorage = <T extends Record<string, unknown>>(
 	options?: ConstructorParameters<typeof MMKV>[0],
 ): TypedStorage<T> => {
 	const mmkv = new MMKV(options);
+	const listener = mmkv.addOnValueChangedListener((changedKey) => {
+		for (const callback of valueChangeCallbacks) {
+			callback(changedKey as keyof T);
+		}
+	});
+	const valueChangeCallbacks = new Set<(changedKey: keyof T) => void>();
 
 	return {
-		set: <K extends keyof T>(key: K, value: T[K]) => {
+		set: <K extends keyof T>(
+			key: K,
+			valueOrUpdater: T[K] | ((prev: T[K] | undefined) => T[K]),
+		) => {
+			const value =
+				typeof valueOrUpdater === "function"
+					? (valueOrUpdater as (prev: T[K] | undefined) => T[K])(
+							mmkv.contains(key as string)
+								? ((): T[K] | undefined => {
+										const storedString = mmkv.getString(key as string);
+										if (!storedString) return undefined;
+										try {
+											const storedValue = JSON.parse(
+												storedString,
+											) as StoredValue<unknown>;
+											if (storedValue.type === "arraybuffer") {
+												const array = storedValue.value as number[];
+												const buffer = new ArrayBuffer(array.length);
+												const view = new Uint8Array(buffer);
+												array.forEach((value, index) => {
+													view[index] = value;
+												});
+												return buffer as unknown as T[K];
+											}
+											return storedValue.value as T[K];
+										} catch (error) {
+											console.error(
+												`Error retrieving value for key ${String(key)}:`,
+												error,
+											);
+											return undefined;
+										}
+									})()
+								: undefined,
+						)
+					: valueOrUpdater;
+
 			if (value === undefined || value === null) {
 				mmkv.delete(key as string);
 				return;
@@ -79,6 +127,18 @@ export const createTypedStorage = <T extends Record<string, unknown>>(
 
 		getAllKeys: () => {
 			return mmkv.getAllKeys();
+		},
+
+		addOnValueChangedListener: (callback: (changedKey: keyof T) => void) => {
+			valueChangeCallbacks.add(callback);
+			return {
+				remove: () => {
+					valueChangeCallbacks.delete(callback);
+					if (valueChangeCallbacks.size === 0) {
+						listener.remove();
+					}
+				},
+			};
 		},
 	};
 };
