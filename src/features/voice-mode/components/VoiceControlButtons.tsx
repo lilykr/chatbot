@@ -1,6 +1,7 @@
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 
 interface IconButtonProps {
@@ -8,28 +9,36 @@ interface IconButtonProps {
 }
 
 export const VoiceControlButtons = ({ onPress }: IconButtonProps) => {
+	const safeAreaInsets = useSafeAreaInsets();
 	return (
-		<BouncyPressable onPress={onPress} style={styles.buttonContainer}>
-			<LinearGradient
-				colors={["#f78f9e", "#ae3bd1"]}
-				start={{ x: 0, y: 0.5 }}
-				end={{ x: 1, y: 0.5 }}
-				style={styles.buttonBorder}
-			>
+		<View style={[styles.layout, { marginBottom: safeAreaInsets.bottom + 32 }]}>
+			<BouncyPressable onPress={onPress} style={styles.buttonContainer}>
 				<LinearGradient
-					colors={["#C26E73", "#AC1ED6"]}
-					start={{ x: 0, y: 0 }}
-					end={{ x: 1, y: 1 }}
-					style={styles.button}
+					colors={["#f78f9e", "#ae3bd1"]}
+					start={{ x: 0, y: 0.5 }}
+					end={{ x: 1, y: 0.5 }}
+					style={styles.buttonBorder}
 				>
-					<SimpleLineIcons name="microphone" size={28} color="white" />
+					<LinearGradient
+						colors={["#C26E73", "#AC1ED6"]}
+						start={{ x: 0, y: 0 }}
+						end={{ x: 1, y: 1 }}
+						style={styles.button}
+					>
+						<SimpleLineIcons name="microphone" size={28} color="white" />
+					</LinearGradient>
 				</LinearGradient>
-			</LinearGradient>
-		</BouncyPressable>
+			</BouncyPressable>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	layout: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+	},
 	buttonContainer: {
 		width: 68,
 		height: 68,

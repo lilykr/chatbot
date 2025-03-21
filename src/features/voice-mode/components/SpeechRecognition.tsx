@@ -5,9 +5,11 @@ import {
 	useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
 import { font } from "../../../constants/font";
 import { showAlert } from "../../../utils/alert";
+
+const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 export type SupportedLanguage = "en-US";
 
@@ -219,10 +221,9 @@ const SpeechRecognition = ({
 
 const styles = StyleSheet.create({
 	transcriptContainer: {
+		marginTop: WINDOW_HEIGHT / 2,
 		flex: 1,
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
-		padding: 15,
-		borderRadius: 10,
+
 		alignItems: "center",
 		justifyContent: "center",
 	},
