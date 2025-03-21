@@ -1,6 +1,10 @@
 // From https://github.com/Shopify/react-native-skia/blob/main/apps/paper/src/Examples/Aurora/components/CoonsPatchMeshGradient.tsx
 
-import type { CubicBezierHandle } from "@shopify/react-native-skia";
+import type {
+	Color,
+	CubicBezierHandle,
+	SkPoint,
+} from "@shopify/react-native-skia";
 import {
 	BackdropBlur,
 	Canvas,
@@ -237,21 +241,16 @@ interface RectPatchProps {
 	defaultMesh: CubicBezierHandle[];
 }
 
-const RectPatch = ({
-	r,
-	debug,
-	lines,
-	colors,
-	mesh,
-	defaultMesh,
-}: RectPatchProps) => {
+const RectPatch = ({ r, lines, colors, mesh, defaultMesh }: RectPatchProps) => {
 	const patch = useRectToPatch(mesh, r);
 	return (
 		<>
 			<Patch
 				patch={patch}
-				colors={debug ? undefined : rectToColors(colors, r)}
-				texture={rectToTexture(defaultMesh, r)}
+				colors={rectToColors(colors, r) as Color[]}
+				texture={
+					rectToTexture(defaultMesh, r) as [SkPoint, SkPoint, SkPoint, SkPoint]
+				}
 			/>
 			{lines && <Curves patch={patch} />}
 		</>
