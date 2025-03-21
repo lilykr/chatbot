@@ -3,10 +3,10 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "./Text";
 import { BouncyPressable } from "./BouncyPressable";
+import { BlurView } from "expo-blur";
 
 interface CardButtonProps {
 	text: string;
-	backgroundColor?: string;
 	textColor?: string;
 	borderColor?: string;
 	style?: ViewStyle;
@@ -18,7 +18,6 @@ interface CardButtonProps {
 
 export const CardButton = ({
 	text,
-	backgroundColor = "black",
 	textColor = "white",
 	borderColor = "#333",
 	style,
@@ -31,45 +30,51 @@ export const CardButton = ({
 		<BouncyPressable onPress={onPress}>
 			<View
 				style={[
-					styles.card,
+					styles.container,
 					{
-						backgroundColor,
 						borderColor,
 					},
 					style,
 				]}
 			>
-				<Text
-					style={[
-						styles.buttonText,
-						{
-							color: textColor,
-							fontSize: 18,
-						},
-						textStyle,
-					]}
-					weight="medium"
-				>
-					{text}
-				</Text>
-				<Feather
-					name="arrow-up-right"
-					size={iconSize}
-					color={iconColor}
-					style={styles.arrow}
-				/>
+				<BlurView intensity={80} tint="dark" style={styles.card}>
+					<Text
+						style={[
+							styles.buttonText,
+							{
+								color: textColor,
+								fontSize: 18,
+							},
+							textStyle,
+						]}
+						weight="medium"
+					>
+						{text}
+					</Text>
+					<Feather
+						name="arrow-up-right"
+						size={iconSize}
+						color={iconColor}
+						style={styles.arrow}
+					/>
+				</BlurView>
 			</View>
 		</BouncyPressable>
 	);
 };
 
 const styles = StyleSheet.create({
-	card: {
+	container: {
 		borderRadius: 30,
 		borderWidth: 1,
-		padding: 16,
+		overflow: "hidden",
 		height: 180,
 		width: 140,
+	},
+	card: {
+		padding: 16,
+		height: "100%",
+		width: "100%",
 		position: "relative",
 	},
 	buttonText: {
