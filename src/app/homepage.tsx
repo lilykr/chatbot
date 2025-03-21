@@ -34,19 +34,16 @@ export default function Homepage() {
 					<View style={styles.buttonContainer}>
 						<CardButton
 							text="AI text writer"
-							backgroundColor={colors.night}
 							borderColor={colors.lightGrey}
 							onPress={() => router.push("/chat")}
 						/>
 						<CardButton
 							text="AI Voice mode"
-							backgroundColor={colors.night}
 							borderColor={colors.lightGrey}
 							onPress={() => router.push("/voiceMode")}
 						/>
 						<CardButton
 							text="AI Rant"
-							backgroundColor={colors.night}
 							borderColor={colors.lightGrey}
 							onPress={() => router.push("/aiRant")}
 						/>
