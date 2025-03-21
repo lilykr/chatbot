@@ -1,9 +1,8 @@
-import type { ViewStyle, TextStyle } from "react-native";
-import { View, StyleSheet, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { Text } from "./Text";
+import type { TextStyle, ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { BouncyPressable } from "./BouncyPressable";
-import { BlurView } from "expo-blur";
+import { Text } from "./Text";
 
 interface CardButtonProps {
 	text: string;
@@ -37,7 +36,8 @@ export const CardButton = ({
 					style,
 				]}
 			>
-				<BlurView intensity={60} tint="dark" style={styles.card}>
+				<View style={styles.card}>
+					<View style={styles.overlay} />
 					<Text
 						style={[
 							styles.buttonText,
@@ -57,7 +57,7 @@ export const CardButton = ({
 						color={iconColor}
 						style={styles.arrow}
 					/>
-				</BlurView>
+				</View>
 			</View>
 		</BouncyPressable>
 	);
@@ -70,6 +70,15 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 		height: 170,
 		width: 140,
+	},
+	overlay: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		backgroundColor: "black",
+		opacity: 0.5,
 	},
 	card: {
 		padding: 16,

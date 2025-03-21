@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
-import { StyleSheet, type TextInput, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
@@ -34,7 +34,6 @@ export default function Chat() {
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<LegendListRef>(null);
-	const inputRef = useRef<TextInput>(null);
 
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
@@ -60,12 +59,8 @@ export default function Chat() {
 		headers: {
 			Accept: "text/event-stream",
 		},
-		// initialValue: { title: initialChat?.value.title },
+		initialValue: { title: initialChat?.value.title },
 	});
-
-	useEffect(() => {
-		inputRef.current?.focus();
-	}, []);
 
 	useEffect(() => {
 		if (chatId === "new") {
@@ -118,11 +113,6 @@ export default function Chat() {
 		}
 	}, [input, handleSubmit, messages]);
 
-	// Function to handle video capture
-	// const onVideoCaptured = useCallback((videoUri: string) => {
-	// 	// handleVideoMessage(videoUri);
-	// }, []);
-
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
 	return (
@@ -137,23 +127,23 @@ export default function Chat() {
 			onLayout={handleLayout}
 		>
 			<Header title={titleObject?.title || "AI chatbot"} />
-			<MessageList
-				users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
-				messages={messages}
-				listRef={messageListRef}
-			/>
-
-			<ComposerInput
-				inputRef={inputRef}
-				value={input}
-				onChangeText={(text) =>
-					handleInputChange({
-						target: { value: text },
-					} as unknown as React.ChangeEvent<HTMLInputElement>)
-				}
-				onSubmit={handleSubmitInput}
-				onCameraPress={openCamera}
-			/>
+			<KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+				<MessageList
+					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
+					messages={messages}
+					listRef={messageListRef}
+				/>
+				<ComposerInput
+					value={input}
+					onChangeText={(text) =>
+						handleInputChange({
+							target: { value: text },
+						} as unknown as React.ChangeEvent<HTMLInputElement>)
+					}
+					onSubmit={handleSubmitInput}
+					onCameraPress={openCamera}
+				/>
+			</KeyboardAvoidingView>
 
 			{/* {showCamera && (
 				<View style={StyleSheet.absoluteFill}>
