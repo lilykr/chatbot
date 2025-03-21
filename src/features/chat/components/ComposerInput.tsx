@@ -1,6 +1,5 @@
 import type React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, TextInput, useAnimatedValue, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { SendButton } from "./SendButton";
@@ -11,6 +10,7 @@ interface ComposerInputProps {
 	onSubmit: () => void;
 	onCameraPress: () => void;
 	isQuickReplies?: boolean;
+	inputRef?: React.RefObject<TextInput>;
 }
 
 export const ComposerInput: React.FC<ComposerInputProps> = ({
@@ -19,6 +19,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	onSubmit,
 	onCameraPress,
 	isQuickReplies = false,
+	inputRef,
 }) => {
 	return (
 		<View style={styles.container}>
@@ -35,6 +36,9 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					</Pressable> */}
 
 				<TextInput
+					keyboardAppearance="dark"
+					ref={inputRef}
+					autoFocus={true}
 					style={styles.input}
 					value={value}
 					onChangeText={onChangeText}
