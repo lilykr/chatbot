@@ -16,7 +16,7 @@ import { type HistoryItem, storage } from "../../../services/storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { nanoid } from "nanoid";
 
-const AI_AVATAR = require("../../../../assets/avatar.png");
+export const AI_AVATAR = require("../../../../assets/avatar.png");
 
 storage.addOnValueChangedListener((key) => {
 	console.log("history changed", key);

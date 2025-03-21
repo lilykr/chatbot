@@ -1,12 +1,13 @@
 import type { UIMessage } from "ai";
 import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Linking, TextStyle } from "react-native";
 import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { Avatar } from "./Avatar";
 import type { User } from "./MessageList";
+import Markdown from "react-native-markdown-display";
 
 interface MessageBubbleProps {
 	message: UIMessage;
@@ -19,6 +20,11 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 	user,
 	position,
 }) => {
+	const handleLinkPress = (url: string) => {
+		Linking.openURL(url);
+		return false;
+	};
+
 	return (
 		<View
 			style={[
@@ -43,12 +49,38 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 						end={{ x: 1, y: 1 }}
 						style={styles.gradient}
 					>
-						<Text style={[styles.text, styles.rightText]}>
+						<Markdown
+							style={{
+								body: {
+									...styles.text,
+									...styles.rightText,
+								},
+								link: {
+									...styles.link,
+									color: colors.white,
+								},
+							}}
+							onLinkPress={handleLinkPress}
+						>
 							{message.content}
-						</Text>
+						</Markdown>
 					</LinearGradient>
 				) : (
-					<Text style={[styles.text, styles.leftText]}>{message.content}</Text>
+					<Markdown
+						style={{
+							body: {
+								...styles.text,
+								...styles.leftText,
+							},
+							link: {
+								...styles.link,
+								color: colors.white,
+							},
+						}}
+						onLinkPress={handleLinkPress}
+					>
+						{message.content}
+					</Markdown>
 				)}
 			</View>
 
@@ -80,7 +112,7 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.darkGrey,
 		marginLeft: 8,
 		paddingHorizontal: 18,
-		paddingVertical: 14,
+		paddingVertical: 6,
 		borderBottomLeftRadius: 0,
 	},
 	rightBubble: {
@@ -91,7 +123,7 @@ const styles = StyleSheet.create({
 	},
 	gradient: {
 		paddingHorizontal: 18,
-		paddingVertical: 14,
+		paddingVertical: 6,
 	},
 	text: {
 		fontFamily: font.regular,
@@ -103,5 +135,8 @@ const styles = StyleSheet.create({
 	},
 	rightText: {
 		color: colors.white,
+	},
+	link: {
+		textDecorationLine: "underline" as const,
 	},
 });

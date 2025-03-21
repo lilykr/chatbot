@@ -9,7 +9,7 @@ interface ComposerInputProps {
 	value: string;
 	onChangeText: (text: string) => void;
 	onSubmit: () => void;
-	onCameraPress: () => void;
+	onCameraPress?: () => void;
 	isQuickReplies?: boolean;
 }
 
