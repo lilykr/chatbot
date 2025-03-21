@@ -1,4 +1,5 @@
 import { vec } from "@shopify/react-native-skia";
+import { BlurView } from "expo-blur";
 import React from "react";
 import {
 	Dimensions,
@@ -22,6 +23,9 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { LLK_AVATAR } from "../app/chatWithLily/[chatId]";
+import { CoonsPatchMeshGradient } from "../features/MeshGradient/components/CoonsPatchMeshGradient";
+
+const SCALE_TIMING = 200;
 
 const { width, height } = Dimensions.get("window");
 const CARD_WIDTH = 0.8 * width;
@@ -137,7 +141,7 @@ const AnimatedCard = () => {
 				{ perspective: 1500 },
 				{ rotateX: yAxisRotation },
 				{ rotateY: xAxisRotation },
-				{ scale: withTiming(imageScale.value) },
+				{ scale: withTiming(imageScale.value, { duration: SCALE_TIMING }) },
 				{ translateX: translationX },
 				{ translateY: translationY },
 			],
@@ -168,7 +172,11 @@ const AnimatedCard = () => {
 				{ perspective: 1500 },
 				{ translateX: translationX },
 				{ translateY: translationY },
-				{ scale: withTiming(imageScale.value * 0.95) },
+				{
+					scale: withTiming(imageScale.value * 0.95, {
+						duration: SCALE_TIMING,
+					}),
+				},
 			],
 		};
 	});
@@ -197,16 +205,31 @@ const AnimatedCard = () => {
 				{ perspective: 1500 },
 				{ translateX: translationX },
 				{ translateY: translationY },
-				{ scale: withTiming(imageScale.value * 0.9) },
+				{
+					scale: withTiming(imageScale.value * 0.9, { duration: SCALE_TIMING }),
+				},
 			],
 		};
 	});
 
 	return (
-		<GestureHandlerRootView style={styles.container}>
+		<GestureHandlerRootView style={styles.layout}>
+			<CoonsPatchMeshGradient rows={3} cols={3} colors={palette} play />
 			<View style={styles.container}>
 				<GestureDetector gesture={dragGesture}>
 					<AnimatedView style={[styles.card, animatedCard]}>
+						{/* <BlurView intensity={100} style={styles.card}> */}
+						<BlurView
+							intensity={100}
+							style={{
+								position: "absolute",
+								top: 0,
+								left: 0,
+								right: 0,
+								bottom: 0,
+								borderRadius: 30,
+							}}
+						/>
 						<AnimatedView style={[styles.imageContainer, animatedImage]}>
 							<Image
 								source={LLK_AVATAR}
@@ -241,6 +264,7 @@ const AnimatedCard = () => {
 								</AnimatedTouchableOpacity>
 							</View>
 						</View>
+						{/* </BlurView> */}
 					</AnimatedView>
 				</GestureDetector>
 			</View>
@@ -251,27 +275,42 @@ const AnimatedCard = () => {
 export default AnimatedCard;
 
 const styles = StyleSheet.create({
+	layout: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		zIndex: 2,
+	},
 	container: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		zIndex: 2,
 	},
 	card: {
+		zIndex: 100,
 		borderRadius: 30,
 		height: CARD_HEIGHT,
 		width: CARD_WIDTH,
-		backgroundColor: "#F6F3F0",
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
+		// backgroundColor: "#F6F3F0",
+		// shadowColor: "#000",
+		// shadowOffset: {
+		// 	width: 0,
+		// 	height: 2,
+		// },
+		boxShadow: "0px 0px 100px 0px rgba(0, 0, 0, 0.25)",
 		shadowOpacity: 0.25,
 		shadowRadius: 3.84,
 		elevation: 5,
+		// opacity: 0.5,
+		borderWidth: 1,
+		borderColor: "red",
 	},
 	imageContainer: {
+		zIndex: 101,
 		height: IMAGE_HEIGHT,
+		borderWidth: 1,
+		borderColor: "red",
 	},
 	contentContainer: {
 		height: "40%",
@@ -336,3 +375,22 @@ const styles = StyleSheet.create({
 		color: "white",
 	},
 });
+
+const palette = [
+	"#FEF8C4",
+	"#E1F1D5",
+	"#C4EBE5",
+	"#ECA171",
+	"#FFFCF3",
+	"#D4B3B7",
+	"#B5A8D2",
+	"#F068A1",
+	"#EDD9A2",
+	"#FEEFAB",
+	"#A666C0",
+	"#8556E5",
+	"#DC4C4C",
+	"#EC795A",
+	"#E599F0",
+	"#96EDF2",
+];
