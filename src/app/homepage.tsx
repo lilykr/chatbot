@@ -15,7 +15,7 @@ export default function Homepage() {
 			<MeshGradient />
 			<SafeAreaView style={styles.layout}>
 				<Text
-					weight="medium"
+					weight="semibold"
 					style={{
 						color: "white",
 						fontSize: 28,
