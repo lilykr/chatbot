@@ -6,7 +6,6 @@ import Animated, {
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Header } from "../components/Header";
 import { DebugVolume } from "../features/voice-mode/components/DebugVolume";
 import SpeechRecognition, {
@@ -20,14 +19,12 @@ import { useVolumeControl } from "../features/voice-mode/hooks/useVolumeControl"
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 // Add this constant at the top with other constants
 const enableDebug = false; // You can toggle this to show/hide debug controls
-const FINAL_POINT_COUNT = 2000; // Target number of points
+const FINAL_POINT_COUNT = 1000; // Target number of points
 const INITIAL_POINT_COUNT = 200; // Starting with fewer points for fast initial render
 
 export default function VoiceMode() {
-	const safeAreaInsets = useSafeAreaInsets();
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
-	const [isLoading, setIsLoading] = useState(true);
 	const opacity = useSharedValue(0);
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
@@ -105,9 +102,6 @@ export default function VoiceMode() {
 	const handleFirstRender = useCallback(() => {
 		if (renderedOnce.current) return;
 		renderedOnce.current = true;
-
-		// Hide loading indicator but keep the opacity at 0
-		setIsLoading(false);
 
 		// Increase the point count gradually
 		const increasePoints = () => {
