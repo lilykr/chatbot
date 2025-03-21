@@ -1,10 +1,9 @@
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
-import type { LegendListRef } from "@legendapp/list";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { type FlatList, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
@@ -20,16 +19,17 @@ import { titleSchema } from "../../api/generate-title+api";
 
 const AI_AVATAR = require("../../../../assets/avatar.png");
 
-storage.listen("history", (newValue) => {
-	console.log("history changed", JSON.stringify(newValue, null, 2));
-});
+// storage.clearAll();
+// storage.listen("history", (newValue) => {
+// 	console.log("history changed", JSON.stringify(newValue, null, 2));
+// });
 
 export default function Chat() {
 	const { chatId } = useLocalSearchParams();
 
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
-	const messageListRef = useRef<LegendListRef>(null);
+	const messageListRef = useRef<FlatList>(null);
 
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
@@ -48,7 +48,11 @@ export default function Chat() {
 			initialMessages: initialChat?.value.messages ?? [],
 		});
 
-	const { object: titleObject, submit: generateTitle } = useObject({
+	const {
+		object: titleObject,
+		submit: generateTitle,
+		isLoading: isGeneratingTitle,
+	} = useObject({
 		fetch: expoFetch as unknown as typeof globalThis.fetch,
 		api: "https://lilykr-chatbot.expo.app/api/generate-title",
 		schema: titleSchema,
@@ -75,6 +79,7 @@ export default function Chat() {
 		messages,
 		status,
 		initialChat,
+		isGeneratingTitle,
 		title: titleObject?.title,
 	});
 

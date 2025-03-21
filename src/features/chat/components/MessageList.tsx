@@ -1,8 +1,7 @@
-import { LegendList, type LegendListRef } from "@legendapp/list";
 import type { UIMessage } from "ai";
 import type React from "react";
 import { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../constants/colors";
 import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
@@ -16,7 +15,7 @@ export interface User {
 interface MessageListProps {
 	messages: UIMessage[];
 	users: User[];
-	listRef?: React.RefObject<LegendListRef>;
+	listRef?: React.RefObject<FlatList>;
 }
 
 export const MessageList: React.FC<MessageListProps> = ({
@@ -58,19 +57,17 @@ export const MessageList: React.FC<MessageListProps> = ({
 
 	return (
 		<View style={[styles.container]}>
-			<LegendList
+			<FlatList
 				ref={listRef}
-				data={messages}
+				data={messages.toReversed()}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
-				estimatedItemSize={100}
 				contentContainerStyle={{
-					paddingBottom: keyboardHeight,
+					paddingBottom: safeAreaInsets.top + 60,
 					paddingHorizontal: 10,
 				}}
-				// maintainVisibleContentPosition={true}
-				alignItemsAtEnd={true}
-				maintainScrollAtEnd={true}
+				inverted
+				keyboardDismissMode="interactive"
 			/>
 		</View>
 	);

@@ -10,11 +10,14 @@ export function usePersistChat(params: {
 	status: string;
 	initialChat: HistoryItem<"chat"> | undefined;
 	title: string | undefined;
+	isGeneratingTitle: boolean;
 }) {
-	const { chatId, messages, status, initialChat, title } = params;
+	const { chatId, messages, status, initialChat, title, isGeneratingTitle } =
+		params;
 
 	useEffect(() => {
 		// Only save if the last message is from the assistant
+		if (isGeneratingTitle) return;
 		if (messages.length === 0) return;
 		if (status === "streaming") return;
 		if (messages[messages.length - 1]?.role !== "assistant") return;
@@ -53,5 +56,5 @@ export function usePersistChat(params: {
 				},
 			]);
 		}
-	}, [initialChat, status, messages, title, chatId]);
+	}, [initialChat, status, messages, title, chatId, isGeneratingTitle]);
 }
