@@ -80,7 +80,7 @@ export const History = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 24,
+		marginTop: 8,
 	},
 	title: {
 		color: colors.white,
