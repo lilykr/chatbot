@@ -109,7 +109,7 @@ export default function Chat() {
 			]}
 			onLayout={handleLayout}
 		>
-			<Header title={titleObject?.title || "AI chatbot"} />
+			<Header title={titleObject?.title || "AI chatbot"} type="chat" />
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
 				<MessageList
 					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}

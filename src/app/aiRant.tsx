@@ -49,7 +49,7 @@ export default function AIRant() {
 				},
 			]}
 		>
-			<Header title="AI Rant Mode" />
+			<Header title="AI Rant Mode" type="rant" />
 
 			<View style={styles.content}>
 				{rantMessage !== undefined ? (

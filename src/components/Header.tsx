@@ -23,7 +23,7 @@ const LEFT_ELEMENTS_WIDTH = 72;
 interface HeaderProps {
 	title: string;
 	showBackButton?: boolean;
-	type?: "chat" | "chatWithLily" | "voice" | "rant";
+	type: "chat" | "chatWithLily" | "voice" | "rant";
 }
 
 export const Header = ({ title, showBackButton = true, type }: HeaderProps) => {

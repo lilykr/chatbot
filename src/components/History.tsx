@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
-import { storage } from "../services/storage";
+import { type HistoryItem, storage } from "../services/storage";
 import type { App } from "../types/apps";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
@@ -40,8 +40,13 @@ const getHistoryContent = (item: App) => {
 
 export const History = () => {
 	const [histories, setHistories] = useState(storage.get("history"));
-	const handleChatPress = (id: string) => {
-		router.push(`/chat/${id}`);
+
+	const handleChatPress = (item: HistoryItem) => {
+		if (item.type === "chatWithLily") {
+			router.push(`/chatWithLily/${item.id}`);
+		} else {
+			router.push(`/chat/${item.id}`);
+		}
 	};
 
 	useEffect(() => {
@@ -61,7 +66,7 @@ export const History = () => {
 					<BouncyPressable
 						key={item.id}
 						style={styles.historyItem}
-						onPress={() => handleChatPress(item.id)}
+						onPress={() => handleChatPress(item)}
 					>
 						<View style={styles.historyContainer}>
 							<Image
