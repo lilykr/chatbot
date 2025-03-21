@@ -1,8 +1,6 @@
-
-import * as SplashScreen from "expo-splash-screen";
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useState } from "react";
-import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChatSingleInput } from "../components/ChatSingleInput";
@@ -11,8 +9,6 @@ import { ResponseDisplay } from "../components/ResponseDisplay";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
 import { rantSchema } from "./api/chat-rant+api";
-import { ChatSingleInput } from "../components/ChatSingleInput";
-import { ResponseDisplay } from "../components/ResponseDisplay";
 
 export default function AIRant() {
 	const [input, setInput] = useState("");
