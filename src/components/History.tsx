@@ -5,10 +5,9 @@ import { Image, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
 import { type HistoryItem, storage } from "../services/storage";
 import type { App } from "../types/apps";
+import { getAppImage } from "../utils/getAppImage";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
-const LOGO = require("../../assets/avatar.png");
-const LLK_AVATAR = require("../../assets/llk.png");
 
 const getHistoryTitle = (type: App["type"]) => {
 	switch (type) {
@@ -73,10 +72,7 @@ export const History = () => {
 							onPress={() => handleChatPress(item)}
 						>
 							<View style={styles.historyContainer}>
-								<Image
-									source={item.type === "chatWithLily" ? LLK_AVATAR : LOGO}
-									style={styles.logo}
-								/>
+								<Image source={getAppImage(item.type)} style={styles.logo} />
 								<View style={styles.historyContent}>
 									<Text style={styles.historyTitle}>
 										{getHistoryTitle(item.type)}

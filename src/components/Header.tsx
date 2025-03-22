@@ -13,17 +13,18 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
+import type { AppType } from "../types/apps";
+import { getAppImage } from "../utils/getAppImage";
 import { Text } from "./Text";
 
-const LOGO = require("../../assets/avatar.png");
-const LLK_AVATAR = require("../../assets/llk.png");
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCROLL_DURATION = 3000; // Duration for one complete scroll
 const LEFT_ELEMENTS_WIDTH = 72;
+
 interface HeaderProps {
 	title: string;
 	showBackButton?: boolean;
-	type: "chat" | "chatWithLily" | "voice" | "rant";
+	type: AppType;
 	onClose?: () => void;
 }
 
@@ -91,10 +92,7 @@ export const Header = ({
 				</Pressable>
 			)}
 			<View style={styles.logoBorder}>
-				<Image
-					source={type === "chatWithLily" ? LLK_AVATAR : LOGO}
-					style={styles.logo}
-				/>
+				<Image source={getAppImage(type)} style={styles.logo} />
 			</View>
 			<View style={{ position: "relative" }}>
 				<View style={styles.titleContainer}>

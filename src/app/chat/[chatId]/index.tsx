@@ -23,6 +23,7 @@ import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
+import { IMAGES } from "../../../constants/images";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { useCamera } from "../../../features/chat/hooks/useCamera";
@@ -30,8 +31,6 @@ import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { VoiceMode } from "../../../features/voice-mode/VoiceMode";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
-
-export const AI_AVATAR = require("../../../../assets/avatar.png");
 
 // storage.clearAll();
 // storage.listen("history", (newValue) => {
@@ -207,11 +206,11 @@ export default function Chat() {
 		>
 			<Header
 				title={titleObject?.title || "AI chatbot"}
-				type={openVoiceMode ? "voice" : "chat"}
+				type={openVoiceMode ? "voiceMode" : "chat"}
 			/>
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
 				<MessageList
-					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
+					users={[{ _id: 1 }, { _id: 2, avatar: IMAGES.LOGO }]}
 					messages={messages}
 					listRef={messageListRef}
 				/>
