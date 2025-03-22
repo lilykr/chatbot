@@ -201,9 +201,14 @@ const SpeechRecognition = ({
 			}
 			// Otherwise show "Listening..."
 			return (
-				<Text style={styles.transcriptText}>
-					<Text style={{ opacity: 0.8 }}>Listening...</Text>
-				</Text>
+				<View style={styles.listeningContainer}>
+					<Text
+						style={[styles.transcriptText, { opacity: 0.8, marginBottom: 10 }]}
+					>
+						Listening...
+					</Text>
+					<Text style={styles.languageText}>Available language: English</Text>
+				</View>
 			);
 		}
 
@@ -228,6 +233,11 @@ const styles = StyleSheet.create({
 		lineHeight: 28,
 		textAlign: "center",
 		fontFamily: font.medium,
+	},
+	listeningContainer: {
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	languageText: {
 		color: "white",
