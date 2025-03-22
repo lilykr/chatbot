@@ -194,7 +194,7 @@ export function VoiceMode({
 			<VoiceControlButtons
 				onPress={handleToggleSpeechRecognition}
 				onClose={handleClose}
-				onRefresh={handleRefresh}
+				// onRefresh={handleRefresh}
 			/>
 			<View style={styles.overlay}>
 				{enableDebug && (

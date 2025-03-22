@@ -14,9 +14,18 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import ErrorBoundary from "react-native-error-boundary";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+	ReanimatedLogLevel,
+	configureReanimatedLogger,
+} from "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
+// This is the default configuration
+configureReanimatedLogger({
+	level: ReanimatedLogLevel.warn,
+	strict: false,
+});
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
