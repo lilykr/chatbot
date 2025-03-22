@@ -15,7 +15,7 @@
 		"build:web": "npx expo export -p web"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "^1.2.5",
+		"@ai-sdk/google": "^1.2.1",
 		"@ai-sdk/react": "^1.1.23",
 		"@expo-google-fonts/epilogue": "^0.2.3",
 		"@expo/metro-runtime": "~4.0.1",

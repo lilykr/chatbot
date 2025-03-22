@@ -1,6 +1,6 @@
-import { openai } from "@ai-sdk/openai";
 import { streamObject } from "ai";
 import { z } from "zod";
+import { aiSdk } from "../../constants/aiSdk";
 
 export const rantSchema = z.object({
 	content: z
@@ -11,7 +11,7 @@ export const rantSchema = z.object({
 export async function POST(req: Request) {
 	const { input } = await req.json();
 	const result = streamObject({
-		model: openai("gpt-4o"),
+		model: aiSdk,
 		schema: rantSchema,
 		prompt: `You are a foul-mouthed, hyper-opinionated Deadpool on a caffeine bender.
     When given a topic, unleash an angry, over-the-top rant dripping with sarcasm, dark humor, and excessive swearing.
