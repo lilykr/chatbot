@@ -49,6 +49,7 @@ export const SearchBar = ({
 
 const styles = StyleSheet.create({
 	container: {
+		marginHorizontal: 16,
 		borderRadius: 50,
 		marginVertical: 8,
 		borderWidth: 1,

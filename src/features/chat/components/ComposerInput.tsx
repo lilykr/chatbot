@@ -1,6 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { useEffect } from "react";
+import {
+	Animated,
+	StyleSheet,
+	TextInput,
+	View,
+	useAnimatedValue,
+} from "react-native";
+import { BouncyPressable } from "../../../components/BouncyPressable";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { SendButton } from "./SendButton";
@@ -24,6 +32,22 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	isQuickReplies = false,
 	inputRef,
 }) => {
+	const hasInput = value.trim().length > 0;
+	const voiceScaleAnim = useAnimatedValue(1);
+	const sendScaleAnim = useAnimatedValue(0);
+
+	useEffect(() => {
+		Animated.spring(voiceScaleAnim, {
+			toValue: hasInput ? 0 : 1,
+			useNativeDriver: true,
+		}).start();
+
+		Animated.spring(sendScaleAnim, {
+			toValue: hasInput ? 1 : 0,
+			useNativeDriver: true,
+		}).start();
+	}, [hasInput, voiceScaleAnim, sendScaleAnim]);
+
 	return (
 		<View style={styles.container}>
 			<View
@@ -39,13 +63,6 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 						<Ionicons name="camera" size={24} color={colors.white} />
 					</Pressable> */}
 
-				{/* Voice button */}
-				{onVoicePress && (
-					<Pressable onPress={onVoicePress} style={styles.voiceButton}>
-						<Ionicons name="mic" size={20} color={colors.white} />
-					</Pressable>
-				)}
-
 				<TextInput
 					keyboardAppearance="dark"
 					ref={inputRef}
@@ -59,7 +76,47 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					editable={!isQuickReplies}
 				/>
 
-				<SendButton onPress={onSubmit} isDisabled={value.trim().length === 0} />
+				<View style={styles.buttonContainer}>
+					{/* Voice button - shown when no input */}
+					{onVoicePress && (
+						<Animated.View
+							style={[
+								styles.voiceButtonContainer,
+								{
+									transform: [{ scale: voiceScaleAnim }],
+									zIndex: hasInput ? 1 : 2,
+									opacity: voiceScaleAnim,
+									pointerEvents: hasInput ? "none" : "auto",
+								},
+							]}
+						>
+							<BouncyPressable
+								onPress={onVoicePress}
+								style={styles.voiceButton}
+								disabled={hasInput}
+							>
+								<View style={styles.voiceButtonInner}>
+									<Ionicons name="mic" size={20} color={colors.white} />
+								</View>
+							</BouncyPressable>
+						</Animated.View>
+					)}
+
+					{/* Send button - shown when has input */}
+					<Animated.View
+						style={[
+							styles.sendButtonContainer,
+							{
+								transform: [{ scale: sendScaleAnim }],
+								zIndex: hasInput ? 2 : 1,
+								opacity: sendScaleAnim,
+								pointerEvents: hasInput ? "auto" : "none",
+							},
+						]}
+					>
+						<SendButton onPress={onSubmit} isDisabled={!hasInput} />
+					</Animated.View>
+				</View>
 			</View>
 		</View>
 	);
@@ -87,9 +144,36 @@ const styles = StyleSheet.create({
 		marginLeft: 12,
 		marginBottom: 10,
 	},
+	buttonContainer: {
+		position: "relative",
+		width: 32,
+		height: 32,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	voiceButtonContainer: {
+		position: "absolute",
+		width: 32,
+		height: 32,
+	},
+	sendButtonContainer: {
+		position: "absolute",
+		width: 32,
+		height: 32,
+	},
 	voiceButton: {
-		marginLeft: 12,
-		padding: 5,
+		width: 32,
+		height: 32,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	voiceButtonInner: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		backgroundColor: colors.vibrantPurple,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	input: {
 		flex: 1,

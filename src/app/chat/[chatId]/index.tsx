@@ -34,26 +34,24 @@ import { titleSchema } from "../../api/generate-title+api";
 export const AI_AVATAR = require("../../../../assets/avatar.png");
 
 // storage.clearAll();
-storage.listen("history", (newValue) => {
-	console.log("history changed", JSON.stringify(newValue, null, 2));
-});
+// storage.listen("history", (newValue) => {
+// 	console.log("history changed", JSON.stringify(newValue, null, 2));
+// });
 
 export default function Chat() {
-	const { chatId, voiceModePrompt, openVoiceMode } = useLocalSearchParams<{
+	const { chatId, openVoiceMode } = useLocalSearchParams<{
 		chatId: string | "new";
-		voiceModePrompt?: string;
 		openVoiceMode?: "true" | "false";
 	}>();
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<FlatList>(null);
 	const inputRef = useRef<TextInput>(null);
-	const hasAutoSentVoicePrompt = useRef(false);
 
 	// Add state to handle voice mode visibility
-	const [showVoiceMode, setShowVoiceMode] = useState(false);
+	const [showVoiceMode, setShowVoiceMode] = useState(openVoiceMode === "true");
 	// Animation value for voice mode opacity
-	const voiceModeOpacity = useSharedValue(0);
+	const voiceModeOpacity = useSharedValue(openVoiceMode === "true" ? 1 : 0);
 
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
@@ -94,46 +92,17 @@ export default function Chat() {
 	});
 
 	useEffect(() => {
-		if (chatId === "new" && !openVoiceMode) {
+		if (chatId === "new") {
 			router.setParams({ chatId: uuid.v4() });
-			setTimeout(() => {
-				InteractionManager.runAfterInteractions(() => {
-					inputRef.current?.focus();
-				});
-			}, 560);
+			if (!openVoiceMode) {
+				setTimeout(() => {
+					InteractionManager.runAfterInteractions(() => {
+						inputRef.current?.focus();
+					});
+				}, 560);
+			}
 		}
 	}, [chatId, openVoiceMode]);
-
-	// Auto-send voiceMode prompt if provided and no existing messages
-	useEffect(() => {
-		if (
-			voiceModePrompt &&
-			messages.length === 0 &&
-			status !== "streaming" &&
-			!hasAutoSentVoicePrompt.current
-		) {
-			hasAutoSentVoicePrompt.current = true;
-
-			handleInputChange({
-				target: { value: voiceModePrompt },
-			} as unknown as React.ChangeEvent<HTMLInputElement>);
-
-			// Use requestAnimationFrame instead of setTimeout for better timing
-			requestAnimationFrame(() => {
-				handleSubmit();
-				generateTitle({
-					messages: [{ role: "user", content: voiceModePrompt }],
-				});
-			});
-		}
-	}, [
-		voiceModePrompt,
-		messages.length,
-		status,
-		handleInputChange,
-		handleSubmit,
-		generateTitle,
-	]);
 
 	usePersistChat({
 		chatId: chatId as string,
@@ -142,7 +111,7 @@ export default function Chat() {
 		initialChat,
 		isGeneratingTitle,
 		title: titleObject?.title,
-		type: voiceModePrompt ? "voiceMode" : "chat",
+		type: openVoiceMode ? "voiceMode" : "chat",
 	});
 
 	const handleLayout = useCallback(() => {
@@ -168,20 +137,21 @@ export default function Chat() {
 
 	// Handle voice mode closing with animation
 	const handleVoiceModeClose = useCallback(() => {
+		if (messages.length === 0) {
+			router.back();
+			return;
+		}
 		voiceModeOpacity.value = withTiming(0, { duration: 500 }, () => {
 			// This runs after animation completes
 			runOnJS(setShowVoiceMode)(false);
 		});
-	}, [voiceModeOpacity]);
+	}, [voiceModeOpacity, messages]);
 
 	// Handle speech end from voice mode
 	const handleSpeechEnd = useCallback(
 		(transcript: string) => {
-			// Close voice mode with animation
-			handleVoiceModeClose();
-
 			// Process the transcript
-			if (transcript) {
+			if (transcript && transcript.trim().length > 0) {
 				// Directly append the message using the append function
 				append({
 					role: "user",
@@ -196,7 +166,7 @@ export default function Chat() {
 				}
 			}
 		},
-		[append, generateTitle, messages.length, handleVoiceModeClose],
+		[append, generateTitle, messages.length],
 	);
 
 	// Voice mode animated style
@@ -261,6 +231,7 @@ export default function Chat() {
 					<VoiceMode
 						onSpeechEnd={handleSpeechEnd}
 						onClose={handleVoiceModeClose}
+						autoStart={true}
 					/>
 				</Animated.View>
 			)}

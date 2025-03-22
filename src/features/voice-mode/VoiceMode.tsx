@@ -12,7 +12,6 @@ import SpeechRecognition, {
 	startSpeechRecognition,
 	stopSpeechRecognition,
 } from "./components/SpeechRecognition";
-import { VoiceControlButtons } from "./components/VoiceControlButtons";
 import { WaveMesh } from "./components/WaveMesh";
 import { useVolumeControl } from "./hooks/useVolumeControl";
 
@@ -25,17 +24,21 @@ const INITIAL_POINT_COUNT = 200; // Starting with fewer points for fast initial 
 export type VoiceModeProps = {
 	onSpeechEnd: (transcript: string) => void;
 	onClose: () => void;
+	autoStart?: boolean;
 };
 
-export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
+export function VoiceMode({
+	onSpeechEnd,
+	onClose,
+	autoStart = false,
+}: VoiceModeProps) {
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 	const opacity = useSharedValue(0);
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
-
-	// Track current transcript
-	const [transcript, setTranscript] = useState("");
+	const [isSpeechActive, setIsSpeechActive] = useState(autoStart);
+	const [isClosing, setIsClosing] = useState(false);
 
 	// Track the actual point count as a state value for passing to WaveMesh
 	const [currentPointCount, setCurrentPointCount] =
@@ -84,15 +87,20 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 	// Pass the volume shared value to the hook
 	const {
 		isManualMode,
-		isRecognizing,
+		permissionError,
 		toggleManualMode,
-		setRecognizingState,
+		setPermissionErrorState,
 		handleManualVolumeChange,
+		cleanup: volumeControlCleanup,
 	} = useVolumeControl({ volume });
 
 	// Handle speech recognition end
 	const handleSpeechEnd = (transcript: string) => {
-		setTranscript(transcript);
+		// Don't send the transcript if we're deliberately closing
+		if (isClosing) {
+			return;
+		}
+
 		if (onSpeechEnd) {
 			onSpeechEnd(transcript);
 		}
@@ -100,29 +108,107 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	// Handle toggle of speech recognition
 	const handleToggleSpeechRecognition = async () => {
-		if (isRecognizing) {
+		if (isSpeechActive) {
+			// Make sure to stop speech recognition and clean up
 			stopSpeechRecognition();
-			setRecognizingState(false);
+			onClose();
+			setIsSpeechActive(false);
 		} else {
-			const started = await startSpeechRecognition();
-			setRecognizingState(started);
+			// First, ensure we've cleaned up any previous recording
+			volumeControlCleanup();
+
+			try {
+				const started = await startSpeechRecognition();
+				if (!started) {
+					setPermissionErrorState("Failed to start speech recognition");
+				} else {
+					setIsSpeechActive(true);
+					setPermissionErrorState(null);
+					// If successful, ensure manual mode is off
+					toggleManualMode(false);
+				}
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : String(error);
+				setPermissionErrorState(errorMessage);
+				setIsSpeechActive(false);
+			}
 		}
 	};
 
 	// Handle refresh button press to reset transcript
 	const handleRefresh = useCallback(() => {
-		setTranscript("");
-		if (onSpeechEnd) {
-			onSpeechEnd("");
+		// Set a refreshing flag to prevent new transcripts from being processed
+		setIsClosing(true);
+
+		// Stop the current speech recognition session
+		if (isSpeechActive) {
+			stopSpeechRecognition();
 		}
-	}, [onSpeechEnd]);
+
+		// Clean up any recording resources
+		volumeControlCleanup();
+
+		// Short delay to ensure everything is cleaned up
+		setTimeout(() => {
+			// Reset the closing flag
+			setIsClosing(false);
+
+			// Clear the transcript by calling onSpeechEnd with empty string
+			if (onSpeechEnd) {
+				onSpeechEnd("");
+			}
+
+			// If speech was active before, restart it
+			if (isSpeechActive) {
+				const restartSpeechRecognition = async () => {
+					// Ensure we've cleaned up any previous recording
+					volumeControlCleanup();
+
+					try {
+						const started = await startSpeechRecognition();
+						if (!started) {
+							setPermissionErrorState("Failed to restart speech recognition");
+							setIsSpeechActive(false);
+						} else {
+							setPermissionErrorState(null);
+							// If successful, ensure manual mode is off
+							toggleManualMode(false);
+						}
+					} catch (error) {
+						const errorMessage =
+							error instanceof Error ? error.message : String(error);
+						setPermissionErrorState(errorMessage);
+						setIsSpeechActive(false);
+					}
+				};
+
+				restartSpeechRecognition();
+			}
+		}, 300); // longer delay to ensure clean restart
+	}, [
+		onSpeechEnd,
+		isSpeechActive,
+		volumeControlCleanup,
+		toggleManualMode,
+		setPermissionErrorState,
+	]);
 
 	// Handle close button press
 	const handleClose = useCallback(() => {
+		// Set the closing flag to prevent sending the transcript
+		setIsClosing(true);
+
+		// Ensure all recording and audio resources are cleaned up
+		if (isSpeechActive) {
+			stopSpeechRecognition();
+		}
+		volumeControlCleanup();
+
 		if (onClose) {
 			onClose();
 		}
-	}, [onClose]);
+	}, [onClose, isSpeechActive, volumeControlCleanup]);
 
 	// Handle first render completion
 	const handleFirstRender = useCallback(() => {
@@ -158,8 +244,55 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 		console.log("VoiceMode component mounted");
 		// After a small delay for the initial render with minimal points
 		const timer = setTimeout(handleFirstRender, 200);
-		return () => clearTimeout(timer);
-	}, [handleFirstRender]);
+
+		// Start recording automatically if autoStart is true
+		if (autoStart) {
+			const autoStartRecording = async () => {
+				// Ensure we've cleaned up any previous recording
+				volumeControlCleanup();
+
+				try {
+					const started = await startSpeechRecognition();
+					if (!started) {
+						setPermissionErrorState("Failed to start speech recognition");
+						setIsSpeechActive(false);
+					} else {
+						setIsSpeechActive(true);
+						setPermissionErrorState(null);
+						// If successful, ensure manual mode is off
+						toggleManualMode(false);
+					}
+				} catch (error) {
+					const errorMessage =
+						error instanceof Error ? error.message : String(error);
+					setPermissionErrorState(errorMessage);
+					setIsSpeechActive(false);
+				}
+			};
+
+			// Wait a bit longer to ensure everything is ready
+			setTimeout(autoStartRecording, 500);
+		}
+
+		return () => {
+			clearTimeout(timer);
+			// Make sure to stop speech recognition when unmounting
+			if (isSpeechActive) {
+				stopSpeechRecognition();
+			}
+			// Always clean up recording and audio when unmounting
+			volumeControlCleanup();
+			// Reset closing flag when unmounting
+			setIsClosing(false);
+		};
+	}, [
+		handleFirstRender,
+		autoStart,
+		toggleManualMode,
+		setPermissionErrorState,
+		isSpeechActive,
+		volumeControlCleanup,
+	]);
 
 	return (
 		<View style={styles.layout}>
@@ -176,14 +309,15 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 			</Animated.View>
 
 			<SpeechRecognition
-				isRecognizing={isRecognizing}
+				isActive={isSpeechActive}
+				permissionError={permissionError}
 				onEnd={handleSpeechEnd}
-			/>
-			<VoiceControlButtons
-				onPress={handleToggleSpeechRecognition}
+				isClosing={isClosing}
+				onToggleSpeech={handleToggleSpeechRecognition}
 				onClose={handleClose}
 				onRefresh={handleRefresh}
 			/>
+
 			<View style={styles.overlay}>
 				{enableDebug && (
 					<DebugVolume

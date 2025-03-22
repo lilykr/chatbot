@@ -32,6 +32,7 @@ export default function Homepage() {
 							justifyContent: "flex-start",
 							marginTop: 16,
 							marginBottom: 36,
+							paddingHorizontal: 16,
 						}}
 					>
 						<RoundButton
@@ -48,6 +49,7 @@ export default function Homepage() {
 							fontSize: 28,
 							width: "70%",
 							marginBottom: 8,
+							paddingHorizontal: 16,
 						}}
 					>
 						Create, explore, be inspired
@@ -91,7 +93,6 @@ export default function Homepage() {
 
 const styles = StyleSheet.create({
 	layout: {
-		paddingHorizontal: 16,
 		zIndex: 1,
 		flex: 1,
 	},
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
 		paddingRight: 16,
 	},
 	scrollView: {
-		marginHorizontal: -16, // Negates the parent's horizontal margin
 		paddingHorizontal: 16,
 		minHeight: 200,
 	},
