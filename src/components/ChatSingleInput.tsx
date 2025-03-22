@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../constants/colors";
-import { BouncyPressable } from "./BouncyPressable";
+import { GradientButton } from "./GradientButton";
 import { Text } from "./Text";
 
 interface Props {
@@ -27,6 +27,7 @@ export function ChatSingleInput({
 			<Text style={styles.prompt}>{prompt}</Text>
 			<View style={styles.inputWrapper}>
 				<TextInput
+					autoFocus
 					style={styles.input}
 					value={input}
 					onChangeText={onInputChange}
@@ -36,11 +37,7 @@ export function ChatSingleInput({
 					onSubmitEditing={onSubmit}
 					ref={inputRef}
 				/>
-				<BouncyPressable style={styles.submitButton} onPress={onSubmit}>
-					<Text style={{ color: colors.white, fontSize: 18 }} weight="semibold">
-						{submitButtonText}
-					</Text>
-				</BouncyPressable>
+				<GradientButton text={submitButtonText} onPress={onSubmit} />
 			</View>
 		</View>
 	);
@@ -49,7 +46,8 @@ export function ChatSingleInput({
 const styles = StyleSheet.create({
 	inputContainer: {
 		width: "100%",
-		alignItems: "center",
+		paddingHorizontal: 20,
+		paddingTop: 100,
 	},
 	prompt: {
 		color: colors.white,
@@ -70,13 +68,5 @@ const styles = StyleSheet.create({
 		minHeight: 100,
 		textAlignVertical: "top",
 		marginBottom: 15,
-	},
-	submitButton: {
-		backgroundColor: colors.vibrantPurple,
-		color: colors.white,
-		padding: 15,
-		borderRadius: 15,
-		textAlign: "center",
-		fontSize: 16,
 	},
 });

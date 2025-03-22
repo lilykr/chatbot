@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
-import { BouncyPressable } from "./BouncyPressable";
+import { GradientButton } from "./GradientButton";
 import { Text } from "./Text";
 
 interface ResponseDisplayProps {
@@ -42,11 +42,7 @@ export function ResponseDisplay({
 					</View>
 				)}
 			</ScrollView>
-			<BouncyPressable style={styles.newResponseButton} onPress={onNewResponse}>
-				<Text weight="semibold" style={{ fontSize: 16, color: colors.white }}>
-					{newResponseButtonText}
-				</Text>
-			</BouncyPressable>
+			<GradientButton onPress={onNewResponse} text={newResponseButtonText} />
 		</View>
 	);
 }
@@ -56,6 +52,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		padding: 20,
 		flex: 1,
+		paddingTop: 56,
 	},
 	scrollView: {
 		flex: 1,
