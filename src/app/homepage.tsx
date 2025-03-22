@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CardButton } from "../components/CardButton";
@@ -13,6 +13,35 @@ import { MeshGradient } from "../features/MeshGradient/MeshGradient";
 
 export default function Homepage() {
 	const insets = useSafeAreaInsets();
+	const [searchQuery, setSearchQuery] = useState("");
+
+	// Define the card data
+	const cards = [
+		{
+			text: "AI text writer",
+			onPress: () => router.push("/chat/new"),
+		},
+		{
+			text: "Lisa-Lou's chatbot",
+			onPress: () => router.push("/chatWithLily/new"),
+		},
+		{
+			text: "AI Voice mode",
+			onPress: () => router.push("/chat/new?openVoiceMode=true"),
+		},
+		{
+			text: "AI Rant",
+			onPress: () => router.push("/aiRant/new"),
+		},
+	];
+
+	// Filter cards based on search query
+	const filteredCards = searchQuery
+		? cards.filter((card) =>
+				card.text.toLowerCase().includes(searchQuery.toLowerCase()),
+			)
+		: cards;
+
 	return (
 		<>
 			<MeshGradient />
@@ -54,7 +83,7 @@ export default function Homepage() {
 					>
 						Create, explore, be inspired
 					</Text>
-					<SearchBar />
+					<SearchBar onSearch={setSearchQuery} />
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
@@ -62,26 +91,14 @@ export default function Homepage() {
 						style={styles.scrollView}
 					>
 						<View style={styles.buttonContainer}>
-							<CardButton
-								text="AI text writer"
-								borderColor={colors.lightGrey}
-								onPress={() => router.push("/chat/new")}
-							/>
-							<CardButton
-								text="Lisa-Lou's chatbot"
-								borderColor={colors.lightGrey}
-								onPress={() => router.push("/chatWithLily/new")}
-							/>
-							<CardButton
-								text="AI Voice mode"
-								borderColor={colors.lightGrey}
-								onPress={() => router.push("/chat/new?openVoiceMode=true")}
-							/>
-							<CardButton
-								text="AI Rant"
-								borderColor={colors.lightGrey}
-								onPress={() => router.push("/aiRant/new")}
-							/>
+							{filteredCards.map((card) => (
+								<CardButton
+									key={card.text}
+									text={card.text}
+									borderColor={colors.lightGrey}
+									onPress={card.onPress}
+								/>
+							))}
 						</View>
 					</ScrollView>
 					<History />
