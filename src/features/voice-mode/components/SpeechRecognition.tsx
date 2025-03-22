@@ -59,16 +59,28 @@ export const startSpeechRecognition = async () => {
 export const stopSpeechRecognition = (
 	onTranscriptComplete?: (transcript: string) => void,
 ) => {
-	// Stop speech recognition
-	ExpoSpeechRecognitionModule.stop();
-	// The callback will be called by the component via the onEnd prop
+	try {
+		// First try to abort any existing speech recognition
+		ExpoSpeechRecognitionModule.abort();
+
+		// Then explicitly stop it
+		ExpoSpeechRecognitionModule.stop();
+
+		// The callback will be called by the component via the onEnd prop
+		console.log("Speech recognition stopped");
+	} catch (error) {
+		// If there's an error, log it but don't throw to avoid crashing
+		console.error("Error stopping speech recognition:", error);
+	}
 };
 
 const SpeechRecognition = ({
-	isRecognizing,
+	isActive,
+	permissionError,
 	onEnd,
 }: {
-	isRecognizing: boolean;
+	isActive: boolean;
+	permissionError: string | null;
 	onEnd?: (transcript: string) => void;
 }) => {
 	const [transcript, setTranscript] = useState("");
@@ -77,8 +89,7 @@ const SpeechRecognition = ({
 	);
 	const [isLoading, setIsLoading] = useState(true);
 	const isWeb = Platform.OS === "web";
-	const [previousRecognizingState, setPreviousRecognizingState] =
-		useState(false);
+	const [previousActiveState, setPreviousActiveState] = useState(false);
 
 	// Check if English is available
 	useEffect(() => {
@@ -134,7 +145,7 @@ const SpeechRecognition = ({
 
 	// Handle end event to show alert with final transcript and reset
 	useSpeechRecognitionEvent("end", () => {
-		if (isRecognizing && transcript) {
+		if (isActive && transcript) {
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
 				onEnd(transcript);
@@ -145,10 +156,10 @@ const SpeechRecognition = ({
 		}
 	});
 
-	// Track changes in isRecognizing to detect when user stops recognition
+	// Track changes in isActive to detect when user stops recognition
 	useEffect(() => {
-		// If we were recognizing before and now we're not, and we have a transcript
-		if (previousRecognizingState && !isRecognizing && transcript) {
+		// If we were active before and now we're not, and we have a transcript
+		if (previousActiveState && !isActive && transcript) {
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
 				onEnd(transcript);
@@ -158,23 +169,38 @@ const SpeechRecognition = ({
 			setTranscript("");
 		}
 
-		// If we weren't recognizing before and now we are, reset transcript
-		if (!previousRecognizingState && isRecognizing) {
+		// If we weren't active before and now we are, reset transcript
+		if (!previousActiveState && isActive) {
 			setTranscript("");
 		}
 
 		// Update previous state
-		setPreviousRecognizingState(isRecognizing);
-	}, [isRecognizing, previousRecognizingState, transcript, onEnd]);
+		setPreviousActiveState(isActive);
+	}, [isActive, previousActiveState, transcript, onEnd]);
 
 	// Clean up when the component unmounts
 	useEffect(() => {
 		return () => {
-			ExpoSpeechRecognitionModule.abort();
+			try {
+				// First abort any ongoing speech recognition
+				ExpoSpeechRecognitionModule.abort();
+
+				// Then explicitly stop it
+				ExpoSpeechRecognitionModule.stop();
+
+				console.log("Speech recognition cleanup on unmount");
+			} catch (error) {
+				console.error("Error in speech recognition cleanup:", error);
+			}
 		};
 	}, []);
 
 	const renderContent = () => {
+		// If there's a permission error, show it
+		if (permissionError) {
+			return <Text style={styles.errorText}>{permissionError}</Text>;
+		}
+
 		// If we're loading, show loading message
 		if (isLoading) {
 			return (
@@ -194,7 +220,7 @@ const SpeechRecognition = ({
 		}
 
 		// If recognition is active
-		if (isRecognizing) {
+		if (isActive) {
 			// If there's a transcript, show it
 			if (transcript) {
 				return <Text style={styles.transcriptText}>{transcript}</Text>;
@@ -245,6 +271,13 @@ const styles = StyleSheet.create({
 		opacity: 0.8,
 		fontFamily: font.regular,
 		textAlign: "center",
+	},
+	errorText: {
+		color: "#FF6B6B", // Red error color
+		fontSize: 16,
+		textAlign: "center",
+		fontFamily: font.medium,
+		padding: 10,
 	},
 });
 

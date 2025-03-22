@@ -28,7 +28,7 @@ interface WebAudioContextType {
 export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 	const [recording, setRecording] = useState<Audio.Recording | null>(null);
 	const [isManualMode, setIsManualMode] = useState(true);
-	const [isRecognizing, setIsRecognizing] = useState(false);
+	const [permissionError, setPermissionError] = useState<string | null>(null);
 	const isMountedRef = useRef(true);
 	const isRecordingSetupInProgressRef = useRef(false);
 	const volumeRef = useRef(volume);
@@ -360,29 +360,65 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 		(enabled: boolean) => {
 			setIsManualMode(enabled);
 
-			// If switching to manual mode, stop speech recognition
-			if (enabled && isRecognizing) {
-				setIsRecognizing(false);
+			// Reset any permission errors when switching to manual mode
+			if (enabled) {
+				setPermissionError(null);
+
+				// Make sure to stop any active recording when switching to manual mode
+				if (recording) {
+					stopAndUnloadRecording(recording).catch((err) =>
+						console.error(
+							"Error stopping recording when toggling manual mode:",
+							err,
+						),
+					);
+				}
 			}
 		},
-		[isRecognizing],
+		[recording, stopAndUnloadRecording],
 	);
 
-	// Toggle speech recognition state
-	const setRecognizingState = useCallback((recognizing: boolean) => {
-		setIsRecognizing(recognizing);
+	// Handle permission errors
+	const setPermissionErrorState = useCallback(
+		(error: string | null) => {
+			setPermissionError(error);
 
-		// If starting recognition, ensure we're not in manual mode
-		if (recognizing) {
-			setIsManualMode(false);
+			// If there's an error, switch to manual mode
+			if (error) {
+				setIsManualMode(true);
+
+				// Also make sure to stop any recording if there's an error
+				if (recording) {
+					stopAndUnloadRecording(recording).catch((err) =>
+						console.error("Error stopping recording on error:", err),
+					);
+				}
+			}
+		},
+		[recording, stopAndUnloadRecording],
+	);
+
+	// Add explicit cleanup function to be called when voice mode is closed
+	const cleanup = useCallback(() => {
+		// Clean up recording
+		if (recording) {
+			stopAndUnloadRecording(recording).catch((err) =>
+				console.error("Error in cleanup:", err),
+			);
 		}
-	}, []);
+
+		// Clean up Web Audio if on web
+		if (Platform.OS === "web") {
+			cleanupWebAudio();
+		}
+	}, [recording, stopAndUnloadRecording, cleanupWebAudio]);
 
 	return {
 		isManualMode,
-		isRecognizing,
+		permissionError,
 		toggleManualMode,
-		setRecognizingState,
+		setPermissionErrorState,
 		handleManualVolumeChange,
+		cleanup,
 	};
 };

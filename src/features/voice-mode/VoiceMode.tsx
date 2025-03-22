@@ -38,6 +38,7 @@ export function VoiceMode({
 	const opacity = useSharedValue(0);
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
+	const [isSpeechActive, setIsSpeechActive] = useState(autoStart);
 
 	// Track the actual point count as a state value for passing to WaveMesh
 	const [currentPointCount, setCurrentPointCount] =
@@ -86,10 +87,11 @@ export function VoiceMode({
 	// Pass the volume shared value to the hook
 	const {
 		isManualMode,
-		isRecognizing,
+		permissionError,
 		toggleManualMode,
-		setRecognizingState,
+		setPermissionErrorState,
 		handleManualVolumeChange,
+		cleanup: volumeControlCleanup,
 	} = useVolumeControl({ volume });
 
 	// Handle speech recognition end
@@ -101,12 +103,30 @@ export function VoiceMode({
 
 	// Handle toggle of speech recognition
 	const handleToggleSpeechRecognition = async () => {
-		if (isRecognizing) {
+		if (isSpeechActive) {
+			// Make sure to stop speech recognition and clean up
 			stopSpeechRecognition();
-			setRecognizingState(false);
+			setIsSpeechActive(false);
 		} else {
-			const started = await startSpeechRecognition();
-			setRecognizingState(started);
+			// First, ensure we've cleaned up any previous recording
+			volumeControlCleanup();
+
+			try {
+				const started = await startSpeechRecognition();
+				if (!started) {
+					setPermissionErrorState("Failed to start speech recognition");
+				} else {
+					setIsSpeechActive(true);
+					setPermissionErrorState(null);
+					// If successful, ensure manual mode is off
+					toggleManualMode(false);
+				}
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : String(error);
+				setPermissionErrorState(errorMessage);
+				setIsSpeechActive(false);
+			}
 		}
 	};
 
@@ -119,10 +139,16 @@ export function VoiceMode({
 
 	// Handle close button press
 	const handleClose = useCallback(() => {
+		// Ensure all recording and audio resources are cleaned up
+		if (isSpeechActive) {
+			stopSpeechRecognition();
+		}
+		volumeControlCleanup();
+
 		if (onClose) {
 			onClose();
 		}
-	}, [onClose]);
+	}, [onClose, isSpeechActive, volumeControlCleanup]);
 
 	// Handle first render completion
 	const handleFirstRender = useCallback(() => {
@@ -162,16 +188,49 @@ export function VoiceMode({
 		// Start recording automatically if autoStart is true
 		if (autoStart) {
 			const autoStartRecording = async () => {
-				const started = await startSpeechRecognition();
-				setRecognizingState(started);
+				// Ensure we've cleaned up any previous recording
+				volumeControlCleanup();
+
+				try {
+					const started = await startSpeechRecognition();
+					if (!started) {
+						setPermissionErrorState("Failed to start speech recognition");
+						setIsSpeechActive(false);
+					} else {
+						setIsSpeechActive(true);
+						setPermissionErrorState(null);
+						// If successful, ensure manual mode is off
+						toggleManualMode(false);
+					}
+				} catch (error) {
+					const errorMessage =
+						error instanceof Error ? error.message : String(error);
+					setPermissionErrorState(errorMessage);
+					setIsSpeechActive(false);
+				}
 			};
 
 			// Wait a bit longer to ensure everything is ready
 			setTimeout(autoStartRecording, 500);
 		}
 
-		return () => clearTimeout(timer);
-	}, [handleFirstRender, autoStart, setRecognizingState]);
+		return () => {
+			clearTimeout(timer);
+			// Make sure to stop speech recognition when unmounting
+			if (isSpeechActive) {
+				stopSpeechRecognition();
+			}
+			// Always clean up recording and audio when unmounting
+			volumeControlCleanup();
+		};
+	}, [
+		handleFirstRender,
+		autoStart,
+		toggleManualMode,
+		setPermissionErrorState,
+		isSpeechActive,
+		volumeControlCleanup,
+	]);
 
 	return (
 		<View style={styles.layout}>
@@ -188,7 +247,8 @@ export function VoiceMode({
 			</Animated.View>
 
 			<SpeechRecognition
-				isRecognizing={isRecognizing}
+				isActive={isSpeechActive}
+				permissionError={permissionError}
 				onEnd={handleSpeechEnd}
 			/>
 			<VoiceControlButtons
