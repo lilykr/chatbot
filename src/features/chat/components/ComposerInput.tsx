@@ -1,5 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { SendButton } from "./SendButton";
@@ -9,6 +10,7 @@ interface ComposerInputProps {
 	onChangeText: (text: string) => void;
 	onSubmit: () => void;
 	onCameraPress?: () => void;
+	onVoicePress?: () => void;
 	isQuickReplies?: boolean;
 	inputRef?: React.RefObject<TextInput>;
 }
@@ -18,6 +20,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	onChangeText,
 	onSubmit,
 	onCameraPress,
+	onVoicePress,
 	isQuickReplies = false,
 	inputRef,
 }) => {
@@ -31,9 +34,17 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					},
 				]}
 			>
+				{/* Camera button */}
 				{/* <Pressable onPress={onCameraPress} style={styles.cameraButton}>
 						<Ionicons name="camera" size={24} color={colors.white} />
 					</Pressable> */}
+
+				{/* Voice button */}
+				{onVoicePress && (
+					<Pressable onPress={onVoicePress} style={styles.voiceButton}>
+						<Ionicons name="mic" size={20} color={colors.white} />
+					</Pressable>
+				)}
 
 				<TextInput
 					keyboardAppearance="dark"
@@ -75,6 +86,10 @@ const styles = StyleSheet.create({
 	cameraButton: {
 		marginLeft: 12,
 		marginBottom: 10,
+	},
+	voiceButton: {
+		marginLeft: 12,
+		padding: 5,
 	},
 	input: {
 		flex: 1,

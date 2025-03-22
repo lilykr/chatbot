@@ -2,7 +2,7 @@ import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	type FlatList,
 	InteractionManager,
@@ -10,6 +10,12 @@ import {
 	type TextInput,
 	View,
 } from "react-native";
+import Animated, {
+	runOnJS,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
@@ -20,6 +26,7 @@ import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { useCamera } from "../../../features/chat/hooks/useCamera";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { VoiceMode } from "../../../features/voice-mode/VoiceMode";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 import { apiUrl } from "../../../constants/apiUrl";
@@ -32,11 +39,21 @@ storage.listen("history", (newValue) => {
 });
 
 export default function Chat() {
-	const { chatId } = useLocalSearchParams();
+	const { chatId, voiceModePrompt, openVoiceMode } = useLocalSearchParams<{
+		chatId: string | "new";
+		voiceModePrompt?: string;
+		openVoiceMode?: "true" | "false";
+	}>();
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<FlatList>(null);
 	const inputRef = useRef<TextInput>(null);
+	const hasAutoSentVoicePrompt = useRef(false);
+
+	// Add state to handle voice mode visibility
+	const [showVoiceMode, setShowVoiceMode] = useState(false);
+	// Animation value for voice mode opacity
+	const voiceModeOpacity = useSharedValue(0);
 
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
@@ -70,7 +87,7 @@ export default function Chat() {
 	});
 
 	useEffect(() => {
-		if (chatId === "new") {
+		if (chatId === "new" && !openVoiceMode) {
 			router.setParams({ chatId: uuid.v4() });
 			setTimeout(() => {
 				InteractionManager.runAfterInteractions(() => {
@@ -78,7 +95,38 @@ export default function Chat() {
 				});
 			}, 560);
 		}
-	}, [chatId]);
+	}, [chatId, openVoiceMode]);
+
+	// Auto-send voiceMode prompt if provided and no existing messages
+	useEffect(() => {
+		if (
+			voiceModePrompt &&
+			messages.length === 0 &&
+			status !== "streaming" &&
+			!hasAutoSentVoicePrompt.current
+		) {
+			hasAutoSentVoicePrompt.current = true;
+
+			handleInputChange({
+				target: { value: voiceModePrompt },
+			} as unknown as React.ChangeEvent<HTMLInputElement>);
+
+			// Use requestAnimationFrame instead of setTimeout for better timing
+			requestAnimationFrame(() => {
+				handleSubmit();
+				generateTitle({
+					messages: [{ role: "user", content: voiceModePrompt }],
+				});
+			});
+		}
+	}, [
+		voiceModePrompt,
+		messages.length,
+		status,
+		handleInputChange,
+		handleSubmit,
+		generateTitle,
+	]);
 
 	usePersistChat({
 		chatId: chatId as string,
@@ -87,7 +135,7 @@ export default function Chat() {
 		initialChat,
 		isGeneratingTitle,
 		title: titleObject?.title,
-		type: "chat",
+		type: voiceModePrompt ? "voiceMode" : "chat",
 	});
 
 	const handleLayout = useCallback(() => {
@@ -102,6 +150,74 @@ export default function Chat() {
 		}
 	}, [input, handleSubmit, messages, generateTitle]);
 
+	// Handle voice mode opening
+	useEffect(() => {
+		if (openVoiceMode === "true") {
+			// Show voice mode with animation
+			setShowVoiceMode(true);
+			voiceModeOpacity.value = withTiming(1, { duration: 500 });
+		}
+	}, [openVoiceMode, voiceModeOpacity]);
+
+	// Handle voice mode closing with animation
+	const handleVoiceModeClose = useCallback(() => {
+		voiceModeOpacity.value = withTiming(0, { duration: 500 }, () => {
+			// This runs after animation completes
+			runOnJS(setShowVoiceMode)(false);
+		});
+	}, [voiceModeOpacity]);
+
+	// Handle speech end from voice mode
+	const handleSpeechEnd = useCallback(
+		(transcript: string) => {
+			// Close voice mode with animation
+			handleVoiceModeClose();
+
+			// Process the transcript
+			if (transcript) {
+				handleInputChange({
+					target: { value: transcript },
+				} as unknown as React.ChangeEvent<HTMLInputElement>);
+
+				// Use setTimeout to ensure the input is set before submitting
+				setTimeout(() => {
+					handleSubmit();
+					if (messages.length === 0) {
+						generateTitle({
+							messages: [{ role: "user", content: transcript }],
+						});
+					}
+				}, 100);
+			}
+		},
+		[
+			handleInputChange,
+			handleSubmit,
+			generateTitle,
+			messages.length,
+			handleVoiceModeClose,
+		],
+	);
+
+	// Voice mode animated style
+	const voiceModeAnimatedStyle = useAnimatedStyle(() => {
+		return {
+			opacity: voiceModeOpacity.value,
+			position: "absolute",
+			top: 0,
+			left: 0,
+			right: 0,
+			bottom: 0,
+			zIndex: 100,
+		};
+	});
+
+	// Function to open voice mode manually
+	const openVoiceModeManually = useCallback(() => {
+		setShowVoiceMode(true);
+		voiceModeOpacity.value = withTiming(1, { duration: 500 });
+	}, [voiceModeOpacity]);
+
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
 	return (
@@ -115,7 +231,12 @@ export default function Chat() {
 			]}
 			onLayout={handleLayout}
 		>
-			<Header title={titleObject?.title || "AI chatbot"} type="chat" />
+			<Header
+				title={
+					titleObject?.title || openVoiceMode ? "AI Voice Mode" : "AI chatbot"
+				}
+				type={openVoiceMode ? "voice" : "chat"}
+			/>
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
 				<MessageList
 					users={[{ _id: 1 }, { _id: 2, avatar: AI_AVATAR }]}
@@ -132,8 +253,19 @@ export default function Chat() {
 					}
 					onSubmit={handleSubmitInput}
 					onCameraPress={openCamera}
+					onVoicePress={openVoiceModeManually}
 				/>
 			</KeyboardAvoidingView>
+
+			{/* Add Voice Mode overlay */}
+			{showVoiceMode && (
+				<Animated.View style={voiceModeAnimatedStyle}>
+					<VoiceMode
+						onSpeechEnd={handleSpeechEnd}
+						onClose={handleVoiceModeClose}
+					/>
+				</Animated.View>
+			)}
 
 			{/* {showCamera && (
 				<View style={StyleSheet.absoluteFill}>

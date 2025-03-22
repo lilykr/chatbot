@@ -14,7 +14,7 @@ const getHistoryTitle = (type: App["type"]) => {
 	switch (type) {
 		case "chat":
 			return "AI Chatbot";
-		case "voice":
+		case "voiceMode":
 			return "Voice Mode";
 		case "rant":
 			return "AI Rant";
@@ -28,7 +28,7 @@ const getHistoryTitle = (type: App["type"]) => {
 const getHistoryContent = (item: App) => {
 	switch (item.type) {
 		case "chat":
-		case "voice":
+		case "voiceMode":
 		case "chatWithLily":
 			return item.value.title;
 		case "rant":
