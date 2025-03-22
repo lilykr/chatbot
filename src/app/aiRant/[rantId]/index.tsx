@@ -129,8 +129,8 @@ export default function AIRant() {
 							placeholder="Enter a topic..."
 							submitButtonText="Rant"
 							inputRef={inputRef}
+							handleTopicSelect={handleTopicSelect}
 						/>
-						<RantSuggestions onSelectTopic={handleTopicSelect} />
 					</>
 				)}
 			</View>

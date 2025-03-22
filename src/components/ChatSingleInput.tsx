@@ -2,6 +2,7 @@ import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../constants/colors";
 import { GradientButton } from "./GradientButton";
 import { Text } from "./Text";
+import { RantSuggestions } from "./RantSuggestions";
 
 interface Props {
 	input: string;
@@ -11,6 +12,7 @@ interface Props {
 	submitButtonText: string;
 	placeholder: string;
 	inputRef: React.RefObject<TextInput>;
+	handleTopicSelect: (topic: string) => void;
 }
 
 export function ChatSingleInput({
@@ -21,11 +23,14 @@ export function ChatSingleInput({
 	submitButtonText,
 	placeholder,
 	inputRef,
+	handleTopicSelect,
 }: Props) {
 	return (
 		<View style={styles.inputContainer}>
 			<Text style={styles.prompt}>{prompt}</Text>
 			<View style={styles.inputWrapper}>
+				<RantSuggestions onSelectTopic={handleTopicSelect} />
+
 				<TextInput
 					autoFocus
 					style={styles.input}
@@ -36,6 +41,7 @@ export function ChatSingleInput({
 					multiline
 					onSubmitEditing={onSubmit}
 					ref={inputRef}
+					textAlign="center"
 				/>
 				<GradientButton text={submitButtonText} onPress={onSubmit} />
 			</View>
@@ -65,7 +71,6 @@ const styles = StyleSheet.create({
 		padding: 15,
 		color: colors.white,
 		fontSize: 16,
-		minHeight: 100,
 		textAlignVertical: "top",
 		marginBottom: 15,
 	},
