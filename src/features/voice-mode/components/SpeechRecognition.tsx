@@ -135,8 +135,6 @@ const SpeechRecognition = ({
 	// Handle end event to show alert with final transcript and reset
 	useSpeechRecognitionEvent("end", () => {
 		if (isRecognizing && transcript) {
-			showAlert("Transcription Complete", transcript, [{ text: "OK" }]);
-
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
 				onEnd(transcript);

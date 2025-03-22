@@ -21,6 +21,7 @@ import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { Text } from "../../../components/Text";
+import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
@@ -29,7 +30,6 @@ import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { VoiceMode } from "../../../features/voice-mode/VoiceMode";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
-import { apiUrl } from "../../../constants/apiUrl";
 
 export const AI_AVATAR = require("../../../../assets/avatar.png");
 
@@ -61,16 +61,23 @@ export default function Chat() {
 			| undefined,
 	).current;
 
-	const { messages, error, handleInputChange, input, handleSubmit, status } =
-		useChat({
-			fetch: expoFetch as unknown as typeof globalThis.fetch,
-			api: `${apiUrl}/api/chat`,
-			streamProtocol: "data",
-			headers: {
-				Accept: "text/event-stream",
-			},
-			initialMessages: initialChat?.value.messages ?? [],
-		});
+	const {
+		messages,
+		error,
+		handleInputChange,
+		input,
+		handleSubmit,
+		status,
+		append,
+	} = useChat({
+		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		api: `${apiUrl}/api/chat`,
+		streamProtocol: "data",
+		headers: {
+			Accept: "text/event-stream",
+		},
+		initialMessages: initialChat?.value.messages ?? [],
+	});
 
 	const {
 		object: titleObject,
@@ -175,28 +182,21 @@ export default function Chat() {
 
 			// Process the transcript
 			if (transcript) {
-				handleInputChange({
-					target: { value: transcript },
-				} as unknown as React.ChangeEvent<HTMLInputElement>);
+				// Directly append the message using the append function
+				append({
+					role: "user",
+					content: transcript,
+				});
 
-				// Use setTimeout to ensure the input is set before submitting
-				setTimeout(() => {
-					handleSubmit();
-					if (messages.length === 0) {
-						generateTitle({
-							messages: [{ role: "user", content: transcript }],
-						});
-					}
-				}, 100);
+				// Generate title if this is the first message
+				if (messages.length === 0) {
+					generateTitle({
+						messages: [{ role: "user", content: transcript }],
+					});
+				}
 			}
 		},
-		[
-			handleInputChange,
-			handleSubmit,
-			generateTitle,
-			messages.length,
-			handleVoiceModeClose,
-		],
+		[append, generateTitle, messages.length, handleVoiceModeClose],
 	);
 
 	// Voice mode animated style

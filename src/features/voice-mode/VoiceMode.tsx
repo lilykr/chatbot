@@ -34,6 +34,9 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
 
+	// Track current transcript
+	const [transcript, setTranscript] = useState("");
+
 	// Track the actual point count as a state value for passing to WaveMesh
 	const [currentPointCount, setCurrentPointCount] =
 		useState(INITIAL_POINT_COUNT);
@@ -89,6 +92,7 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	// Handle speech recognition end
 	const handleSpeechEnd = (transcript: string) => {
+		setTranscript(transcript);
 		if (onSpeechEnd) {
 			onSpeechEnd(transcript);
 		}
@@ -104,6 +108,14 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 			setRecognizingState(started);
 		}
 	};
+
+	// Handle refresh button press to reset transcript
+	const handleRefresh = useCallback(() => {
+		setTranscript("");
+		if (onSpeechEnd) {
+			onSpeechEnd("");
+		}
+	}, [onSpeechEnd]);
 
 	// Handle close button press
 	const handleClose = useCallback(() => {
@@ -167,7 +179,11 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 				isRecognizing={isRecognizing}
 				onEnd={handleSpeechEnd}
 			/>
-			<VoiceControlButtons onPress={handleToggleSpeechRecognition} />
+			<VoiceControlButtons
+				onPress={handleToggleSpeechRecognition}
+				onClose={handleClose}
+				onRefresh={handleRefresh}
+			/>
 			<View style={styles.overlay}>
 				{enableDebug && (
 					<DebugVolume
