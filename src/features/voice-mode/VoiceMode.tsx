@@ -10,7 +10,6 @@ import { Header } from "../../components/Header";
 import { DebugVolume } from "./components/DebugVolume";
 import SpeechRecognition, {
 	startSpeechRecognition,
-	stopSpeechRecognition,
 } from "./components/SpeechRecognition";
 import { WaveMesh } from "./components/WaveMesh";
 import { useVolumeControl } from "./hooks/useVolumeControl";
@@ -101,59 +100,11 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 		}
 	};
 
-	// Handle toggle of speech recognition
-	const handleToggleSpeechRecognition = async () => {
-		// Make sure to stop speech recognition and clean up
-		stopSpeechRecognition();
-	};
-
-	// Handle refresh button press to reset transcript
-	const handleRefresh = () => {
-		// Set a refreshing flag to prevent new transcripts from being processed
-		setIsClosing(true);
-
-		// Stop the current speech recognition session
-		stopSpeechRecognition();
-
-		// Clean up any recording resources
-		volumeControlCleanup();
-
-		// Short delay to ensure everything is cleaned up
-		setTimeout(() => {
-			// Reset the closing flag
-			setIsClosing(false);
-
-			// If speech was active before, restart it
-			const restartSpeechRecognition = async () => {
-				// Ensure we've cleaned up any previous recording
-				volumeControlCleanup();
-
-				try {
-					const started = await startSpeechRecognition();
-					if (!started) {
-						setPermissionErrorState("Failed to restart speech recognition");
-					} else {
-						setPermissionErrorState(null);
-						// If successful, ensure manual mode is off
-						toggleManualMode(false);
-					}
-				} catch (error) {
-					const errorMessage =
-						error instanceof Error ? error.message : String(error);
-					setPermissionErrorState(errorMessage);
-				}
-			};
-
-			restartSpeechRecognition();
-		}, 300); // longer delay to ensure clean restart
-	};
-
 	// Handle close button press
 	const handleClose = useCallback(() => {
 		// Set the closing flag to prevent sending the transcript
 		setIsClosing(true);
 
-		stopSpeechRecognition();
 		volumeControlCleanup();
 
 		if (onClose) {
@@ -195,7 +146,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 		// Start recording automatically if autoStart is true
 		const autoStartRecording = async () => {
-			console.log("autoStartRecording");
 			// Ensure we've cleaned up any previous recording
 			volumeControlCleanup();
 
@@ -220,7 +170,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 		return () => {
 			clearTimeout(timer);
-			stopSpeechRecognition();
 			// Always clean up recording and audio when unmounting
 			volumeControlCleanup();
 			// Reset closing flag when unmounting
@@ -244,11 +193,9 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 			<SpeechRecognition
 				permissionError={permissionError}
-				onEnd={handleSpeechEnd}
+				onSpeechEnd={handleSpeechEnd}
 				isClosing={isClosing}
-				onToggleSpeech={handleToggleSpeechRecognition}
 				onClose={handleClose}
-				onRefresh={handleRefresh}
 			/>
 
 			<View style={styles.overlay}>
