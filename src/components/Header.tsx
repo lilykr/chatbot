@@ -82,7 +82,7 @@ export const Header = ({
 			style={[
 				styles.container,
 				{
-					paddingTop: safeAreaInsets.top,
+					paddingTop: safeAreaInsets.top + 8,
 				},
 			]}
 		>

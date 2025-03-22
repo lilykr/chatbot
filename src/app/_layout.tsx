@@ -22,13 +22,11 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
-SystemUI.setBackgroundColorAsync("black");
-// This is the default configuration
+SystemUI.setBackgroundColorAsync(colors.night);
 configureReanimatedLogger({
 	level: ReanimatedLogLevel.warn,
 	strict: false,
 });
-// Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -61,6 +59,13 @@ export default function RootLayout() {
 							contentStyle: { backgroundColor: colors.night },
 						}}
 					>
+						<Stack.Screen
+							name="/"
+							options={{
+								animation: "fade",
+								animationDuration: 300,
+							}}
+						/>
 						<Stack.Screen
 							name="animated-card"
 							options={{

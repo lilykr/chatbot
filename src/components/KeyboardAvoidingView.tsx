@@ -69,7 +69,10 @@ export const KeyboardAvoidingView: React.FC<KeyboardAvoidingViewProps> = ({
 	duration = 250,
 	easing = Easing.out(Easing.cubic),
 }) => {
-	const keyboard = useAnimatedKeyboard();
+	const keyboard = useAnimatedKeyboard({
+		isStatusBarTranslucentAndroid: true,
+		isNavigationBarTranslucentAndroid: false,
+	});
 	const extraOffset = useSharedValue(offset);
 	const extraKeyboardOpenedOffset = useSharedValue(keyboardOpenedOffset);
 
