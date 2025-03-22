@@ -26,7 +26,7 @@ export default function AnimatedCardPage() {
 					opacity: 0.5,
 				}}
 			>
-				<BouncyPressable onPress={() => router.push("/homepage")}>
+				<BouncyPressable onPress={() => router.back()}>
 					<AntDesign name="closecircleo" size={48} color="white" />
 				</BouncyPressable>
 			</View>
