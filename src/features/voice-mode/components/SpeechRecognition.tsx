@@ -66,18 +66,6 @@ export const startSpeechRecognition = async () => {
 	}
 };
 
-const stopSpeechRecognition = () => {
-	try {
-		// First try to abort any existing speech recognition
-		ExpoSpeechRecognitionModule.abort();
-		// Then explicitly stop it
-		ExpoSpeechRecognitionModule.stop();
-	} catch (error) {
-		// If there's an error, log it but don't throw to avoid crashing
-		console.error("Error stopping speech recognition:", error);
-	}
-};
-
 const SpeechRecognition = ({
 	permissionError,
 	onSpeechEnd,
@@ -164,6 +152,14 @@ const SpeechRecognition = ({
 		checkEnglishAvailability();
 	}, [isWeb]);
 
+	useSpeechRecognitionEvent("start", (event) => {
+		console.log(">>> start");
+	});
+
+	useSpeechRecognitionEvent("end", (event) => {
+		console.log(">>> end");
+	});
+
 	// Set up speech recognition event listeners
 	useSpeechRecognitionEvent("result", (event) => {
 		// Don't update transcript if we're closing
@@ -197,13 +193,13 @@ const SpeechRecognition = ({
 	// Clean up when the component unmounts
 	useEffect(() => {
 		return () => {
-			stopSpeechRecognition();
+			ExpoSpeechRecognitionModule.abort();
 		};
 	}, []);
 
 	useEffect(() => {
 		if (isRefreshing) {
-			stopSpeechRecognition();
+			ExpoSpeechRecognitionModule.abort();
 		}
 	}, [isRefreshing]);
 
@@ -211,7 +207,7 @@ const SpeechRecognition = ({
 		if (transcript.length === 0) {
 			return;
 		}
-		stopSpeechRecognition();
+		ExpoSpeechRecognitionModule.stop();
 	};
 	const handleRefresh = () => setIsRefreshing(true);
 
