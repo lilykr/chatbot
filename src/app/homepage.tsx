@@ -1,26 +1,46 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CardButton } from "../components/CardButton";
 import { History } from "../components/History";
+import { RoundButton } from "../components/RoundButton";
 import { SearchBar } from "../components/SearchBar";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
 import { MeshGradient } from "../features/MeshGradient/MeshGradient";
 
 export default function Homepage() {
+	const insets = useSafeAreaInsets();
 	return (
 		<>
 			<MeshGradient />
-			<SafeAreaView style={styles.layout}>
+			<View
+				style={[
+					styles.layout,
+					{ paddingTop: insets.top, paddingBottom: insets.bottom },
+				]}
+			>
+				<View
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						justifyContent: "flex-start",
+						marginTop: 16,
+						marginBottom: 36,
+					}}
+				>
+					<RoundButton size={56} onPress={() => router.push("/animated-card")}>
+						<Ionicons name="sparkles" size={24} color="white" />
+					</RoundButton>
+				</View>
 				<Text
 					weight="semibold"
 					style={{
 						color: "white",
 						fontSize: 28,
 						width: "70%",
-						paddingTop: 80,
 						marginBottom: 8,
 					}}
 				>
@@ -57,14 +77,14 @@ export default function Homepage() {
 					</View>
 				</ScrollView>
 				<History />
-			</SafeAreaView>
+			</View>
 		</>
 	);
 }
 
 const styles = StyleSheet.create({
 	layout: {
-		marginHorizontal: 16,
+		paddingHorizontal: 16,
 		zIndex: 1,
 	},
 	scrollContent: {

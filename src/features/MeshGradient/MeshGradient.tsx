@@ -8,6 +8,7 @@ export const MeshGradient = () => {
 			rows={3}
 			cols={3}
 			colors={palette}
+			square
 			// lines
 			// handles
 			play

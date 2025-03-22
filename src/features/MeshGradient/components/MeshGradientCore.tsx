@@ -1,13 +1,10 @@
-// From https://github.com/Shopify/react-native-skia/blob/main/apps/paper/src/Examples/Aurora/components/CoonsPatchMeshGradient.tsx
-
+// Forked from CoonsPatchMeshGradient without Canvas and debug features
 import type {
 	Color,
 	CubicBezierHandle,
 	SkPoint,
 } from "@shopify/react-native-skia";
 import {
-	BackdropBlur,
-	Canvas,
 	Group,
 	ImageShader,
 	Patch,
@@ -19,17 +16,12 @@ import {
 	vec,
 } from "@shopify/react-native-skia";
 import React, { useMemo } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
-import { GestureDetector } from "react-native-gesture-handler";
+import { useWindowDimensions } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
-import { useDerivedValue, useSharedValue } from "react-native-reanimated";
+import { useDerivedValue } from "react-native-reanimated";
 
-import { createNoise2D } from "./SimpleNoise";
-
-import { Cubic } from "./Cubic";
-import { Curves } from "./Curves";
 import { symmetric } from "./Math";
-import { useHandles } from "./useHandles";
+import { createNoise2D } from "./SimpleNoise";
 
 const rectToTexture = (
 	vertices: CubicBezierHandle[],
@@ -82,13 +74,10 @@ const useRectToPatch = (
 		];
 	}, [mesh]);
 
-interface CoonsPatchMeshGradientProps {
+interface MeshGradientCoreProps {
 	rows: number;
 	cols: number;
 	colors: string[];
-	debug?: boolean;
-	lines?: boolean;
-	handles?: boolean;
 	play?: boolean;
 	square?: boolean;
 }
@@ -96,16 +85,13 @@ interface CoonsPatchMeshGradientProps {
 const F = 10000;
 const A = 80;
 
-export const CoonsPatchMeshGradient = ({
+export const MeshGradientCore = ({
 	rows,
 	cols,
 	colors,
-	debug,
-	lines,
-	handles,
-	play,
+	play = true,
 	square,
-}: CoonsPatchMeshGradientProps) => {
+}: MeshGradientCoreProps) => {
 	const { width, height } = useWindowDimensions();
 	const win = useMemo(
 		() => Skia.XYWHRect(0, 0, width, height),
@@ -131,6 +117,7 @@ export const CoonsPatchMeshGradient = ({
 			}),
 		)
 		.flat(2);
+
 	const rects = new Array(rows).fill(0).flatMap((_r, row) =>
 		new Array(cols).fill(0).map((_c, col) => {
 			const l = cols + 1;
@@ -141,11 +128,13 @@ export const CoonsPatchMeshGradient = ({
 			return [tl, tr, br, bl];
 		}),
 	);
+
 	const noises = defaultMesh.map(() => [
 		createNoise2D(),
 		createNoise2D(),
 		createNoise2D(),
 	]);
+
 	const meshNoise = useDerivedValue(() => {
 		return defaultMesh.map((pt, i) => {
 			if (isEdge(pt.pos, win)) {
@@ -178,83 +167,43 @@ export const CoonsPatchMeshGradient = ({
 		});
 	}, [clock]);
 
-	const meshGesture = useSharedValue(defaultMesh);
-
-	const gesture = useHandles(meshGesture, defaultMesh, win);
-	const mesh = play ? meshNoise : meshGesture;
+	const mesh = play ? meshNoise : useDerivedValue(() => defaultMesh);
 
 	return (
-		<View
-			style={[
-				StyleSheet.absoluteFill,
-				{
-					backgroundColor: "#000000",
-					zIndex: 1,
-					flex: 1,
-				},
-			]}
-		>
-			<GestureDetector gesture={gesture}>
-				<Canvas style={{ width, height }}>
-					<Group>
-						<ImageShader image={image} tx="repeat" ty="repeat" />
-						{rects.map((r, i) => {
-							return (
-								<RectPatch
-									// biome-ignore lint/suspicious/noArrayIndexKey: Acceptable here
-									key={i}
-									r={r as [number, number, number, number]}
-									mesh={mesh}
-									debug={!!debug}
-									lines={!!lines}
-									colors={colors}
-									defaultMesh={defaultMesh}
-								/>
-							);
-						})}
-					</Group>
-					{defaultMesh.map(({ pos }, index) => {
-						if (isEdge(pos, win) || !handles) {
-							return null;
-						}
-						return (
-							<Cubic
-								// biome-ignore lint/suspicious/noArrayIndexKey: Acceptable here
-								key={index}
-								mesh={mesh}
-								index={index}
-								color={colors[index]!}
-							/>
-						);
-					})}
-					<BackdropBlur blur={10} clip={{ x: 0, y: 0, width, height }} />
-				</Canvas>
-			</GestureDetector>
-		</View>
+		<Group>
+			<ImageShader image={image} tx="repeat" ty="repeat" />
+			{rects.map((r, i) => {
+				return (
+					<RectPatch
+						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+						key={i}
+						r={r as [number, number, number, number]}
+						mesh={mesh}
+						colors={colors}
+						defaultMesh={defaultMesh}
+					/>
+				);
+			})}
+		</Group>
 	);
 };
 
 interface RectPatchProps {
 	r: [number, number, number, number];
-	debug?: boolean;
-	lines?: boolean;
 	colors: string[];
 	mesh: SharedValue<CubicBezierHandle[]>;
 	defaultMesh: CubicBezierHandle[];
 }
 
-const RectPatch = ({ r, lines, colors, mesh, defaultMesh }: RectPatchProps) => {
+const RectPatch = ({ r, colors, mesh, defaultMesh }: RectPatchProps) => {
 	const patch = useRectToPatch(mesh, r);
 	return (
-		<>
-			<Patch
-				patch={patch}
-				colors={rectToColors(colors, r) as Color[]}
-				texture={
-					rectToTexture(defaultMesh, r) as [SkPoint, SkPoint, SkPoint, SkPoint]
-				}
-			/>
-			{lines && <Curves patch={patch} />}
-		</>
+		<Patch
+			patch={patch}
+			colors={rectToColors(colors, r) as Color[]}
+			texture={
+				rectToTexture(defaultMesh, r) as [SkPoint, SkPoint, SkPoint, SkPoint]
+			}
+		/>
 	);
 };

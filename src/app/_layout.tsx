@@ -49,7 +49,15 @@ export default function RootLayout() {
 							headerShown: false,
 							contentStyle: { backgroundColor: colors.night },
 						}}
-					/>
+					>
+						<Stack.Screen
+							name="animated-card"
+							options={{
+								animation: "fade",
+								animationDuration: 300,
+							}}
+						/>
+					</Stack>
 				</SafeAreaProvider>
 			</GestureHandlerRootView>
 		</ErrorBoundary>

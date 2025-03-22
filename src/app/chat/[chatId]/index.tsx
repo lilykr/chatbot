@@ -3,7 +3,13 @@ import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
-import { type FlatList, StyleSheet, View } from "react-native";
+import {
+	type FlatList,
+	InteractionManager,
+	StyleSheet,
+	type TextInput,
+	View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
@@ -27,10 +33,10 @@ storage.listen("history", (newValue) => {
 
 export default function Chat() {
 	const { chatId } = useLocalSearchParams();
-
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<FlatList>(null);
+	const inputRef = useRef<TextInput>(null);
 
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
@@ -66,14 +72,13 @@ export default function Chat() {
 	useEffect(() => {
 		if (chatId === "new") {
 			router.setParams({ chatId: uuid.v4() });
+			setTimeout(() => {
+				InteractionManager.runAfterInteractions(() => {
+					inputRef.current?.focus();
+				});
+			}, 560);
 		}
 	}, [chatId]);
-
-	useEffect(() => {
-		setTimeout(() => {
-			messageListRef.current?.scrollToEnd();
-		}, 100);
-	}, []);
 
 	usePersistChat({
 		chatId: chatId as string,
@@ -118,6 +123,7 @@ export default function Chat() {
 					listRef={messageListRef}
 				/>
 				<ComposerInput
+					inputRef={inputRef}
 					value={input}
 					onChangeText={(text) =>
 						handleInputChange({
