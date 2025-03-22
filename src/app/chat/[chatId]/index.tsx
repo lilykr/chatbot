@@ -33,7 +33,7 @@ import { titleSchema } from "../../api/generate-title+api";
 
 export const AI_AVATAR = require("../../../../assets/avatar.png");
 
-// storage.clearAll();
+storage.clearAll();
 storage.listen("history", (newValue) => {
 	console.log("history changed", JSON.stringify(newValue, null, 2));
 });
@@ -94,13 +94,15 @@ export default function Chat() {
 	});
 
 	useEffect(() => {
-		if (chatId === "new" && !openVoiceMode) {
+		if (chatId === "new") {
 			router.setParams({ chatId: uuid.v4() });
-			setTimeout(() => {
-				InteractionManager.runAfterInteractions(() => {
-					inputRef.current?.focus();
-				});
-			}, 560);
+			if (!openVoiceMode) {
+				setTimeout(() => {
+					InteractionManager.runAfterInteractions(() => {
+						inputRef.current?.focus();
+					});
+				}, 560);
+			}
 		}
 	}, [chatId, openVoiceMode]);
 
