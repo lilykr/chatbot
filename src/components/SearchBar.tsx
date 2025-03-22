@@ -1,8 +1,7 @@
-import { Ionicons } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../constants/colors";
-
 interface SearchBarProps {
 	onSearch?: (query: string) => void;
 	placeholder?: string;
@@ -26,9 +25,9 @@ export const SearchBar = ({
 	return (
 		<View style={[styles.container, style]}>
 			<View style={styles.overlay} />
-			<Ionicons
+			<Feather
 				name="search"
-				size={23}
+				size={22}
 				color={colors.lightGrey}
 				style={styles.searchIcon}
 			/>
@@ -70,6 +69,7 @@ const styles = StyleSheet.create({
 	},
 	searchIcon: {
 		marginRight: 8,
+		marginLeft: 6,
 	},
 	input: {
 		height: 30,
