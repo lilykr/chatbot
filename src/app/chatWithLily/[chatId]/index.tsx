@@ -1,5 +1,11 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { type FlatList, StyleSheet, View } from "react-native";
+import {
+	type FlatList,
+	InteractionManager,
+	StyleSheet,
+	type TextInput,
+	View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { Header } from "../../../components/Header";
@@ -29,6 +35,7 @@ export default function ChatWithLily() {
 
 	const messageListRef = useRef<FlatList>(null);
 	const safeAreaInsets = useSafeAreaInsets();
+	const inputRef = useRef<TextInput>(null);
 
 	const { messages, error, handleInputChange, input, handleSubmit, status } =
 		useChat({
@@ -54,6 +61,17 @@ export default function ChatWithLily() {
 		},
 		initialValue: { title: initialChat?.value.title },
 	});
+
+	useEffect(() => {
+		if (chatId === "new") {
+			router.setParams({ chatId: uuid.v4() });
+			setTimeout(() => {
+				InteractionManager.runAfterInteractions(() => {
+					inputRef.current?.focus();
+				});
+			}, 560);
+		}
+	}, [chatId]);
 
 	useEffect(() => {
 		if (chatId === "new") {
@@ -108,6 +126,7 @@ export default function ChatWithLily() {
 				/>
 
 				<ComposerInput
+					inputRef={inputRef}
 					value={input}
 					onChangeText={(text) =>
 						handleInputChange({
