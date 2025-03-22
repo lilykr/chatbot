@@ -19,7 +19,7 @@ export default function AnimatedCardPage() {
 				onPressGithub={() =>
 					Linking.openURL("https://github.com/lilykr/chatbot")
 				}
-				onPressChat={() => router.replace("/chatWithLily/new")}
+				onPressChat={() => router.push("/chatWithLily/new")}
 			/>
 			<View
 				style={{

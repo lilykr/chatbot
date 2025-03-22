@@ -9,9 +9,7 @@ import { storage, type HistoryItem } from "../services/storage";
 import { getHistoryContent, getHistoryTitle } from "../utils/history";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Header } from "../components/Header";
-
-const LOGO = require("../../assets/avatar.png");
-const LLK_AVATAR = require("../../assets/llk.png");
+import { IMAGES } from "../constants/images";
 
 export default function HistoryPage() {
 	const insets = useSafeAreaInsets();
@@ -52,7 +50,11 @@ export default function HistoryPage() {
 							>
 								<View style={styles.historyContainer}>
 									<Image
-										source={item.type === "chatWithLily" ? LLK_AVATAR : LOGO}
+										source={
+											item.type === "chatWithLily"
+												? IMAGES.LLK_AVATAR
+												: IMAGES.LOGO
+										}
 										style={styles.logo}
 									/>
 									<View style={styles.historyContent}>
