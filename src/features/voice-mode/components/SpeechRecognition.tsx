@@ -1,3 +1,5 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
+import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import {
 	ExpoSpeechRecognitionModule,
 	getSupportedLocales,
@@ -6,6 +8,9 @@ import {
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
 import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BouncyPressable } from "../../../components/BouncyPressable";
+import { RoundButton } from "../../../components/RoundButton";
 import { font } from "../../../constants/font";
 import { showAlert } from "../../../utils/alert";
 
@@ -79,11 +84,17 @@ const SpeechRecognition = ({
 	permissionError,
 	onEnd,
 	isClosing = false,
+	onToggleSpeech,
+	onClose,
+	onRefresh,
 }: {
 	isActive: boolean;
 	permissionError: string | null;
 	onEnd?: (transcript: string) => void;
 	isClosing?: boolean;
+	onToggleSpeech?: () => void;
+	onClose?: () => void;
+	onRefresh?: () => void;
 }) => {
 	const [transcript, setTranscript] = useState("");
 	const [isEnglishAvailable, setIsEnglishAvailable] = useState<boolean | null>(
@@ -94,6 +105,7 @@ const SpeechRecognition = ({
 	const [previousActiveState, setPreviousActiveState] = useState(false);
 	const [lastTranscriptBeforeClosing, setLastTranscriptBeforeClosing] =
 		useState("");
+	const safeAreaInsets = useSafeAreaInsets();
 
 	// Check if English is available
 	useEffect(() => {
@@ -278,16 +290,47 @@ const SpeechRecognition = ({
 		return <Text style={styles.languageText}>Available language: English</Text>;
 	};
 
-	return <View style={styles.transcriptContainer}>{renderContent()}</View>;
+	return (
+		<View style={styles.container}>
+			<View style={styles.transcriptContainer}>{renderContent()}</View>
+
+			<View
+				style={[
+					styles.buttonsContainer,
+					{ marginBottom: safeAreaInsets.bottom + 32 },
+				]}
+			>
+				<BouncyPressable onPress={onClose}>
+					<Ionicons name="close-outline" size={30} color="white" />
+				</BouncyPressable>
+				<RoundButton onPress={onToggleSpeech}>
+					<SimpleLineIcons name="microphone" size={28} color="white" />
+				</RoundButton>
+				<BouncyPressable onPress={onRefresh}>
+					<Ionicons name="refresh-outline" size={30} color="white" />
+				</BouncyPressable>
+			</View>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-	transcriptContainer: {
-		marginTop: WINDOW_HEIGHT / 2,
+	container: {
 		flex: 1,
-
+		marginTop: WINDOW_HEIGHT / 2,
+	},
+	transcriptContainer: {
+		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
+		paddingHorizontal: 16,
+	},
+	buttonsContainer: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		width: "80%",
+		alignSelf: "center",
+		alignItems: "center",
 	},
 	transcriptText: {
 		color: "white",

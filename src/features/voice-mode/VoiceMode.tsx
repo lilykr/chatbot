@@ -12,7 +12,6 @@ import SpeechRecognition, {
 	startSpeechRecognition,
 	stopSpeechRecognition,
 } from "./components/SpeechRecognition";
-import { VoiceControlButtons } from "./components/VoiceControlButtons";
 import { WaveMesh } from "./components/WaveMesh";
 import { useVolumeControl } from "./hooks/useVolumeControl";
 
@@ -314,12 +313,11 @@ export function VoiceMode({
 				permissionError={permissionError}
 				onEnd={handleSpeechEnd}
 				isClosing={isClosing}
-			/>
-			<VoiceControlButtons
-				onPress={handleToggleSpeechRecognition}
+				onToggleSpeech={handleToggleSpeechRecognition}
 				onClose={handleClose}
 				onRefresh={handleRefresh}
 			/>
+
 			<View style={styles.overlay}>
 				{enableDebug && (
 					<DebugVolume
