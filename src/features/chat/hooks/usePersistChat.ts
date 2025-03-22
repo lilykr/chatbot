@@ -36,8 +36,6 @@ export function usePersistChat(params: {
 			return;
 		}
 
-		const history = storage.get("history") ?? [];
-
 		if (initialChat) {
 			const newChat: HistoryItem = {
 				...initialChat,
@@ -47,21 +45,29 @@ export function usePersistChat(params: {
 				},
 				updatedAt: Date.now(),
 			};
-			// Replace the existing chat instead of appending
 			storage.set("history", (prev) =>
 				(prev ?? []).map((item) => (item.id === chatId ? newChat : item)),
 			);
 		} else {
-			storage.set("history", [
-				...history,
-				{
+			storage.set("history", (prev = []) => {
+				const existingIndex = prev.findIndex((item) => item.id === chatId);
+				const newChat = {
 					id: chatId as string,
 					type: type,
 					value: { title: title ?? "New chat", messages },
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
-				},
-			]);
+				};
+
+				if (existingIndex !== -1) {
+					// Replace existing chat
+					return prev.map((item, index) =>
+						index === existingIndex ? newChat : item,
+					);
+				}
+				// Add new chat
+				return [...prev, newChat];
+			});
 		}
 	}, [initialChat, status, messages, title, chatId, isGeneratingTitle, type]);
 }
