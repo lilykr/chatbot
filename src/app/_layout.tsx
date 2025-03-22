@@ -57,6 +57,7 @@ function RootLayout() {
 						screenOptions={{
 							headerShown: false,
 							contentStyle: { backgroundColor: colors.night },
+							gestureEnabled: true,
 						}}
 					>
 						<Stack.Screen
