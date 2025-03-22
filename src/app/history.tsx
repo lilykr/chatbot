@@ -10,7 +10,6 @@ import { colors } from "../constants/colors";
 import { type HistoryItem, storage } from "../services/storage";
 import { getAppImage } from "../utils/getAppImage";
 import { getHistoryContent, getHistoryTitle } from "../utils/history";
-import { IMAGES } from "../constants/images";
 
 export default function HistoryPage() {
 	const insets = useSafeAreaInsets();
