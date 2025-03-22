@@ -77,12 +77,6 @@ export default function ChatWithLily() {
 		}
 	}, [chatId]);
 
-	useEffect(() => {
-		setTimeout(() => {
-			messageListRef.current?.scrollToEnd();
-		}, 100);
-	}, []);
-
 	usePersistChat({
 		chatId: chatId as string,
 		messages,
