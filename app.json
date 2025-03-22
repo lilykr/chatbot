@@ -46,6 +46,7 @@
 					"origin": "https://lilykr-chatbot.expo.app"
 				}
 			],
+			["expo-localization"],
 			[
 				"expo-camera",
 				{
@@ -91,7 +92,8 @@
 					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
 				}
 			],
-			"expo-speech-recognition"
+			"expo-speech-recognition",
+			"expo-localization"
 		],
 		"extra": {
 			"eas": {
