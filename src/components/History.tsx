@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
 import { type HistoryItem, storage } from "../services/storage";
 import type { App } from "../types/apps";
@@ -95,6 +95,7 @@ export const History = () => {
 const styles = StyleSheet.create({
 	container: {
 		marginTop: 8,
+		paddingHorizontal: 16,
 	},
 	title: {
 		color: colors.white,
