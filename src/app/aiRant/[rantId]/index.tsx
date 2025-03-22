@@ -52,8 +52,8 @@ export default function AIRant() {
 	}, [input, generateRant]);
 
 	const handleNewRant = useCallback(() => {
-		setInput("");
-		setRantMessage(undefined);
+		const newRantId = uuid.v4();
+		router.replace(`/aiRant/${newRantId}`);
 	}, []);
 
 	useEffect(() => {
@@ -81,8 +81,6 @@ export default function AIRant() {
 		type: "rant",
 		status: "success",
 	});
-
-	console.log("title", initialRant?.value.rantSubject, rantMessage, input);
 
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
