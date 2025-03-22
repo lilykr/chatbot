@@ -25,17 +25,19 @@ const INITIAL_POINT_COUNT = 200; // Starting with fewer points for fast initial 
 export type VoiceModeProps = {
 	onSpeechEnd: (transcript: string) => void;
 	onClose: () => void;
+	autoStart?: boolean;
 };
 
-export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
+export function VoiceMode({
+	onSpeechEnd,
+	onClose,
+	autoStart = false,
+}: VoiceModeProps) {
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 	const opacity = useSharedValue(0);
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
-
-	// Track current transcript
-	const [transcript, setTranscript] = useState("");
 
 	// Track the actual point count as a state value for passing to WaveMesh
 	const [currentPointCount, setCurrentPointCount] =
@@ -92,7 +94,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	// Handle speech recognition end
 	const handleSpeechEnd = (transcript: string) => {
-		setTranscript(transcript);
 		if (onSpeechEnd) {
 			onSpeechEnd(transcript);
 		}
@@ -111,7 +112,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	// Handle refresh button press to reset transcript
 	const handleRefresh = useCallback(() => {
-		setTranscript("");
 		if (onSpeechEnd) {
 			onSpeechEnd("");
 		}
@@ -158,8 +158,20 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 		console.log("VoiceMode component mounted");
 		// After a small delay for the initial render with minimal points
 		const timer = setTimeout(handleFirstRender, 200);
+
+		// Start recording automatically if autoStart is true
+		if (autoStart) {
+			const autoStartRecording = async () => {
+				const started = await startSpeechRecognition();
+				setRecognizingState(started);
+			};
+
+			// Wait a bit longer to ensure everything is ready
+			setTimeout(autoStartRecording, 500);
+		}
+
 		return () => clearTimeout(timer);
-	}, [handleFirstRender]);
+	}, [handleFirstRender, autoStart, setRecognizingState]);
 
 	return (
 		<View style={styles.layout}>

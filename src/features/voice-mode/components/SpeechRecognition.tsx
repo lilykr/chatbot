@@ -149,9 +149,6 @@ const SpeechRecognition = ({
 	useEffect(() => {
 		// If we were recognizing before and now we're not, and we have a transcript
 		if (previousRecognizingState && !isRecognizing && transcript) {
-			// Show alert with the transcript
-			showAlert("Transcription Complete", transcript, [{ text: "OK" }]);
-
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
 				onEnd(transcript);

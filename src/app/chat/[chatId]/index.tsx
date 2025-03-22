@@ -263,6 +263,7 @@ export default function Chat() {
 					<VoiceMode
 						onSpeechEnd={handleSpeechEnd}
 						onClose={handleVoiceModeClose}
+						autoStart={true}
 					/>
 				</Animated.View>
 			)}
