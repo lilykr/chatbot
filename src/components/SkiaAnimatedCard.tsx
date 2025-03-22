@@ -33,10 +33,10 @@ import {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
+import { IMAGES } from "../constants/images";
 import { MeshGradientCore } from "../features/MeshGradient/components/MeshGradientCore";
 import { BlurMask } from "./BlurGradient";
 
-const LLK_AVATAR = require("../../assets/llk.png");
 const LINKEDIN_ICON = require("../../assets/linkedin_icon.png");
 const GITHUB_ICON = require("../../assets/github_icon.png");
 const CHAT_ICON = require("../../assets/ai_round.png");
@@ -160,7 +160,7 @@ export const SkiaAnimatedCard = ({
 }: SkiaAnimatedCardProps) => {
 	const rotateX = useSharedValue(0);
 	const rotateY = useSharedValue(0);
-	const image = useImage(LLK_AVATAR);
+	const image = useImage(IMAGES.LLK_LARGE);
 	const linkedInIcon = useImage(LINKEDIN_ICON);
 	const githubIcon = useImage(GITHUB_ICON);
 	const chatIcon = useImage(CHAT_ICON);
@@ -406,7 +406,7 @@ export const SkiaAnimatedCard = ({
 	});
 
 	return (
-		<GestureHandlerRootView style={styles.container}>
+		<GestureHandlerRootView style={styles.layout}>
 			<GestureDetector gesture={gesture}>
 				<Canvas style={styles.canvas}>
 					{/* Background mesh gradient */}
@@ -692,7 +692,7 @@ export const SkiaAnimatedCard = ({
 };
 
 const styles = StyleSheet.create({
-	container: {
+	layout: {
 		flex: 1,
 	},
 	canvas: {

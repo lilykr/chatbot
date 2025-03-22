@@ -13,6 +13,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import ErrorBoundary from "react-native-error-boundary";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -22,16 +23,14 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
-SystemUI.setBackgroundColorAsync("black");
-// This is the default configuration
+SystemUI.setBackgroundColorAsync(colors.night);
 configureReanimatedLogger({
 	level: ReanimatedLogLevel.warn,
 	strict: false,
 });
-// Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayout() {
 	const [fontsLoaded] = useFonts({
 		Epilogue_400Regular,
 		Epilogue_500Medium,
@@ -59,8 +58,18 @@ export default function RootLayout() {
 						screenOptions={{
 							headerShown: false,
 							contentStyle: { backgroundColor: colors.night },
+							gestureEnabled: true,
+							animation:
+								Platform.OS === "android" ? "slide_from_right" : undefined,
 						}}
 					>
+						<Stack.Screen
+							name="homepage"
+							options={{
+								animation: "fade",
+								animationDuration: 300,
+							}}
+						/>
 						<Stack.Screen
 							name="animated-card"
 							options={{
@@ -74,3 +83,5 @@ export default function RootLayout() {
 		</ErrorBoundary>
 	);
 }
+
+export default RootLayout;

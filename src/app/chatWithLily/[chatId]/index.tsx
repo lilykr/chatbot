@@ -16,13 +16,12 @@ import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { apiUrl } from "../../../constants/apiUrl";
+import { IMAGES } from "../../../constants/images";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
-
-export const LLK_AVATAR = require("../../../../assets/llk.png");
 
 export default function ChatWithLily() {
 	const { chatId } = useLocalSearchParams();
@@ -120,7 +119,7 @@ export default function ChatWithLily() {
 			/>
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
 				<MessageList
-					users={[{ _id: 1 }, { _id: 2, avatar: LLK_AVATAR }]}
+					users={[{ _id: 1 }, { _id: 2, avatar: IMAGES.LLK_AVATAR }]}
 					messages={messages}
 					listRef={messageListRef}
 				/>

@@ -16,7 +16,7 @@ import {
 	vec,
 } from "@shopify/react-native-skia";
 import React, { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
+import { Dimensions } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import { useDerivedValue } from "react-native-reanimated";
 
@@ -85,6 +85,8 @@ interface MeshGradientCoreProps {
 const F = 10000;
 const A = 80;
 
+const height = Dimensions.get("screen").height;
+const width = Dimensions.get("screen").width;
 export const MeshGradientCore = ({
 	rows,
 	cols,
@@ -92,11 +94,7 @@ export const MeshGradientCore = ({
 	play = true,
 	square,
 }: MeshGradientCoreProps) => {
-	const { width, height } = useWindowDimensions();
-	const win = useMemo(
-		() => Skia.XYWHRect(0, 0, width, height),
-		[height, width],
-	);
+	const win = useMemo(() => Skia.XYWHRect(0, 0, width, height), []);
 
 	const clock = useClock();
 	const image = useImage(require("../../../../assets/debug.png"));

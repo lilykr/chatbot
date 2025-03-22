@@ -6,7 +6,7 @@
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
-		"userInterfaceStyle": "light",
+		"userInterfaceStyle": "dark",
 		"newArchEnabled": true,
 		"experiments": {
 			"typedRoutes": true
@@ -28,7 +28,6 @@
 			"package": "com.lilykr.chatbot"
 		},
 		"androidStatusBar": {
-			"barStyle": "dark-content",
 			"translucent": true
 		},
 		"androidNavigationBar": {
@@ -47,6 +46,7 @@
 					"origin": "https://lilykr-chatbot.expo.app"
 				}
 			],
+			["expo-localization"],
 			[
 				"expo-camera",
 				{
@@ -92,7 +92,8 @@
 					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
 				}
 			],
-			"expo-speech-recognition"
+			"expo-speech-recognition",
+			"expo-localization"
 		],
 		"extra": {
 			"eas": {

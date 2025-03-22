@@ -77,12 +77,13 @@ export const Header = ({
 
 	return (
 		<BlurView
+			experimentalBlurMethod="dimezisBlurView"
 			intensity={80}
 			tint="dark"
 			style={[
 				styles.container,
 				{
-					paddingTop: safeAreaInsets.top,
+					paddingTop: safeAreaInsets.top + 8,
 				},
 			]}
 		>
