@@ -69,7 +69,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					style={styles.input}
 					value={value}
 					onChangeText={onChangeText}
-					placeholder={"Tapez un message"}
+					placeholder={"Type a message"}
 					placeholderTextColor={colors.lightGrey}
 					multiline
 					onSubmitEditing={onSubmit}

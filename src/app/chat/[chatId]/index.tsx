@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	type FlatList,
 	InteractionManager,
+	Platform,
 	StyleSheet,
 	type TextInput,
 	View,
@@ -208,7 +209,11 @@ export default function Chat() {
 				title={titleObject?.title || "AI chatbot"}
 				type={openVoiceMode ? "voiceMode" : "chat"}
 			/>
-			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
+			<KeyboardAvoidingView
+				keyboardOpenedOffset={
+					Platform.OS === "ios" ? -safeAreaInsets.bottom : 0
+				}
+			>
 				<MessageList
 					users={[{ _id: 1 }, { _id: 2, avatar: IMAGES.LOGO }]}
 					messages={messages}

@@ -1,10 +1,9 @@
 import type { UIMessage } from "ai";
 import type React from "react";
 import { useCallback } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../constants/colors";
-import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
 import { MessageBubble } from "./MessageBubble";
 
 export interface User {
@@ -24,7 +23,6 @@ export const MessageList: React.FC<MessageListProps> = ({
 	listRef,
 }) => {
 	const safeAreaInsets = useSafeAreaInsets();
-	const keyboardHeight = useKeyboardHeight();
 
 	const findUser = useCallback(
 		(userId: string | number) => {
@@ -67,7 +65,7 @@ export const MessageList: React.FC<MessageListProps> = ({
 					paddingHorizontal: 10,
 				}}
 				inverted
-				keyboardDismissMode="interactive"
+				keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
 			/>
 		</View>
 	);
