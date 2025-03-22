@@ -60,32 +60,34 @@ export const History = () => {
 			<Text weight="medium" style={styles.title}>
 				History
 			</Text>
-			<FlatList
-				data={histories?.sort((a, b) => b.updatedAt - a.updatedAt)}
-				renderItem={({ item }) => (
-					<BouncyPressable
-						key={item.id}
-						style={styles.historyItem}
-						onPress={() => handleChatPress(item)}
-					>
-						<View style={styles.historyContainer}>
-							<Image
-								source={item.type === "chatWithLily" ? LLK_AVATAR : LOGO}
-								style={styles.logo}
-							/>
-							<View style={styles.historyContent}>
-								<Text style={styles.historyTitle}>
-									{getHistoryTitle(item.type)}
-								</Text>
-								<Text style={styles.lastMessage} numberOfLines={1}>
-									{getHistoryContent(item)}
-								</Text>
+			<View>
+				{histories
+					?.sort((a, b) => b.updatedAt - a.updatedAt)
+					.slice(0, 4)
+					.map((item) => (
+						<BouncyPressable
+							key={item.id}
+							style={styles.historyItem}
+							onPress={() => handleChatPress(item)}
+						>
+							<View style={styles.historyContainer}>
+								<Image
+									source={item.type === "chatWithLily" ? LLK_AVATAR : LOGO}
+									style={styles.logo}
+								/>
+								<View style={styles.historyContent}>
+									<Text style={styles.historyTitle}>
+										{getHistoryTitle(item.type)}
+									</Text>
+									<Text style={styles.lastMessage} numberOfLines={1}>
+										{getHistoryContent(item)}
+									</Text>
+								</View>
 							</View>
-						</View>
-						<Ionicons name="chevron-forward" size={24} color={colors.white} />
-					</BouncyPressable>
-				)}
-			/>
+							<Ionicons name="chevron-forward" size={24} color={colors.white} />
+						</BouncyPressable>
+					))}
+			</View>
 		</View>
 	);
 };

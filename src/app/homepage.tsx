@@ -22,61 +22,69 @@ export default function Homepage() {
 					{ paddingTop: insets.top, paddingBottom: insets.bottom },
 				]}
 			>
-				<View
-					style={{
-						width: "100%",
-						flexDirection: "row",
-						justifyContent: "flex-start",
-						marginTop: 16,
-						marginBottom: 36,
-					}}
-				>
-					<RoundButton size={56} onPress={() => router.push("/animated-card")}>
-						<Ionicons name="sparkles" size={24} color="white" />
-					</RoundButton>
-				</View>
-				<Text
-					weight="semibold"
-					style={{
-						color: "white",
-						fontSize: 28,
-						width: "70%",
-						marginBottom: 8,
-					}}
-				>
-					Create, explore, be inspired
-				</Text>
-				<SearchBar />
 				<ScrollView
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={styles.scrollContent}
-					style={styles.scrollView}
+					showsVerticalScrollIndicator={false}
+					style={styles.mainScrollView}
 				>
-					<View style={styles.buttonContainer}>
-						<CardButton
-							text="AI text writer"
-							borderColor={colors.lightGrey}
-							onPress={() => router.push("/chat/new")}
-						/>
-						<CardButton
-							text="Lisa-Lou's chatbot"
-							borderColor={colors.lightGrey}
-							onPress={() => router.push("/chatWithLily/new")}
-						/>
-						<CardButton
-							text="AI Voice mode"
-							borderColor={colors.lightGrey}
-							onPress={() => router.push("/voiceMode")}
-						/>
-						<CardButton
-							text="AI Rant"
-							borderColor={colors.lightGrey}
-							onPress={() => router.push("/aiRant")}
-						/>
+					<View
+						style={{
+							width: "100%",
+							flexDirection: "row",
+							justifyContent: "flex-start",
+							marginTop: 16,
+							marginBottom: 36,
+						}}
+					>
+						<RoundButton
+							size={56}
+							onPress={() => router.push("/animated-card")}
+						>
+							<Ionicons name="sparkles" size={24} color="white" />
+						</RoundButton>
 					</View>
+					<Text
+						weight="semibold"
+						style={{
+							color: "white",
+							fontSize: 28,
+							width: "70%",
+							marginBottom: 8,
+						}}
+					>
+						Create, explore, be inspired
+					</Text>
+					<SearchBar />
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						contentContainerStyle={styles.scrollContent}
+						style={styles.scrollView}
+					>
+						<View style={styles.buttonContainer}>
+							<CardButton
+								text="AI text writer"
+								borderColor={colors.lightGrey}
+								onPress={() => router.push("/chat/new")}
+							/>
+							<CardButton
+								text="Lisa-Lou's chatbot"
+								borderColor={colors.lightGrey}
+								onPress={() => router.push("/chatWithLily/new")}
+							/>
+							<CardButton
+								text="AI Voice mode"
+								borderColor={colors.lightGrey}
+								onPress={() => router.push("/voiceMode")}
+							/>
+							<CardButton
+								text="AI Rant"
+								borderColor={colors.lightGrey}
+								onPress={() => router.push("/aiRant")}
+							/>
+						</View>
+					</ScrollView>
+					<History />
 				</ScrollView>
-				<History />
 			</View>
 		</>
 	);
@@ -86,6 +94,11 @@ const styles = StyleSheet.create({
 	layout: {
 		paddingHorizontal: 16,
 		zIndex: 1,
+		flex: 1,
+	},
+	mainScrollView: {
+		flex: 1,
+		height: "100%",
 	},
 	scrollContent: {
 		paddingRight: 16,
