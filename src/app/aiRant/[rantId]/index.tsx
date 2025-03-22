@@ -48,8 +48,8 @@ export default function AIRant() {
 	const handleSubmit = useCallback(async () => {
 		if (input?.trim().length === 0) return;
 		generateRant({ input });
-		setRantMessage(rantContent?.content || "");
-	}, [input, rantContent?.content, generateRant]);
+		setRantMessage(input || "");
+	}, [input, generateRant]);
 
 	const handleNewRant = useCallback(() => {
 		setInput("");
@@ -81,6 +81,8 @@ export default function AIRant() {
 		type: "rant",
 		status: "success",
 	});
+
+	console.log("title", initialRant?.value.rantSubject, rantMessage, input);
 
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
