@@ -92,9 +92,6 @@ export default function AIRant() {
 		status: "success",
 	});
 
-	console.log("rantMessage", rantMessage);
-	console.log("input", input);
-
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
 	return (

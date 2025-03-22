@@ -158,7 +158,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 					// If successful, ensure manual mode is off
 					toggleManualMode(false);
 				}
-				console.log("autoStartRecording success");
 			} catch (error) {
 				const errorMessage =
 					error instanceof Error ? error.message : String(error);
