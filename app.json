@@ -27,6 +27,14 @@
 			},
 			"package": "com.lilykr.chatbot"
 		},
+		"androidStatusBar": {
+			"barStyle": "dark-content",
+			"translucent": true
+		},
+		"androidNavigationBar": {
+			"barStyle": "dark-content",
+			"backgroundColor": "#090607"
+		},
 		"web": {
 			"favicon": "./assets/favicon.png",
 			"bundler": "metro",

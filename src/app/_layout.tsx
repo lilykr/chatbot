@@ -11,6 +11,7 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import React, { useEffect } from "react";
 import ErrorBoundary from "react-native-error-boundary";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -21,6 +22,7 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
+SystemUI.setBackgroundColorAsync("black");
 // This is the default configuration
 configureReanimatedLogger({
 	level: ReanimatedLogLevel.warn,
@@ -50,7 +52,7 @@ export default function RootLayout() {
 
 	return (
 		<ErrorBoundary>
-			<StatusBar style="light" backgroundColor={colors.night} />
+			<StatusBar style="light" translucent />
 			<GestureHandlerRootView>
 				<SafeAreaProvider>
 					<Stack
