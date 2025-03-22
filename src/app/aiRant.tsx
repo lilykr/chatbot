@@ -9,7 +9,7 @@ import { ResponseDisplay } from "../components/ResponseDisplay";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
 import { rantSchema } from "./api/chat-rant+api";
-
+import { apiUrl } from "../constants/apiUrl";
 export default function AIRant() {
 	const [input, setInput] = useState("");
 	const [rantMessage, setRantMessage] = useState<string | undefined>(undefined);
@@ -22,7 +22,7 @@ export default function AIRant() {
 		isLoading,
 	} = useObject({
 		fetch: expoFetch as unknown as typeof globalThis.fetch,
-		api: "http://localhost:8081/api/chat-rant",
+		api: `${apiUrl}/api/chat-rant`,
 		schema: rantSchema,
 	});
 

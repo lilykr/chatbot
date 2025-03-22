@@ -16,6 +16,7 @@ import { useCamera } from "../../../features/chat/hooks/useCamera";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
+import { apiUrl } from "../../../constants/apiUrl";
 
 export const AI_AVATAR = require("../../../../assets/avatar.png");
 
@@ -40,7 +41,7 @@ export default function Chat() {
 	const { messages, error, handleInputChange, input, handleSubmit, status } =
 		useChat({
 			fetch: expoFetch as unknown as typeof globalThis.fetch,
-			api: "https://lilykr-chatbot.expo.app/api/chat",
+			api: `${apiUrl}/api/chat`,
 			streamProtocol: "data",
 			headers: {
 				Accept: "text/event-stream",
@@ -54,7 +55,7 @@ export default function Chat() {
 		isLoading: isGeneratingTitle,
 	} = useObject({
 		fetch: expoFetch as unknown as typeof globalThis.fetch,
-		api: "https://lilykr-chatbot.expo.app/api/generate-title",
+		api: `${apiUrl}/api/generate-title`,
 		schema: titleSchema,
 		headers: {
 			Accept: "text/event-stream",

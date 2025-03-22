@@ -14,6 +14,7 @@ import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { apiUrl } from "../../../constants/apiUrl";
 
 export const LLK_AVATAR = require("../../../../assets/llk.png");
 
@@ -32,7 +33,7 @@ export default function ChatWithLily() {
 	const { messages, error, handleInputChange, input, handleSubmit, status } =
 		useChat({
 			fetch: expoFetch as unknown as typeof globalThis.fetch,
-			api: "https://lilykr-chatbot.expo.app/api/chat-with-lily",
+			api: `${apiUrl}/api/chat-with-lily`,
 			streamProtocol: "data",
 			headers: {
 				Accept: "text/event-stream",
@@ -46,7 +47,7 @@ export default function ChatWithLily() {
 		isLoading: isGeneratingTitle,
 	} = useObject({
 		fetch: expoFetch as unknown as typeof globalThis.fetch,
-		api: "https://lilykr-chatbot.expo.app/api/generate-title",
+		api: `${apiUrl}/api/generate-title`,
 		schema: titleSchema,
 		headers: {
 			Accept: "text/event-stream",

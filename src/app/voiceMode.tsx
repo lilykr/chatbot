@@ -137,7 +137,7 @@ export default function VoiceMode() {
 
 	return (
 		<View style={styles.layout}>
-			<Header title="AI Voice mode" />
+			<Header title="AI Voice mode" type="voice" />
 			{/* WaveMesh with opacity animation */}
 			{/* Make sure this takes up the full space and is positioned correctly */}
 			<Animated.View style={[animatedStyle, styles.waveMeshContainer]}>
