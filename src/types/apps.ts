@@ -33,3 +33,4 @@ export type RantApp = {
 };
 
 export type App = ChatApp | VoiceModeApp | RantApp | ChatWithLilyApp;
+export type AppType = App["type"];

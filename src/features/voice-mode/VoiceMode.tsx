@@ -230,7 +230,7 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	return (
 		<View style={styles.layout}>
-			<Header title="AI Voice mode" type="voice" />
+			<Header title="AI Voice mode" type="voiceMode" />
 			{/* WaveMesh with opacity animation */}
 			<Animated.View style={[animatedStyle, styles.waveMeshContainer]}>
 				<WaveMesh
