@@ -406,7 +406,7 @@ export const SkiaAnimatedCard = ({
 	});
 
 	return (
-		<GestureHandlerRootView style={styles.container}>
+		<GestureHandlerRootView style={styles.layout}>
 			<GestureDetector gesture={gesture}>
 				<Canvas style={styles.canvas}>
 					{/* Background mesh gradient */}
@@ -692,7 +692,7 @@ export const SkiaAnimatedCard = ({
 };
 
 const styles = StyleSheet.create({
-	container: {
+	layout: {
 		flex: 1,
 	},
 	canvas: {
