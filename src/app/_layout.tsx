@@ -13,6 +13,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import ErrorBoundary from "react-native-error-boundary";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -58,6 +59,8 @@ function RootLayout() {
 							headerShown: false,
 							contentStyle: { backgroundColor: colors.night },
 							gestureEnabled: true,
+							animation:
+								Platform.OS === "android" ? "slide_from_right" : undefined,
 						}}
 					>
 						<Stack.Screen
