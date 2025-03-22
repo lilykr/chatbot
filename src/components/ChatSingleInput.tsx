@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput, View } from "react-native";
-import { Text } from "./Text";
-import { BouncyPressable } from "./BouncyPressable";
 import { colors } from "../constants/colors";
+import { BouncyPressable } from "./BouncyPressable";
+import { Text } from "./Text";
 
 interface Props {
 	input: string;

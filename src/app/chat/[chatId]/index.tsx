@@ -136,20 +136,24 @@ export default function Chat() {
 	}, [openVoiceMode, voiceModeOpacity]);
 
 	// Handle voice mode closing with animation
-	const handleVoiceModeClose = useCallback(() => {
-		if (messages.length === 0) {
-			router.back();
-			return;
-		}
-		voiceModeOpacity.value = withTiming(0, { duration: 500 }, () => {
-			// This runs after animation completes
-			runOnJS(setShowVoiceMode)(false);
-		});
-	}, [voiceModeOpacity, messages]);
+	const handleVoiceModeClose = useCallback(
+		(forceClose = false) => {
+			if (messages.length === 0 && !forceClose) {
+				router.back();
+				return;
+			}
+			voiceModeOpacity.value = withTiming(0, { duration: 500 }, () => {
+				// This runs after animation completes
+				runOnJS(setShowVoiceMode)(false);
+			});
+		},
+		[voiceModeOpacity, messages],
+	);
 
 	// Handle speech end from voice mode
 	const handleSpeechEnd = useCallback(
 		(transcript: string) => {
+			handleVoiceModeClose(true);
 			// Process the transcript
 			if (transcript && transcript.trim().length > 0) {
 				// Directly append the message using the append function
@@ -166,7 +170,7 @@ export default function Chat() {
 				}
 			}
 		},
-		[append, generateTitle, messages.length],
+		[append, generateTitle, messages.length, handleVoiceModeClose],
 	);
 
 	// Voice mode animated style

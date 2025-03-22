@@ -111,7 +111,6 @@ export function VoiceMode({
 		if (isSpeechActive) {
 			// Make sure to stop speech recognition and clean up
 			stopSpeechRecognition();
-			onClose();
 			setIsSpeechActive(false);
 		} else {
 			// First, ensure we've cleaned up any previous recording
@@ -137,7 +136,7 @@ export function VoiceMode({
 	};
 
 	// Handle refresh button press to reset transcript
-	const handleRefresh = useCallback(() => {
+	const handleRefresh = () => {
 		// Set a refreshing flag to prevent new transcripts from being processed
 		setIsClosing(true);
 
@@ -153,11 +152,6 @@ export function VoiceMode({
 		setTimeout(() => {
 			// Reset the closing flag
 			setIsClosing(false);
-
-			// Clear the transcript by calling onSpeechEnd with empty string
-			if (onSpeechEnd) {
-				onSpeechEnd("");
-			}
 
 			// If speech was active before, restart it
 			if (isSpeechActive) {
@@ -186,13 +180,7 @@ export function VoiceMode({
 				restartSpeechRecognition();
 			}
 		}, 300); // longer delay to ensure clean restart
-	}, [
-		onSpeechEnd,
-		isSpeechActive,
-		volumeControlCleanup,
-		toggleManualMode,
-		setPermissionErrorState,
-	]);
+	};
 
 	// Handle close button press
 	const handleClose = useCallback(() => {
@@ -226,9 +214,6 @@ export function VoiceMode({
 
 		// Start increasing points after a short delay
 		setTimeout(increasePoints, 100);
-
-		// Log for debugging
-		console.log("Loading complete, starting animation");
 	}, [opacity, pointCount]);
 
 	// Create animated style for opacity
@@ -241,7 +226,6 @@ export function VoiceMode({
 
 	// Handle when component mounts
 	useEffect(() => {
-		console.log("VoiceMode component mounted");
 		// After a small delay for the initial render with minimal points
 		const timer = setTimeout(handleFirstRender, 200);
 

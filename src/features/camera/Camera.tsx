@@ -2,10 +2,10 @@ import { type CameraOrientation, CameraView } from "expo-camera";
 import type React from "react";
 import {
 	type LegacyRef,
+	useCallback,
 	useEffect,
 	useRef,
 	useState,
-	useCallback,
 } from "react";
 import {
 	Animated,

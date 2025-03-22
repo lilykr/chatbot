@@ -1,10 +1,10 @@
-import type React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, useAnimatedValue, View } from "react-native";
-import { colors } from "../../../constants/colors";
-import { Animated } from "react-native";
+import type React from "react";
 import { useEffect } from "react";
+import { Pressable, StyleSheet, View, useAnimatedValue } from "react-native";
+import { Animated } from "react-native";
 import { BouncyPressable } from "../../../components/BouncyPressable";
+import { colors } from "../../../constants/colors";
 
 interface SendButtonProps {
 	onPress: () => void;
