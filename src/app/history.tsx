@@ -2,13 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BouncyPressable } from "../components/BouncyPressable";
+import { Header } from "../components/Header";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
-import { storage, type HistoryItem } from "../services/storage";
+import { type HistoryItem, storage } from "../services/storage";
+import { getAppImage } from "../utils/getAppImage";
 import { getHistoryContent, getHistoryTitle } from "../utils/history";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Header } from "../components/Header";
 import { IMAGES } from "../constants/images";
 
 export default function HistoryPage() {
@@ -49,14 +50,7 @@ export default function HistoryPage() {
 								onPress={() => handleChatPress(item)}
 							>
 								<View style={styles.historyContainer}>
-									<Image
-										source={
-											item.type === "chatWithLily"
-												? IMAGES.LLK_AVATAR
-												: IMAGES.LOGO
-										}
-										style={styles.logo}
-									/>
+									<Image source={getAppImage(item.type)} style={styles.logo} />
 									<View style={styles.historyContent}>
 										<Text style={styles.historyTitle}>
 											{getHistoryTitle(item.type)}
