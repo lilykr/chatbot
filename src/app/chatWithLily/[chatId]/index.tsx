@@ -1,20 +1,20 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { type FlatList, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "../../../constants/colors";
-import { Header } from "../../../components/Header";
 import uuid from "react-native-uuid";
+import { Header } from "../../../components/Header";
+import { colors } from "../../../constants/colors";
 
-import { useCallback, useEffect, useRef } from "react";
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
 import { fetch as expoFetch } from "expo/fetch";
-import { MessageList } from "../../../features/chat/components/MessageList";
-import { ComposerInput } from "../../../features/chat/components/ComposerInput";
+import { useCallback, useEffect, useRef } from "react";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
+import { apiUrl } from "../../../constants/apiUrl";
+import { ComposerInput } from "../../../features/chat/components/ComposerInput";
+import { MessageList } from "../../../features/chat/components/MessageList";
+import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
-import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
-import { apiUrl } from "../../../constants/apiUrl";
 
 export const LLK_AVATAR = require("../../../../assets/llk.png");
 

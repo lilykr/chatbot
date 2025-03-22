@@ -66,18 +66,13 @@ export const startSpeechRecognition = async () => {
 	}
 };
 
-export const stopSpeechRecognition = (
-	onTranscriptComplete?: (transcript: string) => void,
-) => {
+export const stopSpeechRecognition = () => {
 	try {
 		// First try to abort any existing speech recognition
 		ExpoSpeechRecognitionModule.abort();
 
 		// Then explicitly stop it
 		ExpoSpeechRecognitionModule.stop();
-
-		// The callback will be called by the component via the onEnd prop
-		console.log("Speech recognition stopped");
 	} catch (error) {
 		// If there's an error, log it but don't throw to avoid crashing
 		console.error("Error stopping speech recognition:", error);

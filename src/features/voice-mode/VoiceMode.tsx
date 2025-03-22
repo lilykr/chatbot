@@ -214,9 +214,6 @@ export function VoiceMode({
 
 		// Start increasing points after a short delay
 		setTimeout(increasePoints, 100);
-
-		// Log for debugging
-		console.log("Loading complete, starting animation");
 	}, [opacity, pointCount]);
 
 	// Create animated style for opacity
@@ -229,7 +226,6 @@ export function VoiceMode({
 
 	// Handle when component mounts
 	useEffect(() => {
-		console.log("VoiceMode component mounted");
 		// After a small delay for the initial render with minimal points
 		const timer = setTimeout(handleFirstRender, 200);
 

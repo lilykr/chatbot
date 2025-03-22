@@ -1,13 +1,13 @@
 import type { UIMessage } from "ai";
 import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
-import { StyleSheet, View, Linking, TextStyle } from "react-native";
+import { Linking, StyleSheet, TextStyle, View } from "react-native";
+import Markdown from "react-native-markdown-display";
 import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { Avatar } from "./Avatar";
 import type { User } from "./MessageList";
-import Markdown from "react-native-markdown-display";
 
 interface MessageBubbleProps {
 	message: UIMessage;

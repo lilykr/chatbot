@@ -1,8 +1,8 @@
-import { StyleSheet, View, ScrollView, ActivityIndicator } from "react-native";
-import { Text } from "./Text";
-import { BouncyPressable } from "./BouncyPressable";
-import { colors } from "../constants/colors";
 import { useCallback, useRef } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { colors } from "../constants/colors";
+import { BouncyPressable } from "./BouncyPressable";
+import { Text } from "./Text";
 
 interface ResponseDisplayProps {
 	content?: string | undefined;

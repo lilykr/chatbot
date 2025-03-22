@@ -2,9 +2,9 @@ import React, { useRef, type ReactNode } from "react";
 import {
 	Animated,
 	Pressable,
+	type PressableProps,
 	StyleSheet,
 	type ViewStyle,
-	type PressableProps,
 } from "react-native";
 
 type BouncyPressableProps = {

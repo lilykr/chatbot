@@ -1,11 +1,11 @@
+import { Feather } from "@expo/vector-icons";
 import type React from "react";
 import {
 	Image,
+	type ImageSourcePropType,
 	StyleSheet,
 	View,
-	type ImageSourcePropType,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import { colors } from "../../../constants/colors";
 
 interface AvatarProps {
