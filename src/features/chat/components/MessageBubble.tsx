@@ -67,7 +67,6 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 					</LinearGradient>
 				) : (
 					<Markdown
-						debugPrintTree
 						style={{
 							body: {
 								...styles.text,
