@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect } from "react";
 import {
 	Animated,
+	Keyboard,
 	StyleSheet,
 	TextInput,
 	View,
@@ -36,6 +37,10 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	const voiceScaleAnim = useAnimatedValue(1);
 	const sendScaleAnim = useAnimatedValue(0);
 
+	const handleVoicePress = () => {
+		Keyboard.dismiss();
+		onVoicePress?.();
+	};
 	useEffect(() => {
 		Animated.spring(voiceScaleAnim, {
 			toValue: hasInput ? 0 : 1,
@@ -91,7 +96,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 							]}
 						>
 							<BouncyPressable
-								onPress={onVoicePress}
+								onPress={handleVoicePress}
 								style={styles.voiceButton}
 								disabled={hasInput}
 							>
