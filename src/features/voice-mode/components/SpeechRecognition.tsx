@@ -8,6 +8,11 @@ import {
 } from "expo-speech-recognition";
 import { useEffect, useState } from "react";
 import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
+import Animated, {
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { RoundButton } from "../../../components/RoundButton";
@@ -106,6 +111,25 @@ const SpeechRecognition = ({
 	const [lastTranscriptBeforeClosing, setLastTranscriptBeforeClosing] =
 		useState("");
 	const safeAreaInsets = useSafeAreaInsets();
+
+	// Add animated value for refresh button opacity
+	const refreshButtonOpacity = useSharedValue(0);
+
+	// Create animated style for the refresh button
+	const refreshButtonStyle = useAnimatedStyle(() => {
+		return {
+			opacity: refreshButtonOpacity.value,
+		};
+	});
+
+	// Update refresh button opacity when transcript changes
+	useEffect(() => {
+		if (transcript.length > 0) {
+			refreshButtonOpacity.value = withTiming(1, { duration: 300 });
+		} else {
+			refreshButtonOpacity.value = withTiming(0, { duration: 300 });
+		}
+	}, [transcript, refreshButtonOpacity]);
 
 	// Check if English is available
 	useEffect(() => {
@@ -315,9 +339,11 @@ const SpeechRecognition = ({
 				<RoundButton onPress={handleMicrophonePress}>
 					<SimpleLineIcons name="microphone" size={28} color="white" />
 				</RoundButton>
-				<BouncyPressable onPress={onRefresh}>
-					<Ionicons name="refresh-outline" size={30} color="white" />
-				</BouncyPressable>
+				<Animated.View style={refreshButtonStyle}>
+					<BouncyPressable onPress={onRefresh}>
+						<Ionicons name="refresh-outline" size={30} color="white" />
+					</BouncyPressable>
+				</Animated.View>
 			</View>
 		</View>
 	);
