@@ -80,7 +80,6 @@ export const stopSpeechRecognition = () => {
 };
 
 const SpeechRecognition = ({
-	isActive,
 	permissionError,
 	onEnd,
 	isClosing = false,
@@ -88,7 +87,6 @@ const SpeechRecognition = ({
 	onClose,
 	onRefresh,
 }: {
-	isActive: boolean;
 	permissionError: string | null;
 	onEnd?: (transcript: string) => void;
 	isClosing?: boolean;
@@ -195,7 +193,7 @@ const SpeechRecognition = ({
 		// Skip handling if component is being deliberately closed
 		if (isClosing) return;
 
-		if (isActive && transcript) {
+		if (transcript) {
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
 				onEnd(transcript);
@@ -206,37 +204,12 @@ const SpeechRecognition = ({
 		}
 	});
 
-	// Track changes in isActive to detect when user stops recognition
-	useEffect(() => {
-		// Skip handling if component is being deliberately closed
-		if (isClosing) return;
-
-		// If we were active before and now we're not, and we have a transcript
-		if (previousActiveState && !isActive && transcript) {
-			// Call the onEnd callback with the final transcript
-			if (onEnd) {
-				onEnd(transcript);
-			}
-
-			// Reset transcript
-			setTranscript("");
-		}
-
-		// If we weren't active before and now we are, reset transcript
-		if (!previousActiveState && isActive) {
-			setTranscript("");
-		}
-
-		// Update previous state
-		setPreviousActiveState(isActive);
-	}, [isActive, previousActiveState, transcript, onEnd, isClosing]);
-
 	// Track the transcript for closing purposes
 	useEffect(() => {
-		if (transcript && isActive && !isClosing) {
+		if (transcript && !isClosing) {
 			setLastTranscriptBeforeClosing(transcript);
 		}
-	}, [transcript, isActive, isClosing]);
+	}, [transcript, isClosing]);
 
 	// Update when isClosing changes
 	useEffect(() => {
@@ -263,7 +236,7 @@ const SpeechRecognition = ({
 	}, []);
 
 	const handleMicrophonePress = () => {
-		if (isActive && transcript.length === 0) {
+		if (transcript.length === 0) {
 			return;
 		}
 		if (onToggleSpeech) {
@@ -294,28 +267,21 @@ const SpeechRecognition = ({
 				</Text>
 			);
 		}
-
-		// If recognition is active
-		if (isActive) {
-			// If there's a transcript, show it
-			if (transcript) {
-				return <Text style={styles.transcriptText}>{transcript}</Text>;
-			}
-			// Otherwise show "Listening..."
-			return (
-				<View style={styles.listeningContainer}>
-					<Text
-						style={[styles.transcriptText, { opacity: 0.8, marginBottom: 10 }]}
-					>
-						Listening...
-					</Text>
-					<Text style={styles.languageText}>Available language: English</Text>
-				</View>
-			);
+		// If there's a transcript, show it
+		if (transcript) {
+			return <Text style={styles.transcriptText}>{transcript}</Text>;
 		}
-
-		// Default state: show available language
-		return <Text style={styles.languageText}>Available language: English</Text>;
+		// Otherwise show "Listening..."
+		return (
+			<View style={styles.listeningContainer}>
+				<Text
+					style={[styles.transcriptText, { opacity: 0.8, marginBottom: 10 }]}
+				>
+					Listening...
+				</Text>
+				<Text style={styles.languageText}>Available language: English</Text>
+			</View>
+		);
 	};
 
 	return (
