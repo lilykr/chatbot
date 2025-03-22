@@ -39,6 +39,7 @@ export function VoiceMode({
 	const pointCount = useSharedValue(INITIAL_POINT_COUNT);
 	const renderedOnce = useRef(false);
 	const [isSpeechActive, setIsSpeechActive] = useState(autoStart);
+	const [isClosing, setIsClosing] = useState(false);
 
 	// Track the actual point count as a state value for passing to WaveMesh
 	const [currentPointCount, setCurrentPointCount] =
@@ -96,6 +97,11 @@ export function VoiceMode({
 
 	// Handle speech recognition end
 	const handleSpeechEnd = (transcript: string) => {
+		// Don't send the transcript if we're deliberately closing
+		if (isClosing) {
+			return;
+		}
+
 		if (onSpeechEnd) {
 			onSpeechEnd(transcript);
 		}
@@ -106,6 +112,7 @@ export function VoiceMode({
 		if (isSpeechActive) {
 			// Make sure to stop speech recognition and clean up
 			stopSpeechRecognition();
+			onClose();
 			setIsSpeechActive(false);
 		} else {
 			// First, ensure we've cleaned up any previous recording
@@ -132,13 +139,67 @@ export function VoiceMode({
 
 	// Handle refresh button press to reset transcript
 	const handleRefresh = useCallback(() => {
-		if (onSpeechEnd) {
-			onSpeechEnd("");
+		// Set a refreshing flag to prevent new transcripts from being processed
+		setIsClosing(true);
+
+		// Stop the current speech recognition session
+		if (isSpeechActive) {
+			stopSpeechRecognition();
 		}
-	}, [onSpeechEnd]);
+
+		// Clean up any recording resources
+		volumeControlCleanup();
+
+		// Short delay to ensure everything is cleaned up
+		setTimeout(() => {
+			// Reset the closing flag
+			setIsClosing(false);
+
+			// Clear the transcript by calling onSpeechEnd with empty string
+			if (onSpeechEnd) {
+				onSpeechEnd("");
+			}
+
+			// If speech was active before, restart it
+			if (isSpeechActive) {
+				const restartSpeechRecognition = async () => {
+					// Ensure we've cleaned up any previous recording
+					volumeControlCleanup();
+
+					try {
+						const started = await startSpeechRecognition();
+						if (!started) {
+							setPermissionErrorState("Failed to restart speech recognition");
+							setIsSpeechActive(false);
+						} else {
+							setPermissionErrorState(null);
+							// If successful, ensure manual mode is off
+							toggleManualMode(false);
+						}
+					} catch (error) {
+						const errorMessage =
+							error instanceof Error ? error.message : String(error);
+						setPermissionErrorState(errorMessage);
+						setIsSpeechActive(false);
+					}
+				};
+
+				restartSpeechRecognition();
+			}
+		}, 300); // longer delay to ensure clean restart
+	}, [
+		onSpeechEnd,
+		isSpeechActive,
+		volumeControlCleanup,
+		toggleManualMode,
+		setPermissionErrorState,
+	]);
 
 	// Handle close button press
 	const handleClose = useCallback(() => {
+		// Set the closing flag to prevent sending the transcript
+		setIsClosing(true);
+
 		// Ensure all recording and audio resources are cleaned up
 		if (isSpeechActive) {
 			stopSpeechRecognition();
@@ -222,6 +283,8 @@ export function VoiceMode({
 			}
 			// Always clean up recording and audio when unmounting
 			volumeControlCleanup();
+			// Reset closing flag when unmounting
+			setIsClosing(false);
 		};
 	}, [
 		handleFirstRender,
@@ -250,11 +313,12 @@ export function VoiceMode({
 				isActive={isSpeechActive}
 				permissionError={permissionError}
 				onEnd={handleSpeechEnd}
+				isClosing={isClosing}
 			/>
 			<VoiceControlButtons
 				onPress={handleToggleSpeechRecognition}
 				onClose={handleClose}
-				// onRefresh={handleRefresh}
+				onRefresh={handleRefresh}
 			/>
 			<View style={styles.overlay}>
 				{enableDebug && (

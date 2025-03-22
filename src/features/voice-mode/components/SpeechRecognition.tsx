@@ -78,10 +78,12 @@ const SpeechRecognition = ({
 	isActive,
 	permissionError,
 	onEnd,
+	isClosing = false,
 }: {
 	isActive: boolean;
 	permissionError: string | null;
 	onEnd?: (transcript: string) => void;
+	isClosing?: boolean;
 }) => {
 	const [transcript, setTranscript] = useState("");
 	const [isEnglishAvailable, setIsEnglishAvailable] = useState<boolean | null>(
@@ -90,6 +92,8 @@ const SpeechRecognition = ({
 	const [isLoading, setIsLoading] = useState(true);
 	const isWeb = Platform.OS === "web";
 	const [previousActiveState, setPreviousActiveState] = useState(false);
+	const [lastTranscriptBeforeClosing, setLastTranscriptBeforeClosing] =
+		useState("");
 
 	// Check if English is available
 	useEffect(() => {
@@ -139,12 +143,27 @@ const SpeechRecognition = ({
 
 	// Set up speech recognition event listeners
 	useSpeechRecognitionEvent("result", (event) => {
+		// Don't update transcript if we're closing
+		if (isClosing) return;
+
 		const newTranscript = event.results[0]?.transcript || "";
 		setTranscript(newTranscript);
 	});
 
+	// Clear transcript immediately when isClosing becomes true
+	useEffect(() => {
+		if (isClosing) {
+			// Clear both visible transcript and saved transcript
+			setTranscript("");
+			setLastTranscriptBeforeClosing("");
+		}
+	}, [isClosing]);
+
 	// Handle end event to show alert with final transcript and reset
 	useSpeechRecognitionEvent("end", () => {
+		// Skip handling if component is being deliberately closed
+		if (isClosing) return;
+
 		if (isActive && transcript) {
 			// Call the onEnd callback with the final transcript
 			if (onEnd) {
@@ -158,6 +177,9 @@ const SpeechRecognition = ({
 
 	// Track changes in isActive to detect when user stops recognition
 	useEffect(() => {
+		// Skip handling if component is being deliberately closed
+		if (isClosing) return;
+
 		// If we were active before and now we're not, and we have a transcript
 		if (previousActiveState && !isActive && transcript) {
 			// Call the onEnd callback with the final transcript
@@ -176,7 +198,21 @@ const SpeechRecognition = ({
 
 		// Update previous state
 		setPreviousActiveState(isActive);
-	}, [isActive, previousActiveState, transcript, onEnd]);
+	}, [isActive, previousActiveState, transcript, onEnd, isClosing]);
+
+	// Track the transcript for closing purposes
+	useEffect(() => {
+		if (transcript && isActive && !isClosing) {
+			setLastTranscriptBeforeClosing(transcript);
+		}
+	}, [transcript, isActive, isClosing]);
+
+	// Update when isClosing changes
+	useEffect(() => {
+		if (isClosing && !lastTranscriptBeforeClosing && transcript) {
+			setLastTranscriptBeforeClosing(transcript);
+		}
+	}, [isClosing, lastTranscriptBeforeClosing, transcript]);
 
 	// Clean up when the component unmounts
 	useEffect(() => {

@@ -179,11 +179,8 @@ export default function Chat() {
 	// Handle speech end from voice mode
 	const handleSpeechEnd = useCallback(
 		(transcript: string) => {
-			// Close voice mode with animation
-			handleVoiceModeClose();
-
 			// Process the transcript
-			if (transcript) {
+			if (transcript && transcript.trim().length > 0) {
 				// Directly append the message using the append function
 				append({
 					role: "user",
@@ -198,7 +195,7 @@ export default function Chat() {
 				}
 			}
 		},
-		[append, generateTitle, messages.length, handleVoiceModeClose],
+		[append, generateTitle, messages.length],
 	);
 
 	// Voice mode animated style
