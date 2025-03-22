@@ -7,27 +7,32 @@ interface RoundButtonProps {
 	onPress?: (() => void) | undefined;
 	children: ReactNode;
 	containerStyle?: ViewStyle;
+	size?: number;
 }
 
 export const RoundButton = ({
 	onPress,
 	children,
 	containerStyle,
+	size = 64,
 }: RoundButtonProps) => {
 	return (
 		<View style={[styles.layout, containerStyle]}>
-			<BouncyPressable onPress={onPress} style={styles.buttonContainer}>
+			<BouncyPressable
+				onPress={onPress}
+				style={{ width: size + 4, height: size + 4 }}
+			>
 				<LinearGradient
 					colors={["#f78f9e", "#ae3bd1"]}
 					start={{ x: 0, y: 0.5 }}
 					end={{ x: 1, y: 0.5 }}
-					style={styles.buttonBorder}
+					style={[styles.buttonBorder, { width: size + 4, height: size + 4 }]}
 				>
 					<LinearGradient
 						colors={["#C26E73", "#AC1ED6"]}
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
-						style={styles.button}
+						style={[styles.button, { width: size, height: size }]}
 					>
 						{children}
 					</LinearGradient>
@@ -43,20 +48,13 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
-	buttonContainer: {
-		width: 68,
-		height: 68,
-	},
+
 	button: {
-		width: 64,
-		height: 64,
 		borderRadius: 32,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	buttonBorder: {
-		width: 68,
-		height: 68,
 		borderRadius: 34,
 		justifyContent: "center",
 		alignItems: "center",
