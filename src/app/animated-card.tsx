@@ -1,5 +1,5 @@
-import AnimatedCard from "../components/AnimatedCard";
+import { SkiaAnimatedCard } from "../components/SkiaAnimatedCard";
 
 export default function AnimatedCardPage() {
-	return <AnimatedCard />;
+	return <SkiaAnimatedCard />;
 }

@@ -227,7 +227,6 @@ const AnimatedCard = () => {
 								left: 0,
 								right: 0,
 								bottom: 0,
-								borderRadius: 30,
 							}}
 						/>
 						<AnimatedView style={[styles.imageContainer, animatedImage]}>
@@ -292,7 +291,7 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		height: CARD_HEIGHT,
 		width: CARD_WIDTH,
-		// backgroundColor: "#F6F3F0",
+		backgroundColor: "#F6F3F0",
 		// shadowColor: "#000",
 		// shadowOffset: {
 		// 	width: 0,
