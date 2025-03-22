@@ -1,7 +1,7 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 import React from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BouncyPressable } from "../components/BouncyPressable";
 import { SkiaAnimatedCard } from "../components/SkiaAnimatedCard";
@@ -13,9 +13,13 @@ export default function AnimatedCardPage() {
 	return (
 		<>
 			<SkiaAnimatedCard
-				onPressLinkedin={() => console.log("LinkedIn")}
-				onPressGithub={() => console.log("Github")}
-				onPressChat={() => console.log("Chat")}
+				onPressLinkedin={() =>
+					Linking.openURL("https://www.linkedin.com/in/lisaloukara/")
+				}
+				onPressGithub={() =>
+					Linking.openURL("https://github.com/lilykr/chatbot")
+				}
+				onPressChat={() => router.replace("/chatWithLily/new")}
 			/>
 			<View
 				style={{

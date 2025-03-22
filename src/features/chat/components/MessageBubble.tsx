@@ -3,7 +3,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
 import { Linking, StyleSheet, TextStyle, View } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
 import { Avatar } from "./Avatar";
