@@ -29,7 +29,7 @@ configureReanimatedLogger({
 });
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayout() {
 	const [fontsLoaded] = useFonts({
 		Epilogue_400Regular,
 		Epilogue_500Medium,
@@ -60,7 +60,7 @@ export default function RootLayout() {
 						}}
 					>
 						<Stack.Screen
-							name="/"
+							name="homepage"
 							options={{
 								animation: "fade",
 								animationDuration: 300,
@@ -79,3 +79,5 @@ export default function RootLayout() {
 		</ErrorBoundary>
 	);
 }
+
+export default RootLayout;

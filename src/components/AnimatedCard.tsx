@@ -218,8 +218,8 @@ const AnimatedCard = () => {
 			<View style={styles.container}>
 				<GestureDetector gesture={dragGesture}>
 					<AnimatedView style={[styles.card, animatedCard]}>
-						{/* <BlurView intensity={100} style={styles.card}> */}
 						<BlurView
+							experimentalBlurMethod="dimezisBlurView"
 							intensity={100}
 							style={{
 								position: "absolute",

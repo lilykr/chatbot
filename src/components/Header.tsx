@@ -77,6 +77,7 @@ export const Header = ({
 
 	return (
 		<BlurView
+			experimentalBlurMethod="dimezisBlurView"
 			intensity={80}
 			tint="dark"
 			style={[
