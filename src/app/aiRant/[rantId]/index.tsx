@@ -1,7 +1,12 @@
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import {
+	InteractionManager,
+	StyleSheet,
+	type TextInput,
+	View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChatSingleInput } from "../../../components/ChatSingleInput";
 import { Header } from "../../../components/Header";
@@ -10,11 +15,11 @@ import { Text } from "../../../components/Text";
 import { colors } from "../../../constants/colors";
 import { rantSchema } from "../../api/chat-rant+api";
 import { apiUrl } from "../../../constants/apiUrl";
-import { titleSchema } from "../../api/generate-title+api";
 import { router, useLocalSearchParams } from "expo-router";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import uuid from "react-native-uuid";
+import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 
 export default function AIRant() {
 	const { rantId } = useLocalSearchParams();
@@ -24,10 +29,12 @@ export default function AIRant() {
 			| HistoryItem<"rant">
 			| undefined,
 	).current;
+	const inputRef = useRef<TextInput>(null);
 
 	const [input, setInput] = useState<string | undefined>(undefined);
 	const [rantMessage, setRantMessage] = useState<string | undefined>(undefined);
 	const safeAreaInsets = useSafeAreaInsets();
+	const keyboardOpenedOffset = -safeAreaInsets.bottom - 200;
 
 	const {
 		object: rantContent,
@@ -60,6 +67,11 @@ export default function AIRant() {
 	useEffect(() => {
 		if (rantId === "new") {
 			router.setParams({ rantId: uuid.v4() });
+			setTimeout(() => {
+				InteractionManager.runAfterInteractions(() => {
+					inputRef.current?.focus();
+				});
+			}, 560);
 		}
 	}, [rantId]);
 
@@ -92,25 +104,27 @@ export default function AIRant() {
 				}
 				type="rant"
 			/>
-
-			<View style={styles.content}>
-				{rantMessage !== undefined ? (
-					<ResponseDisplay
-						content={rantContent?.content ?? initialRant?.value.rantText}
-						isLoading={isLoading}
-						onNewResponse={handleNewRant}
-					/>
-				) : (
-					<ChatSingleInput
-						input={input ?? ""}
-						onInputChange={setInput}
-						onSubmit={handleSubmit}
-						prompt="What would you like me to rant about?"
-						placeholder="Enter a topic..."
-						submitButtonText="Rant"
-					/>
-				)}
-			</View>
+			<KeyboardAvoidingView keyboardOpenedOffset={keyboardOpenedOffset}>
+				<View style={styles.content}>
+					{rantMessage !== undefined ? (
+						<ResponseDisplay
+							content={rantContent?.content ?? initialRant?.value.rantText}
+							isLoading={isLoading}
+							onNewResponse={handleNewRant}
+						/>
+					) : (
+						<ChatSingleInput
+							input={input ?? ""}
+							onInputChange={setInput}
+							onSubmit={handleSubmit}
+							prompt="What would you like me to rant about?"
+							placeholder="Enter a topic..."
+							submitButtonText="Rant"
+							inputRef={inputRef}
+						/>
+					)}
+				</View>
+			</KeyboardAvoidingView>
 		</View>
 	);
 }

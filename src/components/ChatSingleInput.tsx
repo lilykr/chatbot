@@ -10,6 +10,7 @@ interface Props {
 	prompt: string;
 	submitButtonText: string;
 	placeholder: string;
+	inputRef: React.RefObject<TextInput>;
 }
 
 export function ChatSingleInput({
@@ -19,6 +20,7 @@ export function ChatSingleInput({
 	prompt,
 	submitButtonText,
 	placeholder,
+	inputRef,
 }: Props) {
 	return (
 		<View style={styles.inputContainer}>
@@ -32,6 +34,7 @@ export function ChatSingleInput({
 					placeholderTextColor={colors.lightGrey}
 					multiline
 					onSubmitEditing={onSubmit}
+					ref={inputRef}
 				/>
 				<BouncyPressable style={styles.submitButton} onPress={onSubmit}>
 					<Text style={{ color: colors.white, fontSize: 18 }} weight="semibold">
