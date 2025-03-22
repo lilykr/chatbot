@@ -232,9 +232,7 @@ export default function Chat() {
 			onLayout={handleLayout}
 		>
 			<Header
-				title={
-					titleObject?.title || openVoiceMode ? "AI Voice Mode" : "AI chatbot"
-				}
+				title={titleObject?.title || "AI chatbot"}
 				type={openVoiceMode ? "voice" : "chat"}
 			/>
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
