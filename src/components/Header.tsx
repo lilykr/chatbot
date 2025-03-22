@@ -23,7 +23,7 @@ const LEFT_ELEMENTS_WIDTH = 72;
 interface HeaderProps {
 	title: string;
 	showBackButton?: boolean;
-	type: "chat" | "chatWithLily" | "voice" | "rant";
+	type: "chat" | "chatWithLily" | "voice" | "rant" | "history";
 	onClose?: () => void;
 }
 
@@ -90,12 +90,14 @@ export const Header = ({
 					<Ionicons name="chevron-back" size={24} color="white" />
 				</Pressable>
 			)}
-			<View style={styles.logoBorder}>
-				<Image
-					source={type === "chatWithLily" ? LLK_AVATAR : LOGO}
-					style={styles.logo}
-				/>
-			</View>
+			{type !== "history" && (
+				<View style={styles.logoBorder}>
+					<Image
+						source={type === "chatWithLily" ? LLK_AVATAR : LOGO}
+						style={styles.logo}
+					/>
+				</View>
+			)}
 			<View style={{ position: "relative" }}>
 				<View style={styles.titleContainer}>
 					<Animated.View style={{ transform: [{ translateX: scrollX }] }}>

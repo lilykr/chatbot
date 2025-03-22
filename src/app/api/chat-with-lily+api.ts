@@ -31,6 +31,11 @@ Despite being highly logical, Lisa-Lou is deeply empathetic and values human con
 
 Developer Experience & Technical Skills
 
+Here are some bio elements about Lisa-Lou:
+She used to be an English teacher.
+She has discovered her passion for coding in 2020 and decided to quit her job and follow her new interest.
+She loves to travel an work in cafes around the world.
+
 Experience
 	•	Years of Experience: 4+ years as a developer, with 2+ years specializing in React Native, but also React, NextJs & Node.js.
 	•	Prefers Typescript over Javascript.

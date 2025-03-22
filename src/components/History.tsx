@@ -4,39 +4,11 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
 import { type HistoryItem, storage } from "../services/storage";
-import type { App } from "../types/apps";
+import { getHistoryContent, getHistoryTitle } from "../utils/history";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
 const LOGO = require("../../assets/avatar.png");
 const LLK_AVATAR = require("../../assets/llk.png");
-
-const getHistoryTitle = (type: App["type"]) => {
-	switch (type) {
-		case "chat":
-			return "AI Chatbot";
-		case "voiceMode":
-			return "Voice Mode";
-		case "rant":
-			return "AI Rant";
-		case "chatWithLily":
-			return "Lisa-Lou's chatbot";
-		default:
-			return "";
-	}
-};
-
-const getHistoryContent = (item: App) => {
-	switch (item.type) {
-		case "chat":
-		case "voiceMode":
-		case "chatWithLily":
-			return item.value.title;
-		case "rant":
-			return item.value.rantSubject;
-		default:
-			return "";
-	}
-};
 
 export const History = () => {
 	const [histories, setHistories] = useState(storage.get("history"));
@@ -59,9 +31,14 @@ export const History = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text weight="medium" style={styles.title}>
-				History
-			</Text>
+			<View style={styles.headerContainer}>
+				<Text weight="medium" style={styles.title}>
+					History
+				</Text>
+				<BouncyPressable onPress={() => router.push("/history")}>
+					<Text style={styles.seeAll}>See all</Text>
+				</BouncyPressable>
+			</View>
 			<View>
 				{histories
 					?.sort((a, b) => b.updatedAt - a.updatedAt)
@@ -99,10 +76,19 @@ const styles = StyleSheet.create({
 		marginTop: 8,
 		paddingHorizontal: 16,
 	},
+	headerContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 16,
+	},
 	title: {
 		color: colors.white,
 		fontSize: 20,
-		marginBottom: 16,
+	},
+	seeAll: {
+		color: colors.lightGrey,
+		fontSize: 16,
 	},
 	historyItem: {
 		flexDirection: "row",
