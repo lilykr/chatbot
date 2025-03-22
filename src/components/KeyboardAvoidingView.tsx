@@ -50,9 +50,9 @@ interface KeyboardAvoidingViewProps {
 	easing?: typeof Easing.ease;
 }
 
-const logKeyboardHeight = (height: number) => {
-	console.log("Keyboard height:", height);
-};
+// const logKeyboardHeight = (height: number) => {
+// 	console.log("Keyboard height:", height);
+// };
 
 /**
  * A component that automatically adjusts its position when the keyboard appears

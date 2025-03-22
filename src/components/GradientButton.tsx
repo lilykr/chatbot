@@ -21,7 +21,6 @@ export function GradientButton({
 	onPress,
 	text,
 	textStyle,
-	containerStyle,
 	buttonStyle,
 	gradientColors = ["#f78f9e", "#ae3bd1"],
 	gradientStart = { x: 0, y: 0.5 },

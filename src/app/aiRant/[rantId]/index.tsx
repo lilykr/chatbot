@@ -1,7 +1,7 @@
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { router, useLocalSearchParams } from "expo-router";
 import { fetch as expoFetch } from "expo/fetch";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
 	InteractionManager,
 	StyleSheet,
@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { ChatSingleInput } from "../../../components/ChatSingleInput";
 import { Header } from "../../../components/Header";
+import { RantSuggestions } from "../../../components/RantSuggestions";
 import { ResponseDisplay } from "../../../components/ResponseDisplay";
 import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
@@ -56,6 +57,15 @@ export default function AIRant() {
 		router.replace(`/aiRant/${newRantId}`);
 	}, []);
 
+	const handleTopicSelect = useCallback(
+		(topic: string) => {
+			setInput(topic);
+			generateRant({ input: topic });
+			setRantMessage(topic);
+		},
+		[generateRant],
+	);
+
 	useEffect(() => {
 		if (initialRant) {
 			setRantMessage(initialRant.value.rantText);
@@ -81,6 +91,9 @@ export default function AIRant() {
 		type: "rant",
 		status: "success",
 	});
+
+	console.log("rantMessage", rantMessage);
+	console.log("input", input);
 
 	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
 
@@ -110,15 +123,18 @@ export default function AIRant() {
 						onNewResponse={handleNewRant}
 					/>
 				) : (
-					<ChatSingleInput
-						input={input ?? ""}
-						onInputChange={setInput}
-						onSubmit={handleSubmit}
-						prompt="What would you like me to rant about?"
-						placeholder="Enter a topic..."
-						submitButtonText="Rant"
-						inputRef={inputRef}
-					/>
+					<>
+						<ChatSingleInput
+							input={input ?? ""}
+							onInputChange={setInput}
+							onSubmit={handleSubmit}
+							prompt="What would you like me to rant about?"
+							placeholder="Enter a topic..."
+							submitButtonText="Rant"
+							inputRef={inputRef}
+						/>
+						<RantSuggestions onSelectTopic={handleTopicSelect} />
+					</>
 				)}
 			</View>
 		</View>

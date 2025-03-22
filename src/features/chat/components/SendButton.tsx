@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
 import { useEffect } from "react";
-import { Pressable, StyleSheet, View, useAnimatedValue } from "react-native";
+import { StyleSheet, useAnimatedValue } from "react-native";
 import { Animated } from "react-native";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { colors } from "../../../constants/colors";

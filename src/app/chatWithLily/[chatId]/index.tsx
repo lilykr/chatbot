@@ -36,16 +36,15 @@ export default function ChatWithLily() {
 	const safeAreaInsets = useSafeAreaInsets();
 	const inputRef = useRef<TextInput>(null);
 
-	const { messages, error, handleInputChange, input, handleSubmit, status } =
-		useChat({
-			fetch: expoFetch as unknown as typeof globalThis.fetch,
-			api: `${apiUrl}/api/chat-with-lily`,
-			streamProtocol: "data",
-			headers: {
-				Accept: "text/event-stream",
-			},
-			initialMessages: initialChat?.value.messages ?? [],
-		});
+	const { messages, handleInputChange, input, handleSubmit, status } = useChat({
+		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		api: `${apiUrl}/api/chat-with-lily`,
+		streamProtocol: "data",
+		headers: {
+			Accept: "text/event-stream",
+		},
+		initialMessages: initialChat?.value.messages ?? [],
+	});
 
 	const {
 		object: titleObject,

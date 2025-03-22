@@ -43,7 +43,7 @@ export default function Chat() {
 		chatId: string | "new";
 		openVoiceMode?: "true" | "false";
 	}>();
-	const { showCamera, openCamera, handleCloseCamera } = useCamera();
+	const { openCamera } = useCamera();
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<FlatList>(null);
 	const inputRef = useRef<TextInput>(null);

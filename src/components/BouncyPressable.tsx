@@ -5,11 +5,12 @@ import {
 	type PressableProps,
 	StyleSheet,
 	type ViewStyle,
+	type StyleProp,
 } from "react-native";
 
 type BouncyPressableProps = {
 	onPress?: (() => void) | undefined;
-	style?: ViewStyle;
+	style?: StyleProp<ViewStyle>;
 	children: ReactNode;
 } & PressableProps;
 

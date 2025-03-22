@@ -100,7 +100,6 @@ const SpeechRecognition = ({
 	);
 	const [isLoading, setIsLoading] = useState(true);
 	const isWeb = Platform.OS === "web";
-	const [previousActiveState, setPreviousActiveState] = useState(false);
 	const [lastTranscriptBeforeClosing, setLastTranscriptBeforeClosing] =
 		useState("");
 	const safeAreaInsets = useSafeAreaInsets();

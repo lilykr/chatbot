@@ -1,7 +1,7 @@
 import type { UIMessage } from "ai";
 import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
-import { Linking, StyleSheet, TextStyle, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";

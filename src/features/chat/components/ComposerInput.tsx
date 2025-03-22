@@ -28,7 +28,6 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	value,
 	onChangeText,
 	onSubmit,
-	onCameraPress,
 	onVoicePress,
 	isQuickReplies = false,
 	inputRef,
