@@ -1,19 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { router } from "expo-router";
+import { useEffect, useRef } from "react";
 import {
-	StyleSheet,
-	View,
-	Pressable,
-	Image,
 	Animated,
 	Dimensions,
 	Easing,
+	Image,
+	Pressable,
+	StyleSheet,
+	View,
 } from "react-native";
-import { Text } from "./Text";
-import { colors } from "../constants/colors";
-import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useEffect, useRef } from "react";
+import { colors } from "../constants/colors";
+import { Text } from "./Text";
 
 const LOGO = require("../../assets/avatar.png");
 const LLK_AVATAR = require("../../assets/llk.png");
@@ -24,15 +24,25 @@ interface HeaderProps {
 	title: string;
 	showBackButton?: boolean;
 	type: "chat" | "chatWithLily" | "voice" | "rant";
+	onClose?: () => void;
 }
 
-export const Header = ({ title, showBackButton = true, type }: HeaderProps) => {
+export const Header = ({
+	title,
+	showBackButton = true,
+	type,
+	onClose,
+}: HeaderProps) => {
 	const safeAreaInsets = useSafeAreaInsets();
 	const scrollX = useRef(new Animated.Value(0)).current;
 	const titleWidth = useRef(0);
 
 	const handleBack = () => {
-		router.back();
+		if (onClose) {
+			onClose();
+		} else {
+			router.back();
+		}
 	};
 
 	const startScrollAnimation = () => {

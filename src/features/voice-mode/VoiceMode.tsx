@@ -6,15 +6,15 @@ import Animated, {
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
-import { Header } from "../components/Header";
-import { DebugVolume } from "../features/voice-mode/components/DebugVolume";
+import { Header } from "../../components/Header";
+import { DebugVolume } from "./components/DebugVolume";
 import SpeechRecognition, {
 	startSpeechRecognition,
 	stopSpeechRecognition,
-} from "../features/voice-mode/components/SpeechRecognition";
-import { VoiceControlButtons } from "../features/voice-mode/components/VoiceControlButtons";
-import { WaveMesh } from "../features/voice-mode/components/WaveMesh";
-import { useVolumeControl } from "../features/voice-mode/hooks/useVolumeControl";
+} from "./components/SpeechRecognition";
+import { VoiceControlButtons } from "./components/VoiceControlButtons";
+import { WaveMesh } from "./components/WaveMesh";
+import { useVolumeControl } from "./hooks/useVolumeControl";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 // Add this constant at the top with other constants
@@ -22,7 +22,12 @@ const enableDebug = false; // You can toggle this to show/hide debug controls
 const FINAL_POINT_COUNT = 1000; // Target number of points
 const INITIAL_POINT_COUNT = 200; // Starting with fewer points for fast initial render
 
-export default function VoiceMode() {
+export type VoiceModeProps = {
+	onSpeechEnd: (transcript: string) => void;
+	onClose: () => void;
+};
+
+export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 	const opacity = useSharedValue(0);
@@ -84,7 +89,9 @@ export default function VoiceMode() {
 
 	// Handle speech recognition end
 	const handleSpeechEnd = (transcript: string) => {
-		console.log("Speech recognition ended with transcript:", transcript);
+		if (onSpeechEnd) {
+			onSpeechEnd(transcript);
+		}
 	};
 
 	// Handle toggle of speech recognition
@@ -97,6 +104,13 @@ export default function VoiceMode() {
 			setRecognizingState(started);
 		}
 	};
+
+	// Handle close button press
+	const handleClose = useCallback(() => {
+		if (onClose) {
+			onClose();
+		}
+	}, [onClose]);
 
 	// Handle first render completion
 	const handleFirstRender = useCallback(() => {
@@ -139,7 +153,6 @@ export default function VoiceMode() {
 		<View style={styles.layout}>
 			<Header title="AI Voice mode" type="voice" />
 			{/* WaveMesh with opacity animation */}
-			{/* Make sure this takes up the full space and is positioned correctly */}
 			<Animated.View style={[animatedStyle, styles.waveMeshContainer]}>
 				<WaveMesh
 					waveIntensity={waveIntensity}

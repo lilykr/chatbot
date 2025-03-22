@@ -67,7 +67,7 @@ export default function Homepage() {
 						<CardButton
 							text="AI Voice mode"
 							borderColor={colors.lightGrey}
-							onPress={() => router.push("/voiceMode")}
+							onPress={() => router.push("/chat/new?openVoiceMode=true")}
 						/>
 						<CardButton
 							text="AI Rant"

@@ -17,7 +17,7 @@ export type ChatWithLilyApp = {
 };
 
 export type VoiceModeApp = {
-	type: "voice";
+	type: "voiceMode";
 	value: {
 		title: string;
 		messages: UIMessage[];

@@ -5,11 +5,11 @@ import { useEffect } from "react";
 import type { HistoryItem } from "../../../services/storage";
 
 export function usePersistChat(params: {
-	type: "chat" | "chatWithLily";
+	type: "chat" | "chatWithLily" | "voiceMode";
 	chatId: string;
 	messages: UIMessage[];
 	status: string;
-	initialChat: HistoryItem<"chat" | "chatWithLily"> | undefined;
+	initialChat: HistoryItem<"chat" | "chatWithLily" | "voiceMode"> | undefined;
 	title: string | undefined;
 	isGeneratingTitle: boolean;
 }) {
