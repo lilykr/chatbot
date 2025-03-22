@@ -22,7 +22,7 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { LLK_AVATAR } from "../app/chatWithLily/[chatId]";
+import { IMAGES } from "../constants/images";
 import { CoonsPatchMeshGradient } from "../features/MeshGradient/components/CoonsPatchMeshGradient";
 
 const SCALE_TIMING = 200;
@@ -231,7 +231,7 @@ const AnimatedCard = () => {
 						/>
 						<AnimatedView style={[styles.imageContainer, animatedImage]}>
 							<Image
-								source={LLK_AVATAR}
+								source={IMAGES.LLK_AVATAR}
 								style={{
 									width: CARD_WIDTH,
 									height: IMAGE_HEIGHT,
