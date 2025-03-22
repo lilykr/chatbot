@@ -197,7 +197,7 @@ export const SkiaAnimatedCard = ({
 			const currentTime = Date.now();
 			// Start a single animation sequence if idle for 2 seconds
 			if (
-				currentTime - lastInteractionTime.value > 3000 &&
+				currentTime - lastInteractionTime.value > 2000 &&
 				!animationActive.value &&
 				animationReady.value
 			) {
