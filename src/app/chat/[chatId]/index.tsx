@@ -34,9 +34,9 @@ import { titleSchema } from "../../api/generate-title+api";
 export const AI_AVATAR = require("../../../../assets/avatar.png");
 
 // storage.clearAll();
-storage.listen("history", (newValue) => {
-	console.log("history changed", JSON.stringify(newValue, null, 2));
-});
+// storage.listen("history", (newValue) => {
+// 	console.log("history changed", JSON.stringify(newValue, null, 2));
+// });
 
 export default function Chat() {
 	const { chatId, openVoiceMode } = useLocalSearchParams<{
@@ -47,7 +47,6 @@ export default function Chat() {
 	const safeAreaInsets = useSafeAreaInsets();
 	const messageListRef = useRef<FlatList>(null);
 	const inputRef = useRef<TextInput>(null);
-	const hasAutoSentVoicePrompt = useRef(false);
 
 	// Add state to handle voice mode visibility
 	const [showVoiceMode, setShowVoiceMode] = useState(openVoiceMode === "true");
@@ -138,11 +137,15 @@ export default function Chat() {
 
 	// Handle voice mode closing with animation
 	const handleVoiceModeClose = useCallback(() => {
+		if (messages.length === 0) {
+			router.back();
+			return;
+		}
 		voiceModeOpacity.value = withTiming(0, { duration: 500 }, () => {
 			// This runs after animation completes
 			runOnJS(setShowVoiceMode)(false);
 		});
-	}, [voiceModeOpacity]);
+	}, [voiceModeOpacity, messages]);
 
 	// Handle speech end from voice mode
 	const handleSpeechEnd = useCallback(

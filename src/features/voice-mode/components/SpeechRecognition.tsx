@@ -243,6 +243,15 @@ const SpeechRecognition = ({
 		};
 	}, []);
 
+	const handleMicrophonePress = () => {
+		if (isActive && transcript.length === 0) {
+			return;
+		}
+		if (onToggleSpeech) {
+			onToggleSpeech();
+		}
+	};
+
 	const renderContent = () => {
 		// If there's a permission error, show it
 		if (permissionError) {
@@ -303,7 +312,7 @@ const SpeechRecognition = ({
 				<BouncyPressable onPress={onClose}>
 					<Ionicons name="close-outline" size={30} color="white" />
 				</BouncyPressable>
-				<RoundButton onPress={onToggleSpeech}>
+				<RoundButton onPress={handleMicrophonePress}>
 					<SimpleLineIcons name="microphone" size={28} color="white" />
 				</RoundButton>
 				<BouncyPressable onPress={onRefresh}>
