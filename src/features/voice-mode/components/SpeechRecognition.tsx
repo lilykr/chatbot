@@ -66,42 +66,25 @@ export const startSpeechRecognition = async () => {
 	}
 };
 
-export const stopSpeechRecognition = () => {
-	try {
-		// First try to abort any existing speech recognition
-		ExpoSpeechRecognitionModule.abort();
-
-		// Then explicitly stop it
-		ExpoSpeechRecognitionModule.stop();
-	} catch (error) {
-		// If there's an error, log it but don't throw to avoid crashing
-		console.error("Error stopping speech recognition:", error);
-	}
-};
-
 const SpeechRecognition = ({
 	permissionError,
-	onEnd,
+	onSpeechEnd,
 	isClosing = false,
-	onToggleSpeech,
 	onClose,
-	onRefresh,
 }: {
 	permissionError: string | null;
-	onEnd?: (transcript: string) => void;
+	onSpeechEnd?: (transcript: string) => void;
 	isClosing?: boolean;
-	onToggleSpeech?: () => void;
 	onClose?: () => void;
-	onRefresh?: () => void;
 }) => {
 	const [transcript, setTranscript] = useState("");
 	const [isEnglishAvailable, setIsEnglishAvailable] = useState<boolean | null>(
 		null,
 	);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isRefreshing, setIsRefreshing] = useState(false);
+
 	const isWeb = Platform.OS === "web";
-	const [lastTranscriptBeforeClosing, setLastTranscriptBeforeClosing] =
-		useState("");
 	const safeAreaInsets = useSafeAreaInsets();
 
 	// Add animated value for refresh button opacity
@@ -169,6 +152,14 @@ const SpeechRecognition = ({
 		checkEnglishAvailability();
 	}, [isWeb]);
 
+	useSpeechRecognitionEvent("start", (event) => {
+		console.log(">>> start");
+	});
+
+	useSpeechRecognitionEvent("end", (event) => {
+		console.log(">>> end");
+	});
+
 	// Set up speech recognition event listeners
 	useSpeechRecognitionEvent("result", (event) => {
 		// Don't update transcript if we're closing
@@ -178,70 +169,47 @@ const SpeechRecognition = ({
 		setTranscript(newTranscript);
 	});
 
-	// Clear transcript immediately when isClosing becomes true
-	useEffect(() => {
-		if (isClosing) {
-			// Clear both visible transcript and saved transcript
-			setTranscript("");
-			setLastTranscriptBeforeClosing("");
-		}
-	}, [isClosing]);
-
 	// Handle end event to show alert with final transcript and reset
 	useSpeechRecognitionEvent("end", () => {
 		// Skip handling if component is being deliberately closed
 		if (isClosing) return;
+		if (isRefreshing) {
+			setTranscript("");
+			setIsRefreshing(false);
+			setTimeout(() => {
+				startSpeechRecognition();
+			}, 100);
+			return;
+		}
 
 		if (transcript) {
 			// Call the onEnd callback with the final transcript
-			if (onEnd) {
-				onEnd(transcript);
+			if (onSpeechEnd) {
+				onSpeechEnd(transcript);
 			}
-
-			// Reset transcript when recognition ends
-			setTranscript("");
 		}
 	});
-
-	// Track the transcript for closing purposes
-	useEffect(() => {
-		if (transcript && !isClosing) {
-			setLastTranscriptBeforeClosing(transcript);
-		}
-	}, [transcript, isClosing]);
-
-	// Update when isClosing changes
-	useEffect(() => {
-		if (isClosing && !lastTranscriptBeforeClosing && transcript) {
-			setLastTranscriptBeforeClosing(transcript);
-		}
-	}, [isClosing, lastTranscriptBeforeClosing, transcript]);
 
 	// Clean up when the component unmounts
 	useEffect(() => {
 		return () => {
-			try {
-				// First abort any ongoing speech recognition
-				ExpoSpeechRecognitionModule.abort();
-
-				// Then explicitly stop it
-				ExpoSpeechRecognitionModule.stop();
-
-				console.log("Speech recognition cleanup on unmount");
-			} catch (error) {
-				console.error("Error in speech recognition cleanup:", error);
-			}
+			ExpoSpeechRecognitionModule.abort();
 		};
 	}, []);
+
+	useEffect(() => {
+		if (isRefreshing) {
+			ExpoSpeechRecognitionModule.abort();
+		}
+	}, [isRefreshing]);
 
 	const handleMicrophonePress = () => {
 		if (transcript.length === 0) {
 			return;
 		}
-		if (onToggleSpeech) {
-			onToggleSpeech();
-		}
+		ExpoSpeechRecognitionModule.stop();
 	};
+	const handleRefresh = () => setIsRefreshing(true);
 
 	const renderContent = () => {
 		// If there's a permission error, show it
@@ -300,7 +268,7 @@ const SpeechRecognition = ({
 					<SimpleLineIcons name="microphone" size={28} color="white" />
 				</RoundButton>
 				<Animated.View style={refreshButtonStyle}>
-					<BouncyPressable onPress={onRefresh}>
+					<BouncyPressable onPress={handleRefresh}>
 						<Ionicons name="refresh-outline" size={30} color="white" />
 					</BouncyPressable>
 				</Animated.View>
