@@ -39,9 +39,8 @@ storage.listen("history", (newValue) => {
 });
 
 export default function Chat() {
-	const { chatId, voiceModePrompt, openVoiceMode } = useLocalSearchParams<{
+	const { chatId, openVoiceMode } = useLocalSearchParams<{
 		chatId: string | "new";
-		voiceModePrompt?: string;
 		openVoiceMode?: "true" | "false";
 	}>();
 	const { showCamera, openCamera, handleCloseCamera } = useCamera();
@@ -51,9 +50,9 @@ export default function Chat() {
 	const hasAutoSentVoicePrompt = useRef(false);
 
 	// Add state to handle voice mode visibility
-	const [showVoiceMode, setShowVoiceMode] = useState(false);
+	const [showVoiceMode, setShowVoiceMode] = useState(openVoiceMode === "true");
 	// Animation value for voice mode opacity
-	const voiceModeOpacity = useSharedValue(0);
+	const voiceModeOpacity = useSharedValue(openVoiceMode === "true" ? 1 : 0);
 
 	const initialChat = useRef(
 		storage.get("history")?.find((chat) => chat.id === chatId) as
@@ -106,37 +105,6 @@ export default function Chat() {
 		}
 	}, [chatId, openVoiceMode]);
 
-	// Auto-send voiceMode prompt if provided and no existing messages
-	useEffect(() => {
-		if (
-			voiceModePrompt &&
-			messages.length === 0 &&
-			status !== "streaming" &&
-			!hasAutoSentVoicePrompt.current
-		) {
-			hasAutoSentVoicePrompt.current = true;
-
-			handleInputChange({
-				target: { value: voiceModePrompt },
-			} as unknown as React.ChangeEvent<HTMLInputElement>);
-
-			// Use requestAnimationFrame instead of setTimeout for better timing
-			requestAnimationFrame(() => {
-				handleSubmit();
-				generateTitle({
-					messages: [{ role: "user", content: voiceModePrompt }],
-				});
-			});
-		}
-	}, [
-		voiceModePrompt,
-		messages.length,
-		status,
-		handleInputChange,
-		handleSubmit,
-		generateTitle,
-	]);
-
 	usePersistChat({
 		chatId: chatId as string,
 		messages,
@@ -144,7 +112,7 @@ export default function Chat() {
 		initialChat,
 		isGeneratingTitle,
 		title: titleObject?.title,
-		type: voiceModePrompt ? "voiceMode" : "chat",
+		type: openVoiceMode ? "voiceMode" : "chat",
 	});
 
 	const handleLayout = useCallback(() => {
