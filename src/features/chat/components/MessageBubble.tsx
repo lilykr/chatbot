@@ -67,6 +67,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 					</LinearGradient>
 				) : (
 					<Markdown
+						debugPrintTree
 						style={{
 							body: {
 								...styles.text,
@@ -75,6 +76,12 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 							link: {
 								...styles.link,
 								color: colors.white,
+							},
+							fence: {
+								backgroundColor: "black",
+							},
+							code_inline: {
+								backgroundColor: "black",
 							},
 						}}
 						onLinkPress={handleLinkPress}
