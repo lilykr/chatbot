@@ -16,15 +16,14 @@ export default function Homepage() {
 	return (
 		<>
 			<MeshGradient />
-			<View
-				style={[
-					styles.layout,
-					{ paddingTop: insets.top, paddingBottom: insets.bottom },
-				]}
-			>
+			<View style={[styles.layout]}>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
 					style={styles.mainScrollView}
+					contentContainerStyle={{
+						paddingTop: insets.top,
+						paddingBottom: insets.bottom,
+					}}
 				>
 					<View
 						style={{
@@ -79,7 +78,7 @@ export default function Homepage() {
 							<CardButton
 								text="AI Rant"
 								borderColor={colors.lightGrey}
-								onPress={() => router.push("/aiRant")}
+								onPress={() => router.push("/aiRant/new")}
 							/>
 						</View>
 					</ScrollView>

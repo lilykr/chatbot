@@ -8,7 +8,7 @@ interface Props {
 	onInputChange: (text: string) => void;
 	onSubmit: () => void;
 	prompt: string;
-	submitButtonText?: string;
+	submitButtonText: string;
 	placeholder: string;
 }
 
@@ -34,7 +34,9 @@ export function ChatSingleInput({
 					onSubmitEditing={onSubmit}
 				/>
 				<BouncyPressable style={styles.submitButton} onPress={onSubmit}>
-					<Text>{submitButtonText}</Text>
+					<Text style={{ color: colors.white, fontSize: 18 }} weight="semibold">
+						{submitButtonText}
+					</Text>
 				</BouncyPressable>
 			</View>
 		</View>

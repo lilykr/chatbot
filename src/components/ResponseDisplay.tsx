@@ -43,7 +43,9 @@ export function ResponseDisplay({
 				)}
 			</ScrollView>
 			<BouncyPressable style={styles.newResponseButton} onPress={onNewResponse}>
-				<Text>{newResponseButtonText}</Text>
+				<Text weight="semibold" style={{ fontSize: 16, color: colors.white }}>
+					{newResponseButtonText}
+				</Text>
 			</BouncyPressable>
 		</View>
 	);

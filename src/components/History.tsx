@@ -44,6 +44,9 @@ export const History = () => {
 	const handleChatPress = (item: HistoryItem) => {
 		if (item.type === "chatWithLily") {
 			router.push(`/chatWithLily/${item.id}`);
+		}
+		if (item.type === "rant") {
+			router.push(`/aiRant/${item.id}`);
 		} else {
 			router.push(`/chat/${item.id}`);
 		}

@@ -4,14 +4,19 @@ import type { UIMessage } from "ai";
 import { useEffect } from "react";
 import type { HistoryItem } from "../../../services/storage";
 
+type ChatTypes = "chat" | "chatWithLily" | "voiceMode";
+
 export function usePersistChat(params: {
-	type: "chat" | "chatWithLily" | "voiceMode";
+	type: ChatTypes | "rant";
 	chatId: string;
-	messages: UIMessage[];
+	messages?: UIMessage[];
+	singleMessage?: string;
 	status: string;
-	initialChat: HistoryItem<"chat" | "chatWithLily" | "voiceMode"> | undefined;
+	initialChat:
+		| HistoryItem<"chat" | "chatWithLily" | "voiceMode" | "rant">
+		| undefined;
 	title: string | undefined;
-	isGeneratingTitle: boolean;
+	isGeneratingTitle?: boolean;
 }) {
 	const {
 		chatId,
@@ -21,53 +26,108 @@ export function usePersistChat(params: {
 		title,
 		isGeneratingTitle,
 		type,
+		singleMessage,
 	} = params;
 
 	useEffect(() => {
-		// Only save if the last message is from the assistant
 		if (isGeneratingTitle) return;
-		if (messages.length === 0) return;
 		if (status === "streaming") return;
-		if (messages[messages.length - 1]?.role !== "assistant") return;
 
-		// Skip saving if number of messages hasn't changed from initialChat
-		// This assumes messages are only ever added, never edited or replaced
-		if (initialChat && initialChat.value.messages.length === messages.length) {
-			return;
-		}
+		// Handle chat types (chat, chatWithLily, voiceMode)
+		if (type !== "rant") {
+			if (!messages?.length) return;
+			if (messages[messages.length - 1]?.role !== "assistant") return;
 
-		if (initialChat) {
-			const newChat: HistoryItem = {
-				...initialChat,
-				value: {
-					...initialChat.value,
-					messages,
-				},
-				updatedAt: Date.now(),
+			// Skip saving if number of messages hasn't changed from initialChat
+			if (
+				initialChat &&
+				"messages" in initialChat.value &&
+				initialChat.value.messages.length === messages.length
+			) {
+				return;
+			}
+
+			const chatValue = {
+				title: title ?? "New chat",
+				messages,
 			};
-			storage.set("history", (prev) =>
-				(prev ?? []).map((item) => (item.id === chatId ? newChat : item)),
-			);
-		} else {
-			storage.set("history", (prev = []) => {
-				const existingIndex = prev.findIndex((item) => item.id === chatId);
-				const newChat = {
-					id: chatId as string,
-					type: type,
-					value: { title: title ?? "New chat", messages },
-					createdAt: Date.now(),
+
+			if (initialChat) {
+				const newChat: HistoryItem<ChatTypes> = {
+					...initialChat,
+					type,
+					value: chatValue,
 					updatedAt: Date.now(),
 				};
+				storage.set("history", (prev) =>
+					(prev ?? []).map((item) => (item.id === chatId ? newChat : item)),
+				);
+			} else {
+				storage.set("history", (prev = []) => {
+					const existingIndex = prev.findIndex((item) => item.id === chatId);
+					const newChat: HistoryItem<ChatTypes> = {
+						id: chatId,
+						type,
+						value: chatValue,
+						createdAt: Date.now(),
+						updatedAt: Date.now(),
+					};
 
-				if (existingIndex !== -1) {
-					// Replace existing chat
-					return prev.map((item, index) =>
-						index === existingIndex ? newChat : item,
-					);
-				}
-				// Add new chat
-				return [...prev, newChat];
-			});
+					if (existingIndex !== -1) {
+						return prev.map((item, index) =>
+							index === existingIndex ? newChat : item,
+						);
+					}
+					return [...prev, newChat];
+				});
+			}
+		} else {
+			// Handle rant type
+			if (!singleMessage) return;
+
+			const rantValue = {
+				rantSubject: title ?? "New rant",
+				rantText: singleMessage,
+			};
+
+			if (initialChat) {
+				const newChat: HistoryItem<"rant"> = {
+					...initialChat,
+					type: "rant",
+					value: rantValue,
+					updatedAt: Date.now(),
+				};
+				storage.set("history", (prev) =>
+					(prev ?? []).map((item) => (item.id === chatId ? newChat : item)),
+				);
+			} else {
+				storage.set("history", (prev = []) => {
+					const existingIndex = prev.findIndex((item) => item.id === chatId);
+					const newChat: HistoryItem<"rant"> = {
+						id: chatId,
+						type: "rant",
+						value: rantValue,
+						createdAt: Date.now(),
+						updatedAt: Date.now(),
+					};
+
+					if (existingIndex !== -1) {
+						return prev.map((item, index) =>
+							index === existingIndex ? newChat : item,
+						);
+					}
+					return [...prev, newChat];
+				});
+			}
 		}
-	}, [initialChat, status, messages, title, chatId, isGeneratingTitle, type]);
+	}, [
+		initialChat,
+		status,
+		messages,
+		title,
+		chatId,
+		isGeneratingTitle,
+		type,
+		singleMessage,
+	]);
 }
