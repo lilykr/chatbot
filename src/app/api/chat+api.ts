@@ -38,10 +38,4 @@ async function handler(req: Request) {
 	});
 }
 
-// Apply IP-based rate limiting: 10 requests per minute (60 seconds) per IP address
-const rateLimitedHandler = withRateLimit(handler, {
-	maxRequests: 40,
-	windowSizeInSeconds: 43200, // 12 hours
-});
-
-export const POST = withSecurity(rateLimitedHandler);
+export const POST = withSecurity(withRateLimit(handler));
