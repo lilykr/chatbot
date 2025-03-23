@@ -33,9 +33,9 @@ import {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { IMAGES } from "../constants/images";
-import { MeshGradientCore } from "../features/MeshGradient/components/MeshGradientCore";
-import { BlurMask } from "./BlurGradient";
+import { BlurMask } from "../../components/BlurGradient";
+import { IMAGES } from "../../constants/images";
+import { MeshGradientCore } from "../MeshGradient/components/MeshGradientCore";
 
 const LINKEDIN_ICON = require("../../assets/linkedin_icon.png");
 const GITHUB_ICON = require("../../assets/github_icon.png");

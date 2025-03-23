@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
 		marginRight: 12,
 		flexDirection: "row",
 		alignItems: "center",
+		width: "100%",
 	},
 	historyContent: {
 		marginLeft: 16,

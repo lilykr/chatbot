@@ -1,14 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
-import { useEffect } from "react";
-import {
-	Animated,
-	Keyboard,
-	StyleSheet,
-	TextInput,
-	View,
-	useAnimatedValue,
-} from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, Keyboard, StyleSheet, TextInput, View } from "react-native";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
@@ -33,8 +26,8 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	inputRef,
 }) => {
 	const hasInput = value.trim().length > 0;
-	const voiceScaleAnim = useAnimatedValue(1);
-	const sendScaleAnim = useAnimatedValue(0);
+	const voiceScaleAnim = useRef<Animated.Value>(new Animated.Value(1)).current;
+	const sendScaleAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
 
 	const handleVoicePress = () => {
 		Keyboard.dismiss();

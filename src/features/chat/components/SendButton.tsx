@@ -1,8 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
-import { useEffect } from "react";
-import { StyleSheet, useAnimatedValue } from "react-native";
-import { Animated } from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, StyleSheet } from "react-native";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { colors } from "../../../constants/colors";
 
@@ -15,7 +14,7 @@ export const SendButton: React.FC<SendButtonProps> = ({
 	onPress,
 	isDisabled = false,
 }) => {
-	const scaleAnim = useAnimatedValue(0);
+	const scaleAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
 
 	useEffect(() => {
 		Animated.spring(scaleAnim, {
