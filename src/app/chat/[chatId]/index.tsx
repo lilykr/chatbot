@@ -1,7 +1,6 @@
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	type FlatList,
@@ -19,9 +18,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
+import { ErrorCard } from "../../../components/ErrorCard";
 import { Header } from "../../../components/Header";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { IMAGES } from "../../../constants/images";
@@ -30,6 +29,7 @@ import { MessageList } from "../../../features/chat/components/MessageList";
 import { useCamera } from "../../../features/chat/hooks/useCamera";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { VoiceMode } from "../../../features/voice-mode/VoiceMode";
+import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 
@@ -61,14 +61,14 @@ export default function Chat() {
 
 	const {
 		messages,
-		error,
+		error: chatError,
 		handleInputChange,
 		input,
 		handleSubmit,
 		status,
 		append,
 	} = useChat({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/chat`,
 		streamProtocol: "data",
 		headers: {
@@ -78,11 +78,12 @@ export default function Chat() {
 	});
 
 	const {
+		error: titleError,
 		object: titleObject,
 		submit: generateTitle,
 		isLoading: isGeneratingTitle,
 	} = useObject({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/generate-title`,
 		schema: titleSchema,
 		headers: {
@@ -192,8 +193,7 @@ export default function Chat() {
 		voiceModeOpacity.value = withTiming(1, { duration: 500 });
 	}, [voiceModeOpacity]);
 
-	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
-
+	const error = chatError || titleError;
 	return (
 		<View
 			style={[
@@ -219,6 +219,9 @@ export default function Chat() {
 					messages={messages}
 					listRef={messageListRef}
 				/>
+
+				{error && <ErrorCard error={error} />}
+
 				<ComposerInput
 					inputRef={inputRef}
 					value={input}
