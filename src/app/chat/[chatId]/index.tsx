@@ -62,7 +62,7 @@ export default function Chat() {
 
 	const {
 		messages,
-		error,
+		error: chatError,
 		handleInputChange,
 		input,
 		handleSubmit,
@@ -79,6 +79,7 @@ export default function Chat() {
 	});
 
 	const {
+		error: titleError,
 		object: titleObject,
 		submit: generateTitle,
 		isLoading: isGeneratingTitle,
@@ -193,6 +194,7 @@ export default function Chat() {
 		voiceModeOpacity.value = withTiming(1, { duration: 500 });
 	}, [voiceModeOpacity]);
 
+	const error = chatError || titleError;
 	return (
 		<View
 			style={[

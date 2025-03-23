@@ -1,3 +1,4 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import {
 	type FlatList,
@@ -14,6 +15,7 @@ import { colors } from "../../../constants/colors";
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
 import { useCallback, useEffect, useRef } from "react";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
+import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
 import { IMAGES } from "../../../constants/images";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
@@ -36,7 +38,14 @@ export default function ChatWithLily() {
 	const safeAreaInsets = useSafeAreaInsets();
 	const inputRef = useRef<TextInput>(null);
 
-	const { messages, handleInputChange, input, handleSubmit, status } = useChat({
+	const {
+		messages,
+		handleInputChange,
+		input,
+		handleSubmit,
+		status,
+		error: chatError,
+	} = useChat({
 		fetch: secureFetch,
 		api: `${apiUrl}/api/chat-with-lily`,
 		streamProtocol: "data",
@@ -47,6 +56,7 @@ export default function ChatWithLily() {
 	});
 
 	const {
+		error: titleError,
 		object: titleObject,
 		submit: generateTitle,
 		isLoading: isGeneratingTitle,
@@ -96,6 +106,7 @@ export default function ChatWithLily() {
 		}
 	}, [input, messages, generateTitle]);
 
+	const error = chatError || titleError;
 	return (
 		<View
 			style={[
@@ -117,6 +128,16 @@ export default function ChatWithLily() {
 					listRef={messageListRef}
 				/>
 
+				{error && (
+					<View style={styles.errorContainer}>
+						<MaterialCommunityIcons
+							name="emoticon-dead"
+							size={24}
+							color={colors.error}
+						/>
+						<Text style={styles.errorText}>{error.message}</Text>
+					</View>
+				)}
 				<ComposerInput
 					inputRef={inputRef}
 					value={input}
@@ -141,5 +162,19 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	errorContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		backgroundColor: colors.errorBackground || "rgba(255, 0, 0, 0.1)",
+		padding: 12,
+		marginHorizontal: 16,
+		marginBottom: 8,
+		borderRadius: 8,
+	},
+	errorText: {
+		color: colors.error || "white",
+		marginLeft: 8,
+		flex: 1,
 	},
 });
