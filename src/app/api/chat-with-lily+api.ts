@@ -1,8 +1,9 @@
-import { streamText } from "ai";
 import type { UIMessage } from "ai";
+import { streamText } from "ai";
 import { aiSdk } from "../../constants/aiSdk";
+import { withSecurity } from "../../services/securityBack";
 
-export async function POST(req: Request) {
+async function handler(req: Request) {
 	const { messages } = await req.json();
 
 	const formattedMessages = messages
@@ -78,3 +79,5 @@ ${formattedMessages}`,
 		},
 	});
 }
+
+export const POST = withSecurity(handler);
