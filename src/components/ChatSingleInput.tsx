@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		paddingHorizontal: 20,
 		paddingTop: 100,
+		alignItems: "center",
 	},
 	prompt: {
 		color: colors.white,
