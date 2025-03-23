@@ -32,7 +32,6 @@ export function ChatSingleInput({
 				<RantSuggestions onSelectTopic={handleTopicSelect} />
 
 				<TextInput
-					autoFocus
 					style={styles.input}
 					value={input}
 					onChangeText={onInputChange}
