@@ -37,9 +37,9 @@ import { BlurMask } from "../../components/BlurGradient";
 import { IMAGES } from "../../constants/images";
 import { MeshGradientCore } from "../MeshGradient/components/MeshGradientCore";
 
-const LINKEDIN_ICON = require("../../assets/linkedin_icon.png");
-const GITHUB_ICON = require("../../assets/github_icon.png");
-const CHAT_ICON = require("../../assets/ai_round.png");
+const LINKEDIN_ICON = require("../../../assets/linkedin_icon.png");
+const GITHUB_ICON = require("../../../assets/github_icon.png");
+const CHAT_ICON = require("../../../assets/ai_round.png");
 
 const { width, height } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.85;
