@@ -54,7 +54,7 @@
 			[
 				"expo-router",
 				{
-					"origin": "https://lilykr-chatbot.expo.app"
+					"origin": "https://lisa-lou.expo.app"
 				}
 			],
 			["expo-localization"],
@@ -119,7 +119,7 @@
 				"projectId": "5b858696-0448-4a8f-a91c-cbdaa34579a7"
 			},
 			"router": {
-				"origin": "https://lilykr-chatbot.expo.app"
+				"origin": "https://lisa-lou.expo.app"
 			}
 		},
 		"owner": "lilykr"
