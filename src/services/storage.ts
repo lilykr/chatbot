@@ -22,6 +22,7 @@ export type HistoryItem<T extends App["type"] = App["type"]> = (T extends "chat"
 };
 
 type PersistData = {
+	deviceId: string;
 	hasOpenedApp: boolean;
 	history: HistoryItem[];
 };
