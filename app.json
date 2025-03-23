@@ -34,7 +34,13 @@
 			"permissions": [
 				"android.permission.CAMERA",
 				"android.permission.RECORD_AUDIO",
-				"android.permission.MODIFY_AUDIO_SETTINGS"
+				"android.permission.MODIFY_AUDIO_SETTINGS",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.WRITE_EXTERNAL_STORAGE",
+				"android.permission.RECORD_AUDIO",
+				"android.permission.MODIFY_AUDIO_SETTINGS",
+				"android.permission.READ_EXTERNAL_STORAGE",
+				"android.permission.WRITE_EXTERNAL_STORAGE"
 			]
 		},
 		"androidStatusBar": {
@@ -122,6 +128,12 @@
 				"origin": "https://lisa-lou.expo.app"
 			}
 		},
-		"owner": "lilykr"
+		"owner": "lilykr",
+		"runtimeVersion": {
+			"policy": "appVersion"
+		},
+		"updates": {
+			"url": "https://u.expo.dev/5b858696-0448-4a8f-a91c-cbdaa34579a7"
+		}
 	}
 }
