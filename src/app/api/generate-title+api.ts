@@ -1,7 +1,6 @@
 import { streamObject } from "ai";
 import { z } from "zod";
 import { aiSdk } from "../../constants/aiSdk";
-import { withRateLimit } from "../../services/rateLimiter";
 import { withSecurity } from "../../services/securityBack";
 
 export const titleSchema = z.object({
@@ -32,4 +31,4 @@ ${JSON.stringify(messages)}`,
 	});
 }
 
-export const POST = withSecurity(withRateLimit(handler));
+export const POST = withSecurity(handler);
