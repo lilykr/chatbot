@@ -1,8 +1,8 @@
 {
 	"expo": {
-		"name": "chatbot",
-		"slug": "chatbot",
-		"scheme": "lilykr.chatbot",
+		"name": "lisa-lou",
+		"slug": "lisa-lou",
+		"scheme": "lilykr.lisalou",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -17,18 +17,29 @@
 		},
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "com.lilykr.chatbot",
-			"backgroundColor": "#080607"
+			"bundleIdentifier": "com.lilykr.lisalou",
+			"backgroundColor": "#080607",
+			"infoPlist": {
+				"NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
+				"NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
+				"ITSAppUsesNonExemptEncryption": false
+			}
 		},
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#080607"
 			},
-			"package": "com.lilykr.chatbot"
+			"package": "com.lilykr.lisalou",
+			"permissions": [
+				"android.permission.CAMERA",
+				"android.permission.RECORD_AUDIO",
+				"android.permission.MODIFY_AUDIO_SETTINGS"
+			]
 		},
 		"androidStatusBar": {
-			"translucent": true
+			"translucent": true,
+			"backgroundColor": "#090607"
 		},
 		"androidNavigationBar": {
 			"barStyle": "dark-content",
@@ -50,8 +61,8 @@
 			[
 				"expo-camera",
 				{
-					"cameraPermission": "Autoriser le chatbot à accéder à votre caméra",
-					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone",
+					"cameraPermission": "Autoriser Lisa-Lou à accéder à votre caméra",
+					"microphonePermission": "Autoriser Lisa-Lou à accéder à votre microphone",
 					"recordAudioAndroid": true
 				}
 			],
@@ -89,7 +100,15 @@
 			[
 				"expo-av",
 				{
-					"microphonePermission": "Autoriser le chatbot à accéder à votre microphone"
+					"microphonePermission": "Autoriser Lisa-Lou à accéder à votre microphone"
+				}
+			],
+			[
+				"expo-media-library",
+				{
+					"photosPermission": "Autoriser Lisa-Lou à accéder à vos photos.",
+					"savePhotosPermission": "Autoriser Lisa-Lou à enregistrer vos photos.",
+					"isAccessMediaLocationEnabled": false
 				}
 			],
 			"expo-speech-recognition",
@@ -97,7 +116,10 @@
 		],
 		"extra": {
 			"eas": {
-				"projectId": "bdc933d0-39b9-4dfb-9e9e-caca2b091286"
+				"projectId": "5b858696-0448-4a8f-a91c-cbdaa34579a7"
+			},
+			"router": {
+				"origin": "https://lilykr-chatbot.expo.app"
 			}
 		},
 		"owner": "lilykr"

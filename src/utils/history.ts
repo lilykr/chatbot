@@ -3,7 +3,7 @@ import type { App } from "../types/apps";
 export const getHistoryTitle = (type: App["type"]) => {
 	switch (type) {
 		case "chat":
-			return "AI Chatbot";
+			return "The Sassy Chatbot";
 		case "voiceMode":
 			return "Voice Mode";
 		case "rant":
