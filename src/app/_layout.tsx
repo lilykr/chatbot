@@ -24,7 +24,10 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
-ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+if (Platform.OS !== "web" && !process.env.CI) {
+	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+}
+
 SystemUI.setBackgroundColorAsync(colors.night);
 configureReanimatedLogger({
 	level: ReanimatedLogLevel.warn,
