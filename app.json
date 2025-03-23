@@ -63,7 +63,6 @@
 					"origin": "https://lisa-lou.expo.app"
 				}
 			],
-			["expo-localization"],
 			[
 				"expo-screen-orientation",
 				{
@@ -121,6 +120,12 @@
 					"photosPermission": "Autoriser Lisa-Lou à accéder à vos photos.",
 					"savePhotosPermission": "Autoriser Lisa-Lou à enregistrer vos photos.",
 					"isAccessMediaLocationEnabled": false
+				}
+			],
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "Autoriser Lisa-Lou à accéder à vos photos."
 				}
 			],
 			"expo-speech-recognition",
