@@ -1,7 +1,8 @@
 import { streamText } from "ai";
 import { aiSdk } from "../../constants/aiSdk";
+import { withSecurity } from "../../services/securityBack";
 
-export async function POST(req: Request) {
+async function handler(req: Request) {
 	const { messages } = await req.json();
 
 	const result = streamText({
@@ -16,3 +17,5 @@ export async function POST(req: Request) {
 		},
 	});
 }
+
+export const POST = withSecurity(handler);

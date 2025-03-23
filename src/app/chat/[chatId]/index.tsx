@@ -1,7 +1,7 @@
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	type FlatList,
@@ -30,6 +30,7 @@ import { MessageList } from "../../../features/chat/components/MessageList";
 import { useCamera } from "../../../features/chat/hooks/useCamera";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { VoiceMode } from "../../../features/voice-mode/VoiceMode";
+import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 
@@ -68,7 +69,7 @@ export default function Chat() {
 		status,
 		append,
 	} = useChat({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/chat`,
 		streamProtocol: "data",
 		headers: {
@@ -82,7 +83,7 @@ export default function Chat() {
 		submit: generateTitle,
 		isLoading: isGeneratingTitle,
 	} = useObject({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/generate-title`,
 		schema: titleSchema,
 		headers: {
@@ -192,8 +193,6 @@ export default function Chat() {
 		voiceModeOpacity.value = withTiming(1, { duration: 500 });
 	}, [voiceModeOpacity]);
 
-	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
-
 	return (
 		<View
 			style={[
@@ -219,6 +218,18 @@ export default function Chat() {
 					messages={messages}
 					listRef={messageListRef}
 				/>
+
+				{error && (
+					<View style={styles.errorContainer}>
+						<MaterialCommunityIcons
+							name="emoticon-dead"
+							size={24}
+							color={colors.error}
+						/>
+						<Text style={styles.errorText}>{error.message}</Text>
+					</View>
+				)}
+
 				<ComposerInput
 					inputRef={inputRef}
 					value={input}
@@ -260,5 +271,19 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.night,
+	},
+	errorContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		backgroundColor: colors.errorBackground || "rgba(255, 0, 0, 0.1)",
+		padding: 12,
+		marginHorizontal: 16,
+		marginBottom: 8,
+		borderRadius: 8,
+	},
+	errorText: {
+		color: colors.error || "white",
+		marginLeft: 8,
+		flex: 1,
 	},
 });

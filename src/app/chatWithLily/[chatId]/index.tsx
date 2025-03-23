@@ -12,7 +12,6 @@ import { Header } from "../../../components/Header";
 import { colors } from "../../../constants/colors";
 
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
-import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { apiUrl } from "../../../constants/apiUrl";
@@ -20,6 +19,7 @@ import { IMAGES } from "../../../constants/images";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 
@@ -37,7 +37,7 @@ export default function ChatWithLily() {
 	const inputRef = useRef<TextInput>(null);
 
 	const { messages, handleInputChange, input, handleSubmit, status } = useChat({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/chat-with-lily`,
 		streamProtocol: "data",
 		headers: {
@@ -51,7 +51,7 @@ export default function ChatWithLily() {
 		submit: generateTitle,
 		isLoading: isGeneratingTitle,
 	} = useObject({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/generate-title`,
 		schema: titleSchema,
 		headers: {
