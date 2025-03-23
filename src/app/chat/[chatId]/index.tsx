@@ -1,5 +1,4 @@
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -19,9 +18,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
+import { ErrorCard } from "../../../components/ErrorCard";
 import { Header } from "../../../components/Header";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { IMAGES } from "../../../constants/images";
@@ -221,16 +220,7 @@ export default function Chat() {
 					listRef={messageListRef}
 				/>
 
-				{error && (
-					<View style={styles.errorContainer}>
-						<MaterialCommunityIcons
-							name="emoticon-dead"
-							size={24}
-							color={colors.error}
-						/>
-						<Text style={styles.errorText}>{error.message}</Text>
-					</View>
-				)}
+				{error && <ErrorCard error={error} />}
 
 				<ComposerInput
 					inputRef={inputRef}
@@ -273,19 +263,5 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.night,
-	},
-	errorContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: colors.errorBackground || "rgba(255, 0, 0, 0.1)",
-		padding: 12,
-		marginHorizontal: 16,
-		marginBottom: 8,
-		borderRadius: 8,
-	},
-	errorText: {
-		color: colors.error || "white",
-		marginLeft: 8,
-		flex: 1,
 	},
 });

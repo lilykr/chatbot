@@ -10,9 +10,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { ChatSingleInput } from "../../../components/ChatSingleInput";
+import { ErrorCard } from "../../../components/ErrorCard";
 import { Header } from "../../../components/Header";
 import { ResponseDisplay } from "../../../components/ResponseDisplay";
-import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
@@ -91,8 +91,6 @@ export default function AIRant() {
 		status: "success",
 	});
 
-	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
-
 	return (
 		<View
 			style={[
@@ -111,6 +109,7 @@ export default function AIRant() {
 				}
 				type="rant"
 			/>
+			{error && <ErrorCard error={error} />}
 			<View style={styles.content}>
 				{rantMessage !== undefined ? (
 					<ResponseDisplay
