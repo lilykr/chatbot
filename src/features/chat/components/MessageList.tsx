@@ -1,6 +1,7 @@
 import type { UIMessage } from "ai";
 import type React from "react";
 import { useCallback } from "react";
+import type { FlatListProps } from "react-native";
 import { FlatList, Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../constants/colors";
@@ -15,12 +16,14 @@ interface MessageListProps {
 	messages: UIMessage[];
 	users: User[];
 	listRef?: React.RefObject<FlatList>;
+	flatListProps?: Partial<FlatListProps<UIMessage>>;
 }
 
 export const MessageList: React.FC<MessageListProps> = ({
 	messages,
 	users,
 	listRef,
+	flatListProps,
 }) => {
 	const safeAreaInsets = useSafeAreaInsets();
 
@@ -66,6 +69,7 @@ export const MessageList: React.FC<MessageListProps> = ({
 				}}
 				inverted
 				keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
+				{...flatListProps}
 			/>
 		</View>
 	);

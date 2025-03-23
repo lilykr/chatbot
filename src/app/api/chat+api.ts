@@ -1,5 +1,7 @@
-import { streamText, type UIMessage } from "ai";
+import type { UIMessage } from "ai";
+import { streamText } from "ai";
 import { aiSdk } from "../../constants/aiSdk";
+import { withRateLimit } from "../../services/rateLimiter";
 import { withSecurity } from "../../services/securityBack";
 
 async function handler(req: Request) {
@@ -37,4 +39,4 @@ async function handler(req: Request) {
 	});
 }
 
-export const POST = withSecurity(handler);
+export const POST = withSecurity(withRateLimit(handler));
