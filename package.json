@@ -12,7 +12,8 @@
 		"prebuild": "expo prebuild --clean",
 		"e2e": "maestro test maestro/chat.yml",
 		"build:web": "npx expo export -p web",
-		"deploy:prod": "eas deploy --prod"
+		"deploy:prod": "eas deploy --prod",
+		"ship": "yarn build:web && yarn deploy:prod"
 	},
 	"dependencies": {
 		"@ai-sdk/google": "^1.2.1",
