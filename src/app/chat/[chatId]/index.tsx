@@ -18,7 +18,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
-import { ErrorCard } from "../../../components/ErrorCard";
 import { Header } from "../../../components/Header";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { apiUrl } from "../../../constants/apiUrl";
@@ -34,6 +33,7 @@ import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 
 // storage.clearAll();
+import { ErrorCard } from "../../../components/ErrorCard";
 // storage.listen("history", (newValue) => {
 // 	console.log("history changed", JSON.stringify(newValue, null, 2));
 // });
@@ -218,9 +218,12 @@ export default function Chat() {
 					users={[{ _id: 1 }, { _id: 2, avatar: IMAGES.LOGO }]}
 					messages={messages}
 					listRef={messageListRef}
+					flatListProps={{
+						ListHeaderComponent: error
+							? () => <ErrorCard error={error} />
+							: null,
+					}}
 				/>
-
-				{error && <ErrorCard error={error} />}
 
 				<ComposerInput
 					inputRef={inputRef}

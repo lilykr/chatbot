@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "index",
 	"scripts": {
-		"postinstall": "patch-package && yarn setup-skia-web",
+		"postinstall": "yarn setup-skia-web",
 		"start": "expo start --dev-client",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
@@ -43,6 +43,7 @@
 		"expo-status-bar": "~2.0.1",
 		"expo-system-ui": "~4.0.8",
 		"expo-video": "~2.0.5",
+		"firebase-admin": "^13.2.0",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
 		"react-native": "0.76.7",

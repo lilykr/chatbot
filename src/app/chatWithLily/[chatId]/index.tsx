@@ -125,9 +125,13 @@ export default function ChatWithLily() {
 					users={[{ _id: 1 }, { _id: 2, avatar: IMAGES.LLK_AVATAR }]}
 					messages={messages}
 					listRef={messageListRef}
+					flatListProps={{
+						ListHeaderComponent: error
+							? () => <ErrorCard error={error} />
+							: null,
+					}}
 				/>
 
-				{error && <ErrorCard error={error} />}
 				<ComposerInput
 					inputRef={inputRef}
 					value={input}
