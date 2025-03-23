@@ -3,7 +3,6 @@
 	"version": "1.0.1",
 	"main": "index",
 	"scripts": {
-		"postinstall": "yarn setup-skia-web",
 		"start": "expo start --dev-client",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
