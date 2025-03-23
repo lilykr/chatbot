@@ -152,11 +152,11 @@ const SpeechRecognition = ({
 		checkEnglishAvailability();
 	}, [isWeb]);
 
-	useSpeechRecognitionEvent("start", (event) => {
+	useSpeechRecognitionEvent("start", () => {
 		console.log(">>> start");
 	});
 
-	useSpeechRecognitionEvent("end", (event) => {
+	useSpeechRecognitionEvent("end", () => {
 		console.log(">>> end");
 	});
 
