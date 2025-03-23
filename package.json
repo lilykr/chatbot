@@ -1,5 +1,5 @@
 {
-	"name": "chatbot",
+	"name": "lisa-lou",
 	"version": "1.0.0",
 	"main": "index",
 	"scripts": {
@@ -36,6 +36,7 @@
 		"expo-linear-gradient": "~14.0.2",
 		"expo-linking": "~7.0.5",
 		"expo-localization": "~16.0.1",
+		"expo-media-library": "~17.0.6",
 		"expo-router": "~4.0.19",
 		"expo-screen-orientation": "~8.0.4",
 		"expo-speech-recognition": "^1.1.1",

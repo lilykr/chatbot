@@ -18,15 +18,15 @@ export default function Homepage() {
 	// Define the card data
 	const cards = [
 		{
-			text: "AI text writer",
+			text: "The Sassy Chatbot",
 			onPress: () => router.push("/chat/new"),
 		},
 		{
-			text: "Lisa-Lou's chatbot",
+			text: "Lisa-Lou's Chatbot",
 			onPress: () => router.push("/chatWithLily/new"),
 		},
 		{
-			text: "AI Voice mode",
+			text: "AI Voice Mode",
 			onPress: () => router.push("/chat/new?openVoiceMode=true"),
 		},
 		{

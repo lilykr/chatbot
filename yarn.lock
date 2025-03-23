@@ -3876,62 +3876,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chatbot@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "chatbot@workspace:."
-  dependencies:
-    "@ai-sdk/google": "npm:^1.2.1"
-    "@ai-sdk/react": "npm:^1.1.23"
-    "@babel/core": "npm:^7.25.2"
-    "@biomejs/biome": "npm:1.9.4"
-    "@expo-google-fonts/epilogue": "npm:^0.2.3"
-    "@expo/metro-runtime": "npm:~4.0.1"
-    "@legendapp/list": "npm:^1.0.0-beta.24"
-    "@shopify/react-native-skia": "npm:1.5.0"
-    "@stardazed/streams-polyfill": "npm:^2.4.0"
-    "@types/crypto-js": "npm:^4"
-    "@types/react": "npm:~18.3.12"
-    "@ungap/structured-clone": "npm:^1.3.0"
-    ai: "npm:^4.1.61"
-    crypto-js: "npm:^4.2.0"
-    expo: "npm:~52.0.38"
-    expo-av: "npm:~15.0.2"
-    expo-blur: "npm:~14.0.3"
-    expo-camera: "npm:~16.0.17"
-    expo-constants: "npm:~17.0.8"
-    expo-font: "npm:~13.0.4"
-    expo-insights: "npm:~0.8.2"
-    expo-linear-gradient: "npm:~14.0.2"
-    expo-linking: "npm:~7.0.5"
-    expo-localization: "npm:~16.0.1"
-    expo-router: "npm:~4.0.19"
-    expo-screen-orientation: "npm:~8.0.4"
-    expo-speech-recognition: "npm:^1.1.1"
-    expo-splash-screen: "npm:~0.29.22"
-    expo-status-bar: "npm:~2.0.1"
-    expo-system-ui: "npm:~4.0.8"
-    expo-video: "npm:~2.0.5"
-    firebase-admin: "npm:^13.2.0"
-    patch-package: "npm:^8.0.0"
-    react: "npm:18.3.1"
-    react-dom: "npm:18.3.1"
-    react-native: "npm:0.76.7"
-    react-native-error-boundary: "npm:1.2.9"
-    react-native-gesture-handler: "npm:~2.20.2"
-    react-native-get-random-values: "npm:~1.11.0"
-    react-native-gifted-chat: "npm:2.6.5"
-    react-native-markdown-display: "npm:^7.0.2"
-    react-native-mmkv: "npm:^3.2.0"
-    react-native-reanimated: "npm:~3.16.1"
-    react-native-safe-area-context: "npm:4.12.0"
-    react-native-screens: "npm:~4.4.0"
-    react-native-uuid: "npm:^2.0.3"
-    react-native-web: "npm:~0.19.13"
-    typescript: "npm:^5.3.3"
-    zod: "npm:^3.24.2"
-  languageName: unknown
-  linkType: soft
-
 "chownr@npm:^2.0.0":
   version: 2.0.0
   resolution: "chownr@npm:2.0.0"
@@ -4945,6 +4889,16 @@ __metadata:
     expo: "*"
     react: "*"
   checksum: 10c0/7ea9c9c2b6573afefacdc14e694ecb455aa946e25595b139a5525fd698caf9d00e5653bf4265209064c2b8fe62050f9df54cf96599e7d50f7d24374b4bdd2624
+  languageName: node
+  linkType: hard
+
+"expo-media-library@npm:~17.0.6":
+  version: 17.0.6
+  resolution: "expo-media-library@npm:17.0.6"
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: 10c0/48a553d8bb6ae67a532fe333011e34531572a634176943689e65235091ed0112c1618806ce788695f205dd99de0645656d616726f4ce658ab2c5845335b61a9d
   languageName: node
   linkType: hard
 
@@ -6851,6 +6805,63 @@ __metadata:
   checksum: 10c0/640f926fa71d46f9451b4dc999c94b2dcad920abf5fe174a85f120b420cbb34b8f950e251846ed73db715ec9aaadadf1f2482d27088dddd21b1c84761f6a0b5a
   languageName: node
   linkType: hard
+
+"lisa-lou@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "lisa-lou@workspace:."
+  dependencies:
+    "@ai-sdk/google": "npm:^1.2.1"
+    "@ai-sdk/react": "npm:^1.1.23"
+    "@babel/core": "npm:^7.25.2"
+    "@biomejs/biome": "npm:1.9.4"
+    "@expo-google-fonts/epilogue": "npm:^0.2.3"
+    "@expo/metro-runtime": "npm:~4.0.1"
+    "@legendapp/list": "npm:^1.0.0-beta.24"
+    "@shopify/react-native-skia": "npm:1.5.0"
+    "@stardazed/streams-polyfill": "npm:^2.4.0"
+    "@types/crypto-js": "npm:^4"
+    "@types/react": "npm:~18.3.12"
+    "@ungap/structured-clone": "npm:^1.3.0"
+    ai: "npm:^4.1.61"
+    crypto-js: "npm:^4.2.0"
+    expo: "npm:~52.0.38"
+    expo-av: "npm:~15.0.2"
+    expo-blur: "npm:~14.0.3"
+    expo-camera: "npm:~16.0.17"
+    expo-constants: "npm:~17.0.8"
+    expo-font: "npm:~13.0.4"
+    expo-insights: "npm:~0.8.2"
+    expo-linear-gradient: "npm:~14.0.2"
+    expo-linking: "npm:~7.0.5"
+    expo-localization: "npm:~16.0.1"
+    expo-media-library: "npm:~17.0.6"
+    expo-router: "npm:~4.0.19"
+    expo-screen-orientation: "npm:~8.0.4"
+    expo-speech-recognition: "npm:^1.1.1"
+    expo-splash-screen: "npm:~0.29.22"
+    expo-status-bar: "npm:~2.0.1"
+    expo-system-ui: "npm:~4.0.8"
+    expo-video: "npm:~2.0.5"
+    firebase-admin: "npm:^13.2.0"
+    patch-package: "npm:^8.0.0"
+    react: "npm:18.3.1"
+    react-dom: "npm:18.3.1"
+    react-native: "npm:0.76.7"
+    react-native-error-boundary: "npm:1.2.9"
+    react-native-gesture-handler: "npm:~2.20.2"
+    react-native-get-random-values: "npm:~1.11.0"
+    react-native-gifted-chat: "npm:2.6.5"
+    react-native-markdown-display: "npm:^7.0.2"
+    react-native-mmkv: "npm:^3.2.0"
+    react-native-reanimated: "npm:~3.16.1"
+    react-native-safe-area-context: "npm:4.12.0"
+    react-native-screens: "npm:~4.4.0"
+    react-native-uuid: "npm:^2.0.3"
+    react-native-web: "npm:~0.19.13"
+    typescript: "npm:^5.3.3"
+    zod: "npm:^3.24.2"
+  languageName: unknown
+  linkType: soft
 
 "locate-path@npm:^3.0.0":
   version: 3.0.0

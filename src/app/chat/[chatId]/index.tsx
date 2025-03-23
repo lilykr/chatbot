@@ -206,7 +206,7 @@ export default function Chat() {
 			onLayout={handleLayout}
 		>
 			<Header
-				title={titleObject?.title || "AI chatbot"}
+				title={titleObject?.title || "The Sassy Chatbot"}
 				type={openVoiceMode ? "voiceMode" : "chat"}
 			/>
 			<KeyboardAvoidingView
