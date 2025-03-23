@@ -1,6 +1,7 @@
 import { streamObject } from "ai";
 import { z } from "zod";
 import { aiSdk } from "../../constants/aiSdk";
+import { withRateLimit } from "../../services/rateLimiter";
 import { withSecurity } from "../../services/securityBack";
 
 export const rantSchema = z.object({
@@ -26,4 +27,4 @@ ${input}`,
 	return result.toTextStreamResponse();
 }
 
-export const POST = withSecurity(handler);
+export const POST = withSecurity(withRateLimit(handler));

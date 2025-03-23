@@ -1,6 +1,10 @@
 import getFirebaseAdmin from "./firebase";
 
-export interface RateLimitOptions {
+const DEFAULT_MAX_REQUESTS = 40;
+const DEFAULT_WINDOW_SIZE_IN_SECONDS = 43200;
+const DEFAULT_NAMESPACE = "default";
+
+export interface CheckRateLimitParams {
 	// Maximum number of requests in the time window
 	maxRequests: number;
 	// Time window in seconds
@@ -44,7 +48,7 @@ export async function checkRateLimit({
 	windowSizeInSeconds,
 	identifier,
 	namespace = "default",
-}: RateLimitOptions): Promise<{ allowed: boolean; timeLeftMs?: number }> {
+}: CheckRateLimitParams): Promise<{ allowed: boolean; timeLeftMs?: number }> {
 	const db = getFirebaseAdmin();
 	const now = Date.now();
 	const windowStart = now - windowSizeInSeconds * 1000;
@@ -114,12 +118,21 @@ export async function checkRateLimit({
 	}
 }
 
+export type RateLimitOptions = {
+	// Maximum number of requests in the time window
+	maxRequests: number;
+	// Time window in seconds
+	windowSizeInSeconds: number;
+	// Optional namespace to separate different rate limits
+	namespace: string;
+};
+
 /**
  * Middleware wrapper for device-based rate limiting
  */
 export function withRateLimit(
 	handler: (req: Request) => Promise<Response>,
-	options: Omit<RateLimitOptions, "identifier">,
+	options?: RateLimitOptions,
 ) {
 	return async (req: Request) => {
 		// Get device ID for rate limiting
@@ -142,15 +155,27 @@ export function withRateLimit(
 			);
 		}
 
+		let maxRequests = DEFAULT_MAX_REQUESTS;
+		let windowSizeInSeconds = DEFAULT_WINDOW_SIZE_IN_SECONDS;
+		let namespace = DEFAULT_NAMESPACE;
+
+		if (options) {
+			maxRequests = options.maxRequests;
+			windowSizeInSeconds = options.windowSizeInSeconds;
+			namespace = options.namespace;
+		}
+
 		const result = await checkRateLimit({
-			...options,
+			maxRequests,
+			windowSizeInSeconds,
+			namespace,
 			identifier: deviceId,
 		});
 
 		if (!result.allowed) {
 			const timeLeftSec = result.timeLeftMs
 				? Math.ceil(result.timeLeftMs / 1000)
-				: options.windowSizeInSeconds;
+				: windowSizeInSeconds;
 			const timeLeftMin = Math.ceil(timeLeftSec / 60);
 
 			return new Response(
