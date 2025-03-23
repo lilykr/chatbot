@@ -3,9 +3,9 @@ import {
 	Animated,
 	Pressable,
 	type PressableProps,
+	type StyleProp,
 	StyleSheet,
 	type ViewStyle,
-	type StyleProp,
 } from "react-native";
 
 type BouncyPressableProps = {

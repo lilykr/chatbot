@@ -1,8 +1,8 @@
 import { StyleSheet, TextInput, View } from "react-native";
 import { colors } from "../constants/colors";
 import { GradientButton } from "./GradientButton";
-import { Text } from "./Text";
 import { RantSuggestions } from "./RantSuggestions";
+import { Text } from "./Text";
 
 interface Props {
 	input: string;

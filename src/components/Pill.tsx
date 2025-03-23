@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleSheet, type ViewStyle, type StyleProp } from "react-native";
+import { type StyleProp, StyleSheet, type ViewStyle } from "react-native";
+import { colors } from "../constants/colors";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
-import { colors } from "../constants/colors";
 
 interface PillProps {
 	label: string;

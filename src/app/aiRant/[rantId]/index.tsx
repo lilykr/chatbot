@@ -1,6 +1,5 @@
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { router, useLocalSearchParams } from "expo-router";
-import { fetch as expoFetch } from "expo/fetch";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
 	InteractionManager,
@@ -11,13 +10,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
 import { ChatSingleInput } from "../../../components/ChatSingleInput";
+import { ErrorCard } from "../../../components/ErrorCard";
 import { Header } from "../../../components/Header";
-import { RantSuggestions } from "../../../components/RantSuggestions";
 import { ResponseDisplay } from "../../../components/ResponseDisplay";
-import { Text } from "../../../components/Text";
 import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { rantSchema } from "../../api/chat-rant+api";
 
@@ -41,7 +40,7 @@ export default function AIRant() {
 		error,
 		isLoading,
 	} = useObject({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/chat-rant`,
 		schema: rantSchema,
 	});
@@ -92,8 +91,6 @@ export default function AIRant() {
 		status: "success",
 	});
 
-	if (error) return <Text style={{ color: "white" }}>{error.message}</Text>;
-
 	return (
 		<View
 			style={[
@@ -112,6 +109,7 @@ export default function AIRant() {
 				}
 				type="rant"
 			/>
+			{error && <ErrorCard error={error} />}
 			<View style={styles.content}>
 				{rantMessage !== undefined ? (
 					<ResponseDisplay
