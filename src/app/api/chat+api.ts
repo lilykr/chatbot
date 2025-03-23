@@ -1,3 +1,4 @@
+import type { UIMessage } from "ai";
 import { streamText } from "ai";
 import { aiSdk } from "../../constants/aiSdk";
 import { withRateLimit } from "../../services/rateLimiter";
