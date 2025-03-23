@@ -76,6 +76,7 @@ export default function Homepage() {
 						style={{
 							color: "white",
 							fontSize: 28,
+							lineHeight: 34,
 							width: "70%",
 							marginBottom: 8,
 							paddingHorizontal: 16,
