@@ -12,14 +12,15 @@ import { Header } from "../../../components/Header";
 import { colors } from "../../../constants/colors";
 
 import { useChat, experimental_useObject as useObject } from "@ai-sdk/react";
-import { fetch as expoFetch } from "expo/fetch";
 import { useCallback, useEffect, useRef } from "react";
+import { ErrorCard } from "../../../components/ErrorCard";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { apiUrl } from "../../../constants/apiUrl";
 import { IMAGES } from "../../../constants/images";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
 
@@ -36,8 +37,15 @@ export default function ChatWithLily() {
 	const safeAreaInsets = useSafeAreaInsets();
 	const inputRef = useRef<TextInput>(null);
 
-	const { messages, handleInputChange, input, handleSubmit, status } = useChat({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+	const {
+		messages,
+		handleInputChange,
+		input,
+		handleSubmit,
+		status,
+		error: chatError,
+	} = useChat({
+		fetch: secureFetch,
 		api: `${apiUrl}/api/chat-with-lily`,
 		streamProtocol: "data",
 		headers: {
@@ -47,11 +55,12 @@ export default function ChatWithLily() {
 	});
 
 	const {
+		error: titleError,
 		object: titleObject,
 		submit: generateTitle,
 		isLoading: isGeneratingTitle,
 	} = useObject({
-		fetch: expoFetch as unknown as typeof globalThis.fetch,
+		fetch: secureFetch,
 		api: `${apiUrl}/api/generate-title`,
 		schema: titleSchema,
 		headers: {
@@ -77,12 +86,6 @@ export default function ChatWithLily() {
 		}
 	}, [chatId]);
 
-	useEffect(() => {
-		setTimeout(() => {
-			messageListRef.current?.scrollToEnd();
-		}, 100);
-	}, []);
-
 	usePersistChat({
 		chatId: chatId as string,
 		messages,
@@ -102,6 +105,7 @@ export default function ChatWithLily() {
 		}
 	}, [input, messages, generateTitle]);
 
+	const error = chatError || titleError;
 	return (
 		<View
 			style={[
@@ -123,6 +127,7 @@ export default function ChatWithLily() {
 					listRef={messageListRef}
 				/>
 
+				{error && <ErrorCard error={error} />}
 				<ComposerInput
 					inputRef={inputRef}
 					value={input}

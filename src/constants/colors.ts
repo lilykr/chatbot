@@ -5,4 +5,6 @@ export const colors = {
 	dustyRose: "#c26e73",
 	white: "#dedede",
 	lightGrey: "#918D8E",
+	error: "#FF5252",
+	errorBackground: "rgba(255, 82, 82, 0.1)",
 };

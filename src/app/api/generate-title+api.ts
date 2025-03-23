@@ -1,6 +1,7 @@
 import { streamObject } from "ai";
 import { z } from "zod";
 import { aiSdk } from "../../constants/aiSdk";
+import { withSecurity } from "../../services/securityBack";
 
 export const titleSchema = z.object({
 	title: z
@@ -9,7 +10,7 @@ export const titleSchema = z.object({
 		.describe("A concise, descriptive title for the chat conversation"),
 });
 
-export async function POST(req: Request) {
+async function handler(req: Request) {
 	const { messages } = await req.json();
 
 	const result = streamObject({
@@ -29,3 +30,5 @@ ${JSON.stringify(messages)}`,
 		},
 	});
 }
+
+export const POST = withSecurity(handler);

@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { colors } from "../constants/colors";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
-import { colors } from "../constants/colors";
 
 const RANT_SUGGESTIONS = [
 	"Technology",
