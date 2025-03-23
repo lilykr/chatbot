@@ -65,6 +65,12 @@
 			],
 			["expo-localization"],
 			[
+				"expo-screen-orientation",
+				{
+					"initialOrientation": "PORTRAIT_UP"
+				}
+			],
+			[
 				"expo-camera",
 				{
 					"cameraPermission": "Autoriser Lisa-Lou à accéder à votre caméra",
