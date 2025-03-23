@@ -3,6 +3,9 @@ import { storage } from "./storage";
 
 export const deviceId = (() => {
 	const getOrCreateDeviceId = () => {
+		if (process.env.CI) {
+			return "test-device-id";
+		}
 		let _deviceId = storage.get("deviceId");
 		if (!_deviceId) {
 			_deviceId = uuid.v4() as string;
