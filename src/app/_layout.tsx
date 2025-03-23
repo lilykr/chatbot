@@ -9,6 +9,7 @@ import {
 	useFonts,
 } from "@expo-google-fonts/epilogue";
 import { Stack } from "expo-router";
+import * as ScreenOrientation from "expo-screen-orientation";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
@@ -23,6 +24,7 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 
+ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 SystemUI.setBackgroundColorAsync(colors.night);
 configureReanimatedLogger({
 	level: ReanimatedLogLevel.warn,
