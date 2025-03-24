@@ -15,7 +15,7 @@ export const createAudioStreamFromText = async (
 	voiceId = "tikn6m5LXYblsjYtbMQn",
 ): Promise<Buffer> => {
 	const audioStream = await client.textToSpeech.convertAsStream(voiceId, {
-		model_id: "eleven_multilingual_v2",
+		model_id: "eleven_flash_v2_5",
 		text,
 		output_format: "mp3_44100_128",
 		// Optional voice settings that allow you to customize the output
