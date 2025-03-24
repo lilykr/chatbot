@@ -4997,6 +4997,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"burnt@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "burnt@npm:0.13.0"
+  dependencies:
+    sf-symbols-typescript: "npm:^1.0.0"
+    sonner: "npm:^2.0.1"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/7bb3187c77adcf042f0879a8519fd9d5fb60f67dbdf8fca98218c06156262924214363652e6d02a78ab0f00e9fa168e5a31e3ebe297e0da38b02efca525c93e1
+  languageName: node
+  linkType: hard
+
 "bytes@npm:3.1.2":
   version: 3.1.2
   resolution: "bytes@npm:3.1.2"
@@ -8288,6 +8302,7 @@ __metadata:
     "@types/react": "npm:~18.3.12"
     "@ungap/structured-clone": "npm:^1.3.0"
     ai: "npm:^4.1.61"
+    burnt: "npm:^0.13.0"
     crypto-js: "npm:^4.2.0"
     elevenlabs: "npm:^1.54.0"
     expo: "npm:~52.0.38"
@@ -10811,6 +10826,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sf-symbols-typescript@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "sf-symbols-typescript@npm:1.0.0"
+  checksum: 10c0/690314f401fb37b79382decf158fc7f511de5c113ec3fb265ce4e1e06341050d17c1327c581342367f0ba6e41d2b3e82637789fab8cd41a4470ef952e05241bb
+  languageName: node
+  linkType: hard
+
 "shallow-clone@npm:^3.0.0":
   version: 3.0.1
   resolution: "shallow-clone@npm:3.0.1"
@@ -11001,6 +11023,16 @@ __metadata:
     ip-address: "npm:^9.0.5"
     smart-buffer: "npm:^4.2.0"
   checksum: 10c0/00c3271e233ccf1fb83a3dd2060b94cc37817e0f797a93c560b9a7a86c4a0ec2961fb31263bdd24a3c28945e24868b5f063cd98744171d9e942c513454b50ae5
+  languageName: node
+  linkType: hard
+
+"sonner@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "sonner@npm:2.0.1"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/29e15324109ac19e0c9f2236ad695e2791fcf183264e5a4ffc72acfff28894fb8e80de65a1bf40bcea881fe4d06481b3c533ee3dc6ffafa80a44912e2ebc5cf6
   languageName: node
   linkType: hard
 
