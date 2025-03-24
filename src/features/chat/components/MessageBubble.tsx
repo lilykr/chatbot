@@ -10,8 +10,8 @@ import { Avatar } from "./Avatar";
 import type { User } from "./MessageList";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { showAlert } from "../../../utils/alert";
-import type { ReportReason } from "../../../app/api/report+api";
 import { apiUrl } from "../../../constants/apiUrl";
+import { secureFetch } from "../../../services/securityFront";
 
 interface MessageBubbleProps {
 	message: UIMessage;
@@ -43,13 +43,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 		);
 	};
 
-	const handleReportSubmit = async (reason: ReportReason) => {
+	const handleReportSubmit = async (reason: string) => {
 		try {
-			const response = await fetch(`${apiUrl}/api/report`, {
+			const response = await secureFetch(`${apiUrl}/api/report`, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
 				body: JSON.stringify({
 					messageId: message.id,
 					reason,
@@ -217,8 +214,10 @@ const styles = StyleSheet.create({
 		width: "100%",
 		paddingTop: 12,
 		paddingBottom: 8,
+		opacity: 0.7,
 	},
 	actionButton: {
 		padding: 4,
+		opacity: 0.7,
 	},
 });
