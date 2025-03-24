@@ -47,6 +47,14 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
+		shadowColor: "#f78f9e",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.5,
+		shadowRadius: 8,
+		elevation: 10,
 	},
 
 	button: {
