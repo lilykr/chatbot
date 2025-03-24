@@ -2,6 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
 import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import { apiUrl } from "../constants/apiUrl";
 import { colors } from "../constants/colors";
 import { secureFetch } from "../services/securityFront";
 import { GradientButton } from "./GradientButton";
@@ -69,7 +70,7 @@ export function ResponseDisplay({
 		// Start new text-to-speech
 		setIsLoadingAudio(true);
 		try {
-			const response = await secureFetch("/api/text-to-speech", {
+			const response = await secureFetch(`${apiUrl}/api/text-to-speech`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
