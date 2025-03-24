@@ -1,17 +1,30 @@
+import { Ionicons } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather";
 import type { UIMessage } from "ai";
+import * as Burnt from "burnt";
+import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { Ionicons } from "@expo/vector-icons";
+import { BouncyPressable } from "../../../components/BouncyPressable";
+import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
+import { secureFetch } from "../../../services/securityFront";
+import { showAlert } from "../../../utils/alert";
 import { Avatar } from "./Avatar";
 import type { User } from "./MessageList";
-import { BouncyPressable } from "../../../components/BouncyPressable";
-import { showAlert } from "../../../utils/alert";
-import { apiUrl } from "../../../constants/apiUrl";
-import { secureFetch } from "../../../services/securityFront";
+
+const reportReasons = [
+	"Inappropriate content",
+	"Inaccurate information",
+	"Hate speech",
+	"Copyright infringement",
+	"Bias",
+	"Plagiarism",
+	"Other",
+];
 
 interface MessageBubbleProps {
 	message: UIMessage;
@@ -29,16 +42,24 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 		return false;
 	};
 
+	const copyToClipboard = async () => {
+		await Clipboard.setStringAsync(message.content);
+		Burnt.toast({
+			title: "Copied to clipboard",
+			preset: "done",
+		});
+	};
+
 	const handleReport = () => {
 		showAlert(
 			"Report Message",
-			"Please select a reason for reporting this message:",
+			"Please select a reason for reporting this message",
 			[
 				{ text: "Cancel", style: "cancel" },
-				{
-					text: "Inappropriate Content",
-					onPress: () => handleReportSubmit("inappropriate"),
-				},
+				...reportReasons.map((reason) => ({
+					text: reason,
+					onPress: () => handleReportSubmit(reason),
+				})),
 			],
 		);
 	};
@@ -59,7 +80,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 				throw new Error(`Failed to report message: ${response.statusText}`);
 			}
 
-			showAlert("Success", "Message reported successfully");
+			Burnt.alert({
+				title: "Message Reported",
+				preset: "done",
+			});
 		} catch (error) {
 			showAlert("Error", "Failed to report message. Please try again later.", [
 				{ text: "OK" },
@@ -132,6 +156,12 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 								{message.content}
 							</Markdown>
 							<View style={styles.actionButtons}>
+								<BouncyPressable
+									onPress={copyToClipboard}
+									style={styles.actionButton}
+								>
+									<Feather name="copy" size={16} color={colors.white} />
+								</BouncyPressable>
 								<BouncyPressable
 									onPress={handleReport}
 									style={styles.actionButton}
