@@ -72,16 +72,16 @@
 			[
 				"expo-camera",
 				{
-					"cameraPermission": "Autoriser Lisa-Lou à accéder à votre caméra",
-					"microphonePermission": "Autoriser Lisa-Lou à accéder à votre microphone",
+					"cameraPermission": "Allow Lisa-Lou to access your camera",
+					"microphonePermission": "Allow Lisa-Lou to access your microphone",
 					"recordAudioAndroid": true
 				}
 			],
 			[
 				"expo-video",
 				{
-					"supportsBackgroundPlayback": true,
-					"supportsPictureInPicture": true
+					"supportsBackgroundPlayback": false,
+					"supportsPictureInPicture": false
 				}
 			],
 			[
@@ -111,21 +111,21 @@
 			[
 				"expo-av",
 				{
-					"microphonePermission": "Autoriser Lisa-Lou à accéder à votre microphone"
+					"microphonePermission": "Allow Lisa-Lou to access your microphone"
 				}
 			],
 			[
 				"expo-media-library",
 				{
-					"photosPermission": "Autoriser Lisa-Lou à accéder à vos photos.",
-					"savePhotosPermission": "Autoriser Lisa-Lou à enregistrer vos photos.",
+					"photosPermission": "Allow Lisa-Lou to access your photos.",
+					"savePhotosPermission": "Allow Lisa-Lou to save your photos.",
 					"isAccessMediaLocationEnabled": false
 				}
 			],
 			[
 				"expo-image-picker",
 				{
-					"photosPermission": "Autoriser Lisa-Lou à accéder à vos photos."
+					"photosPermission": "Allow Lisa-Lou to access your photos."
 				}
 			],
 			"expo-speech-recognition",
