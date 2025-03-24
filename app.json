@@ -20,8 +20,8 @@
 			"bundleIdentifier": "com.lilykr.lisalou",
 			"backgroundColor": "#080607",
 			"infoPlist": {
-				"NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
-				"NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
+				"NSSpeechRecognitionUsageDescription": "Allow Lisa-Lou to use speech recognition to respond to your oral messages.",
+				"NSMicrophoneUsageDescription": "Allow Lisa-Lou to use the microphone to hear you and respond to your messages.",
 				"ITSAppUsesNonExemptEncryption": false
 			}
 		},
@@ -72,8 +72,8 @@
 			[
 				"expo-camera",
 				{
-					"cameraPermission": "Allow Lisa-Lou to access your camera",
-					"microphonePermission": "Allow Lisa-Lou to access your microphone",
+					"cameraPermission": "Allow Lisa-Lou to access your camera to take photos of you and roast you.",
+					"microphonePermission": "Allow Lisa-Lou to access your microphone to hear you and respond to your messages.",
 					"recordAudioAndroid": true
 				}
 			],
@@ -111,7 +111,7 @@
 			[
 				"expo-av",
 				{
-					"microphonePermission": "Allow Lisa-Lou to access your microphone"
+					"microphonePermission": "Allow Lisa-Lou to access your microphone to hear you and respond to your messages."
 				}
 			],
 			[
