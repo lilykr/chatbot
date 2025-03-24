@@ -1,8 +1,8 @@
-import { useCallback, useRef } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, ScrollView, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
 import { GradientButton } from "./GradientButton";
-import { Text } from "./Text";
+import { SkiaLoader } from "./SkiaLoader";
 
 interface ResponseDisplayProps {
 	content?: string | undefined;
@@ -20,10 +20,19 @@ export function ResponseDisplay({
 	newResponseButtonText = "New Rant",
 }: ResponseDisplayProps) {
 	const scrollViewRef = useRef<ScrollView>(null);
+	const fadeAnim = useRef(new Animated.Value(0)).current;
 
-	const scrollToBottom = useCallback(() => {
-		scrollViewRef.current?.scrollToEnd({ animated: true });
-	}, []);
+	useEffect(() => {
+		if (content) {
+			Animated.timing(fadeAnim, {
+				toValue: 1,
+				duration: 500,
+				useNativeDriver: true,
+			}).start();
+		} else {
+			fadeAnim.setValue(0);
+		}
+	}, [content, fadeAnim]);
 
 	return (
 		<View style={styles.responseContainer}>
@@ -32,15 +41,13 @@ export function ResponseDisplay({
 				style={styles.scrollView}
 				contentContainerStyle={styles.scrollContent}
 				showsVerticalScrollIndicator={true}
-				onContentSizeChange={scrollToBottom}
 			>
-				<Text style={styles.responseText}>{content}</Text>
-				{isLoading && !content && (
-					<View style={styles.typingIndicator}>
-						<ActivityIndicator color={colors.vibrantPurple} />
-						<Text style={styles.typingText}>{loadingText}</Text>
-					</View>
-				)}
+				<Animated.Text style={[styles.responseText, { opacity: fadeAnim }]}>
+					{content}
+				</Animated.Text>
+				<View style={styles.loadingContainer}>
+					{isLoading && !content && <SkiaLoader size={100} />}
+				</View>
 			</ScrollView>
 			<GradientButton onPress={onNewResponse} text={newResponseButtonText} />
 		</View>
@@ -50,22 +57,30 @@ export function ResponseDisplay({
 const styles = StyleSheet.create({
 	responseContainer: {
 		width: "100%",
-		padding: 20,
 		flex: 1,
 		paddingTop: 56,
 	},
 	scrollView: {
 		flex: 1,
 	},
+	loadingContainer: {
+		height: 120,
+		width: 120,
+		alignSelf: "center",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+	},
 	scrollContent: {
 		flexGrow: 1,
 	},
 	responseText: {
 		color: colors.white,
-		fontSize: 16,
-		lineHeight: 24,
+		fontSize: 24,
+		lineHeight: 46,
 		marginBottom: 20,
 		marginTop: 30,
+		paddingHorizontal: 20,
 	},
 	newResponseButton: {
 		backgroundColor: colors.vibrantPurple,
