@@ -20,8 +20,8 @@
 			"bundleIdentifier": "com.lilykr.lisalou",
 			"backgroundColor": "#080607",
 			"infoPlist": {
-				"NSSpeechRecognitionUsageDescription": "Allow Lisa-Lou to use speech recognition to respond to your oral messages.",
-				"NSMicrophoneUsageDescription": "Allow Lisa-Lou to use the microphone to hear you and respond to your messages.",
+				"NSSpeechRecognitionUsageDescription": "Allow Lisa-Lou to use speech recognition to hear you and respond to you.",
+				"NSMicrophoneUsageDescription": "Allow Lisa-Lou to use the microphone to hear you and respond to you.",
 				"ITSAppUsesNonExemptEncryption": false
 			}
 		},
@@ -72,8 +72,8 @@
 			[
 				"expo-camera",
 				{
-					"cameraPermission": "Allow Lisa-Lou to access your camera to take photos of you and roast you.",
-					"microphonePermission": "Allow Lisa-Lou to access your microphone to hear you and respond to your messages.",
+					"cameraPermission": "Allow Lisa-Lou to access your camera to take photos and send them in the chat.",
+					"microphonePermission": "Allow Lisa-Lou to access your microphone to hear you and respond to you.",
 					"recordAudioAndroid": true
 				}
 			],
@@ -111,21 +111,21 @@
 			[
 				"expo-av",
 				{
-					"microphonePermission": "Allow Lisa-Lou to access your microphone to hear you and respond to your messages."
+					"microphonePermission": "Allow Lisa-Lou to access your microphone to hear you and respond to you."
 				}
 			],
 			[
 				"expo-media-library",
 				{
-					"photosPermission": "Allow Lisa-Lou to access your photos.",
-					"savePhotosPermission": "Allow Lisa-Lou to save your photos.",
+					"photosPermission": "Allow Lisa-Lou to access your photos to send them in the chat.",
+					"savePhotosPermission": "Allow Lisa-Lou to save your photos to send them in the chat.",
 					"isAccessMediaLocationEnabled": false
 				}
 			],
 			[
 				"expo-image-picker",
 				{
-					"photosPermission": "Allow Lisa-Lou to access your photos."
+					"photosPermission": "Allow Lisa-Lou to access your photos to send them in the chat."
 				}
 			],
 			"expo-speech-recognition",
