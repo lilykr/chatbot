@@ -152,7 +152,9 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 			try {
 				const started = await startSpeechRecognition();
 				if (!started) {
-					setPermissionErrorState("Failed to start speech recognition");
+					setPermissionErrorState(
+						"Please allow speech recognition and microphone in settings",
+					);
 				} else {
 					setPermissionErrorState(null);
 					// If successful, ensure manual mode is off

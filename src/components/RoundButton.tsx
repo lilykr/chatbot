@@ -8,6 +8,7 @@ interface RoundButtonProps {
 	children: ReactNode;
 	containerStyle?: ViewStyle;
 	size?: number;
+	disabled?: boolean;
 }
 
 export const RoundButton = ({
@@ -15,12 +16,14 @@ export const RoundButton = ({
 	children,
 	containerStyle,
 	size = 64,
+	disabled = false,
 }: RoundButtonProps) => {
 	return (
 		<View style={[styles.layout, containerStyle]}>
 			<BouncyPressable
 				onPress={onPress}
 				style={{ width: size + 4, height: size + 4 }}
+				disabled={disabled}
 			>
 				<LinearGradient
 					colors={["#f78f9e", "#ae3bd1"]}

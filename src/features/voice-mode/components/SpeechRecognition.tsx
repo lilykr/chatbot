@@ -264,7 +264,11 @@ const SpeechRecognition = ({
 				<BouncyPressable onPress={onClose}>
 					<Ionicons name="close-outline" size={30} color="white" />
 				</BouncyPressable>
-				<RoundButton onPress={handleMicrophonePress}>
+				<RoundButton
+					onPress={handleMicrophonePress}
+					containerStyle={permissionError ? styles.disabledButton : {}}
+					disabled={!!permissionError}
+				>
 					<SimpleLineIcons name="microphone" size={28} color="white" />
 				</RoundButton>
 				<Animated.View style={refreshButtonStyle}>
@@ -306,6 +310,9 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	disabledButton: {
+		opacity: 0.2,
 	},
 	languageText: {
 		color: "white",
