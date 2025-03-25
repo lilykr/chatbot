@@ -2,6 +2,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
 import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import type {
+	TextToSpeechInput,
+	TextToSpeechOutput,
+} from "../app/api/text-to-speech+api";
 import { apiUrl } from "../constants/apiUrl";
 import { colors } from "../constants/colors";
 import { secureFetch } from "../services/securityFront";
@@ -75,10 +79,10 @@ export function ResponseDisplay({
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ text: content }),
+				body: JSON.stringify({ text: content } as TextToSpeechInput),
 			});
 
-			const { presignedUrl } = await response.json();
+			const { presignedUrl } = (await response.json()) as TextToSpeechOutput;
 
 			const { sound: newSound } = await Audio.Sound.createAsync(
 				{ uri: presignedUrl },

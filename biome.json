@@ -21,11 +21,7 @@
 		"rules": {
 			"recommended": true,
 			"style": {
-				"noNonNullAssertion": "warn",
-				"useImportType": {
-					"fix": "none",
-					"level": "error"
-				}
+				"noNonNullAssertion": "warn"
 			}
 		}
 	},

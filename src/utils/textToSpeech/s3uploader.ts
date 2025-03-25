@@ -1,11 +1,6 @@
-import {
-	GetObjectCommand,
-	PutObjectCommand,
-	S3Client,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { v4 as uuid } from "uuid";
+import { AwsClient } from "aws4fetch";
 
+// Environment variables remain the same
 const {
 	AWS_ACCESS_KEY_ID,
 	AWS_SECRET_ACCESS_KEY,
@@ -24,34 +19,42 @@ if (
 	);
 }
 
-const s3 = new S3Client({
-	credentials: {
-		accessKeyId: AWS_ACCESS_KEY_ID,
-		secretAccessKey: AWS_SECRET_ACCESS_KEY,
-	},
+// Initialize aws4fetch client
+const client = new AwsClient({
+	accessKeyId: AWS_ACCESS_KEY_ID,
+	secretAccessKey: AWS_SECRET_ACCESS_KEY,
+	service: "s3",
 	region: AWS_REGION_NAME,
 });
 
-export const generatePresignedUrl = async (objectKey: string) => {
-	const getObjectParams = {
-		Bucket: AWS_S3_BUCKET_NAME,
-		Key: objectKey,
-		Expires: 3600,
-	};
-	const command = new GetObjectCommand(getObjectParams);
-	const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-	return url;
+// Base URL for S3 operations
+const baseUrl = `https://${AWS_S3_BUCKET_NAME}.s3.${AWS_REGION_NAME}.amazonaws.com`;
+
+export const generatePresignedUrl = async (
+	objectKey: string,
+): Promise<string> => {
+	const url = `${baseUrl}/${encodeURIComponent(objectKey)}?X-Amz-Expires=3600`;
+	const signedUrl = await client.sign(new Request(url), {
+		aws: { signQuery: true },
+	});
+	return signedUrl.url.toString();
 };
 
-export const uploadAudioStreamToS3 = async (audioStream: Buffer) => {
-	const remotePath = `${uuid()}.mp3`;
-	await s3.send(
-		new PutObjectCommand({
-			Bucket: AWS_S3_BUCKET_NAME,
-			Key: remotePath,
-			Body: audioStream,
-			ContentType: "audio/mpeg",
-		}),
-	);
+export const uploadAudioStreamToS3 = async (
+	audioStream: Buffer,
+): Promise<string> => {
+	const remotePath = `${Date.now()}.mp3`;
+	const response = await client.fetch(`${baseUrl}/${remotePath}`, {
+		method: "PUT",
+		body: audioStream,
+		headers: {
+			"Content-Type": "audio/mpeg",
+		},
+	});
+
+	if (!response.ok) {
+		throw new Error(`Failed to upload to S3: ${await response.text()}`);
+	}
+
 	return remotePath;
 };

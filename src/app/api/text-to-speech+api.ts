@@ -1,3 +1,4 @@
+import { withSecurity } from "../../services/securityBack";
 import { createAudioStreamFromText } from "../../utils/textToSpeech/createAudioStreamFromText";
 import {
 	generatePresignedUrl,
@@ -22,4 +23,4 @@ async function handler(req: Request) {
 	return new Response(JSON.stringify({ presignedUrl } as TextToSpeechOutput));
 }
 
-export const POST = handler; // withSecurity(handler);
+export const POST = withSecurity(handler);
