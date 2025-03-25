@@ -1,18 +1,11 @@
-import { Ionicons } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
 import type { UIMessage } from "ai";
-import * as Burnt from "burnt";
-import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import type React from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { BouncyPressable } from "../../../components/BouncyPressable";
-import { apiUrl } from "../../../constants/apiUrl";
+import { ActionButtons } from "../../../components/ActionButtons";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
-import { secureFetch } from "../../../services/securityFront";
-import { showAlert } from "../../../utils/alert";
 import { Avatar } from "./Avatar";
 import type { User } from "./MessageList";
 
@@ -40,55 +33,6 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 	const handleLinkPress = (url: string) => {
 		Linking.openURL(url);
 		return false;
-	};
-
-	const copyToClipboard = async () => {
-		await Clipboard.setStringAsync(message.content);
-		Burnt.toast({
-			title: "Copied to clipboard",
-			preset: "done",
-		});
-	};
-
-	const handleReport = () => {
-		showAlert(
-			"Report Message",
-			"Please select a reason for reporting this message",
-			[
-				{ text: "Cancel", style: "cancel" },
-				...reportReasons.map((reason) => ({
-					text: reason,
-					onPress: () => handleReportSubmit(reason),
-				})),
-			],
-		);
-	};
-
-	const handleReportSubmit = async (reason: string) => {
-		try {
-			const response = await secureFetch(`${apiUrl}/api/report`, {
-				method: "POST",
-				body: JSON.stringify({
-					messageId: message.id,
-					reason,
-					messageContent: message.content,
-					timestamp: Date.now(),
-				}),
-			});
-
-			if (!response.ok) {
-				throw new Error(`Failed to report message: ${response.statusText}`);
-			}
-
-			Burnt.alert({
-				title: "Message Reported",
-				preset: "done",
-			});
-		} catch (error) {
-			showAlert("Error", "Failed to report message. Please try again later.", [
-				{ text: "OK" },
-			]);
-		}
 	};
 
 	return (
@@ -155,24 +99,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 							>
 								{message.content}
 							</Markdown>
-							<View style={styles.actionButtons}>
-								<BouncyPressable
-									onPress={copyToClipboard}
-									style={styles.actionButton}
-								>
-									<Feather name="copy" size={16} color={colors.white} />
-								</BouncyPressable>
-								<BouncyPressable
-									onPress={handleReport}
-									style={styles.actionButton}
-								>
-									<Ionicons
-										name="flag-outline"
-										size={16}
-										color={colors.white}
-									/>
-								</BouncyPressable>
-							</View>
+							<ActionButtons content={message.content} />
 						</>
 					)}
 				</View>
@@ -234,20 +161,5 @@ const styles = StyleSheet.create({
 	},
 	link: {
 		textDecorationLine: "underline" as const,
-	},
-	actionButtons: {
-		flexDirection: "row",
-		gap: 12,
-		marginTop: 4,
-		borderTopWidth: 1,
-		borderColor: colors.lightGrey,
-		width: "100%",
-		paddingTop: 12,
-		paddingBottom: 8,
-		opacity: 0.7,
-	},
-	actionButton: {
-		padding: 4,
-		opacity: 0.7,
 	},
 });

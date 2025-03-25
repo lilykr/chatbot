@@ -9,6 +9,7 @@ import type {
 import { apiUrl } from "../constants/apiUrl";
 import { colors } from "../constants/colors";
 import { secureFetch } from "../services/securityFront";
+import { ActionButtons } from "./ActionButtons";
 import { GradientButton } from "./GradientButton";
 import { RoundButton } from "./RoundButton";
 import { SkiaLoader } from "./SkiaLoader";
@@ -117,6 +118,11 @@ export function ResponseDisplay({
 				<Animated.Text style={[styles.responseText, { opacity: fadeAnim }]}>
 					{content}
 				</Animated.Text>
+				{content && !isLoading && (
+					<View style={styles.actionButtonsContainer}>
+						<ActionButtons content={content} />
+					</View>
+				)}
 				<View style={styles.loadingContainer}>
 					{isLoading && !content && <SkiaLoader size={100} />}
 				</View>
@@ -169,6 +175,9 @@ const styles = StyleSheet.create({
 		lineHeight: 46,
 		marginBottom: 20,
 		marginTop: 30,
+		paddingHorizontal: 20,
+	},
+	actionButtonsContainer: {
 		paddingHorizontal: 20,
 	},
 	newResponseButtonContainer: {
