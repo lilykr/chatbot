@@ -16,5 +16,11 @@
 		"noImplicitOverride": true,
 		"exactOptionalPropertyTypes": true
 	},
-	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"src/i18n/i18n-util.async.ts",
+		"src/i18n/i18n-util.sync.ts"
+	]
 }

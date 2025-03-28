@@ -7078,6 +7078,7 @@ __metadata:
     react-native-screens: "npm:~4.4.0"
     react-native-uuid: "npm:^2.0.3"
     react-native-web: "npm:~0.19.13"
+    typesafe-i18n: "npm:^5.26.2"
     typescript: "npm:^5.3.3"
     uuid: "npm:^11.1.0"
     zod: "npm:^3.24.2"
@@ -10336,6 +10337,17 @@ __metadata:
   version: 0.7.1
   resolution: "type-fest@npm:0.7.1"
   checksum: 10c0/ce6b5ef806a76bf08d0daa78d65e61f24d9a0380bd1f1df36ffb61f84d14a0985c3a921923cf4b97831278cb6fa9bf1b89c751df09407e0510b14e8c081e4e0f
+  languageName: node
+  linkType: hard
+
+"typesafe-i18n@npm:^5.26.2":
+  version: 5.26.2
+  resolution: "typesafe-i18n@npm:5.26.2"
+  peerDependencies:
+    typescript: ">=3.5.1"
+  bin:
+    typesafe-i18n: cli/typesafe-i18n.mjs
+  checksum: 10c0/f13b13d54bf121701c85424de2d677f3d3e61c6b7160dffa681e3ffcbb2843ea10931d5842fcc382faed78bac727b234259e9fc767a44cd9dc1d64ddd8ddf397
   languageName: node
   linkType: hard
 
