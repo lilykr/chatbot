@@ -23,16 +23,16 @@ export default function Homepage() {
 			onPress: () => router.push("/chat/new"),
 		},
 		{
-			text: t("app.lisa_lou_chatbot"),
-			onPress: () => router.push("/chatWithLily/new"),
+			text: t("app.ai_rant"),
+			onPress: () => router.push("/aiRant/new"),
 		},
 		{
 			text: t("app.ai_voice_mode"),
 			onPress: () => router.push("/chat/new?openVoiceMode=true"),
 		},
 		{
-			text: t("app.ai_rant"),
-			onPress: () => router.push("/aiRant/new"),
+			text: t("app.lisa_lou_chatbot"),
+			onPress: () => router.push("/chatWithLily/new"),
 		},
 	];
 
