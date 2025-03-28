@@ -7,12 +7,12 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { TranslationId } from "./en";
+import en, { TranslationId } from "./en";
 import fr from "./fr";
 
 // Create the i18n instance
 const i18n = new I18n({
-	en: fr,
+	en,
 	fr,
 });
 
