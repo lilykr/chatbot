@@ -9,16 +9,6 @@ import { font } from "../../../constants/font";
 import { Avatar } from "./Avatar";
 import type { User } from "./MessageList";
 
-const reportReasons = [
-	"Inappropriate content",
-	"Inaccurate information",
-	"Hate speech",
-	"Copyright infringement",
-	"Bias",
-	"Plagiarism",
-	"Other",
-];
-
 interface MessageBubbleProps {
 	message: UIMessage;
 	user: User;

@@ -24,7 +24,6 @@ import { RecordButton } from "./components/RecordButton";
 import { useCameraPermissions } from "./hooks/useCameraPermissions";
 import { useOrientationAnimation } from "./hooks/useOrientationAnimation";
 import { useRecordingAnimation } from "./hooks/useRecordingAnimation";
-import { useRecordingTimer } from "./hooks/useRecordingTimer";
 
 interface CameraProps {
 	onClose: () => void;
@@ -47,7 +46,6 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 	).current;
 	const isManualClosing = useRef(false);
 
-	const recordingTime = useRecordingTimer(isRecording);
 	const { borderRadius, scale } = useRecordingAnimation(isRecording);
 	const rotationStyle = useOrientationAnimation(orientation);
 

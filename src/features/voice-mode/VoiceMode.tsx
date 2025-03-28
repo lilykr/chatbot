@@ -10,6 +10,7 @@ import { Header } from "../../components/Header";
 import { useI18n } from "../../i18n/i18n";
 import { DebugVolume } from "./components/DebugVolume";
 import SpeechRecognition, {
+	checkLanguageAvailability,
 	startSpeechRecognition,
 } from "./components/SpeechRecognition";
 import { WaveMesh } from "./components/WaveMesh";
@@ -28,7 +29,7 @@ export type VoiceModeProps = {
 };
 
 export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
-	const { t } = useI18n();
+	const { t, locale } = useI18n();
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 	const opacity = useSharedValue(0);
@@ -140,36 +141,39 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 		};
 	});
 
-	// Handle when component mounts
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// First, check language availability before starting speech recognition
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <intentionally ignoring dependencies to avoid re-running on every render>
 	useEffect(() => {
-		// After a small delay for the initial render with minimal points
-		const timer = setTimeout(handleFirstRender, 200);
-
-		// Start recording automatically if autoStart is true
-		const autoStartRecording = async () => {
-			// Ensure we've cleaned up any previous recording
-			volumeControlCleanup();
-
+		const checkLanguagesAndStart = async () => {
 			try {
-				const started = await startSpeechRecognition();
-				if (!started) {
-					setPermissionErrorState(
-						"Please allow speech recognition and microphone in settings",
-					);
+				// Check which languages are available
+				const { isEnglishAvailable, isFrenchAvailable } =
+					await checkLanguageAvailability();
+
+				// Determine preferred language based on locale and availability
+				const preferredLocale = locale;
+
+				// Only start if at least one language is available
+				if (isEnglishAvailable || isFrenchAvailable) {
+					// Start recording automatically
+					await autoStartRecording(preferredLocale);
 				} else {
-					setPermissionErrorState(null);
-					// If successful, ensure manual mode is off
-					toggleManualMode(false);
+					// If no language is available, set error state
+					setPermissionErrorState(
+						"Voice recognition is not available on this device",
+					);
 				}
 			} catch (error) {
-				const errorMessage =
-					error instanceof Error ? error.message : String(error);
-				setPermissionErrorState(errorMessage);
+				console.error("Failed to check language availability", error);
+				setPermissionErrorState("Failed to check language availability");
 			}
 		};
 
-		autoStartRecording();
+		// Start the process
+		checkLanguagesAndStart();
+
+		// After a small delay for the initial render with minimal points
+		const timer = setTimeout(handleFirstRender, 200);
 
 		return () => {
 			clearTimeout(timer);
@@ -179,6 +183,31 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 			setIsClosing(false);
 		};
 	}, []);
+
+	// Function to start speech recognition with the correct language
+	const autoStartRecording = async (preferredLocale: string) => {
+		// Ensure we've cleaned up any previous recording
+		volumeControlCleanup();
+
+		try {
+			// Pass the preferred locale to startSpeechRecognition
+			const started = await startSpeechRecognition(preferredLocale);
+
+			if (!started) {
+				setPermissionErrorState(
+					"Please allow speech recognition and microphone in settings",
+				);
+			} else {
+				setPermissionErrorState(null);
+				// If successful, ensure manual mode is off
+				toggleManualMode(false);
+			}
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			setPermissionErrorState(errorMessage);
+		}
+	};
 
 	return (
 		<View style={styles.layout}>
@@ -245,7 +274,5 @@ const styles = StyleSheet.create({
 		right: 0,
 		bottom: WINDOW_HEIGHT / 3,
 		zIndex: 1,
-		// borderWidth: 1,
-		// borderColor: "blue",
 	},
 });
