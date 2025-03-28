@@ -2,6 +2,7 @@ import { streamObject } from "ai";
 import { z } from "zod";
 import { aiSdk } from "../../constants/aiSdk";
 import { withSecurity } from "../../services/securityBack";
+import { isFrench } from "../../utils/isFrench";
 
 export const titleSchema = z.object({
 	title: z
@@ -13,14 +14,23 @@ export const titleSchema = z.object({
 async function handler(req: Request) {
 	const { messages } = await req.json();
 
+	let preprompt = `Génère un titre concis, drôle ou sarcastique pour cette conversation.
+Le titre doit être percutant, peut inclure des émojis, lâche-toi.
+Maximum 40 caractères.
+
+Contexte du chat :`;
+
+	if (isFrench(req)) {
+		preprompt = `Génère un titre concis, drôle ou sarcastique pour cette conversation.
+Le titre doit être percutant, peut inclure des émojis, lâche-toi.
+Maximum 40 caractères.
+
+Contexte du chat :`;
+	}
 	const result = streamObject({
 		model: aiSdk,
 		schema: titleSchema,
-		prompt: `Generate a concise, funny or sarcastic title for this chat conversation.
-The title should be concise, and use emojis if needed. Go wild !
-Maximum 40 characters.
-
-Chat context:
+		prompt: `${preprompt}
 ${JSON.stringify(messages)}`,
 	});
 

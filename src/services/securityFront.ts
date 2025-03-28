@@ -2,6 +2,7 @@ import CryptoJS from "crypto-js";
 import { fetch as expoFetch } from "expo/fetch";
 import { Platform } from "react-native";
 import { apiUrl } from "../constants/apiUrl";
+import { i18n } from "../i18n/i18n";
 import { getDeviceId } from "./deviceId";
 
 // Check for required environment variables
@@ -72,6 +73,7 @@ export const secureFetch = (async (
 		...options.headers,
 		...getAuthHeaders(),
 		"x-device-id": getDeviceId(),
+		"x-locale": i18n.locale,
 	};
 
 	// Explicitly handle the body to avoid the RequestInit type issue

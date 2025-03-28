@@ -16,11 +16,13 @@ import { ResponseDisplay } from "../../../components/ResponseDisplay";
 import { apiUrl } from "../../../constants/apiUrl";
 import { colors } from "../../../constants/colors";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { useI18n } from "../../../i18n/i18n";
 import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { rantSchema } from "../../api/chat-rant+api";
 
 export default function AIRant() {
+	const { t } = useI18n();
 	const { rantId } = useLocalSearchParams();
 
 	const initialRant = useRef(
@@ -105,10 +107,11 @@ export default function AIRant() {
 				title={
 					initialRant?.value.rantSubject ??
 					(rantMessage && input) ??
-					"AI Rant Mode"
+					t("app.ai_rant")
 				}
 				type="rant"
 			/>
+
 			{error && <ErrorCard error={error} />}
 			<View style={styles.content}>
 				{rantMessage !== undefined ? (
@@ -116,6 +119,7 @@ export default function AIRant() {
 						content={rantContent?.content ?? initialRant?.value.rantText}
 						isLoading={isLoading}
 						onNewResponse={handleNewRant}
+						newResponseButtonText={t("app.new_rant")}
 					/>
 				) : (
 					<>
@@ -123,9 +127,9 @@ export default function AIRant() {
 							input={input ?? ""}
 							onInputChange={setInput}
 							onSubmit={handleSubmit}
-							prompt="What would you like me to rant about?"
-							placeholder="Enter a topic..."
-							submitButtonText="Rant"
+							prompt={t("app.what_would_you_like_me_to_rant_about")}
+							placeholder={t("app.enter_a_topic")}
+							submitButtonText={t("app.rant")}
 							inputRef={inputRef}
 							handleTopicSelect={handleTopicSelect}
 						/>

@@ -4,11 +4,13 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
+import FormattedText from "../i18n/FormattedText";
 import { type HistoryItem, storage } from "../services/storage";
 import { getAppImage } from "../utils/getAppImage";
 import { getHistoryContent, getHistoryTitle } from "../utils/history";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
+
 export const History = () => {
 	const [histories, setHistories] = useState(storage.get("history"));
 
@@ -31,11 +33,10 @@ export const History = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.headerContainer}>
-				<Text weight="medium" style={styles.title}>
-					History
-				</Text>
+				<FormattedText weight="medium" style={styles.title} id="app.history" />
+
 				<BouncyPressable onPress={() => router.push("/history")}>
-					<Text style={styles.seeAll}>See all</Text>
+					<FormattedText style={styles.seeAll} id="app.see_all" />
 				</BouncyPressable>
 			</View>
 			{!histories?.length ? (
@@ -45,10 +46,12 @@ export const History = () => {
 						size={48}
 						color={colors.lightGrey}
 					/>
-					<Text style={styles.emptyText}>Wow, such empty!</Text>
-					<Text style={styles.emptySubtext}>
-						Your chat history will appear here
-					</Text>
+
+					<FormattedText style={styles.emptyText} id="app.wow_such_empty" />
+					<FormattedText
+						style={styles.emptySubtext}
+						id="app.your_chat_history_will_appear_"
+					/>
 				</View>
 			) : (
 				<View>

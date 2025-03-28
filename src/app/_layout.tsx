@@ -23,6 +23,7 @@ import {
 } from "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
+import { I18nProvider } from "../i18n/i18n";
 
 if (Platform.OS !== "web" && !process.env.CI) {
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
@@ -59,30 +60,32 @@ function RootLayout() {
 			<StatusBar style="light" translucent />
 			<GestureHandlerRootView>
 				<SafeAreaProvider>
-					<Stack
-						screenOptions={{
-							headerShown: false,
-							contentStyle: { backgroundColor: colors.night },
-							gestureEnabled: true,
-							animation:
-								Platform.OS === "android" ? "slide_from_right" : undefined,
-						}}
-					>
-						<Stack.Screen
-							name="homepage"
-							options={{
-								animation: "fade",
-								animationDuration: 300,
+					<I18nProvider>
+						<Stack
+							screenOptions={{
+								headerShown: false,
+								contentStyle: { backgroundColor: colors.night },
+								gestureEnabled: true,
+								animation:
+									Platform.OS === "android" ? "slide_from_right" : undefined,
 							}}
-						/>
-						<Stack.Screen
-							name="animated-card"
-							options={{
-								animation: "fade",
-								animationDuration: 300,
-							}}
-						/>
-					</Stack>
+						>
+							<Stack.Screen
+								name="homepage"
+								options={{
+									animation: "fade",
+									animationDuration: 300,
+								}}
+							/>
+							<Stack.Screen
+								name="animated-card"
+								options={{
+									animation: "fade",
+									animationDuration: 300,
+								}}
+							/>
+						</Stack>
+					</I18nProvider>
 				</SafeAreaProvider>
 			</GestureHandlerRootView>
 		</ErrorBoundary>

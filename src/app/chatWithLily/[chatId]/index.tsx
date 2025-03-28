@@ -20,11 +20,12 @@ import { IMAGES } from "../../../constants/images";
 import { ComposerInput } from "../../../features/chat/components/ComposerInput";
 import { MessageList } from "../../../features/chat/components/MessageList";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
+import { useI18n } from "../../../i18n/i18n";
 import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
-
 export default function ChatWithLily() {
+	const { t } = useI18n();
 	const { chatId } = useLocalSearchParams();
 
 	const initialChat = useRef(
@@ -117,7 +118,7 @@ export default function ChatWithLily() {
 			]}
 		>
 			<Header
-				title={titleObject?.title ?? "Lisa-Lou's chatbot"}
+				title={titleObject?.title ?? t("app.lisa_lou_chatbot")}
 				type="chatWithLily"
 			/>
 			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>

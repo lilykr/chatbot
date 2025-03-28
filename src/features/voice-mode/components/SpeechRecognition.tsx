@@ -17,13 +17,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { RoundButton } from "../../../components/RoundButton";
 import { font } from "../../../constants/font";
+import FormattedText from "../../../i18n/FormattedText";
+import { useI18n } from "../../../i18n/i18n";
 import { showAlert } from "../../../utils/alert";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-export type SupportedLanguage = "en-US";
+export type SupportedLanguage = "en-US" | "fr-FR";
 
-export const startSpeechRecognition = async () => {
+export const startSpeechRecognition = async (preferredLocale?: string) => {
 	try {
 		// Check if speech recognition is available
 		const recognitionAvailable = isRecognitionAvailable();
@@ -47,9 +49,32 @@ export const startSpeechRecognition = async () => {
 			return false;
 		}
 
-		// Start speech recognition with English
+		let recognitionLang = "en-US"; // Default to English
+
+		// If preferred locale is French, check if French recognition is available
+		if (preferredLocale?.startsWith("fr")) {
+			try {
+				const supportedLocales = await getSupportedLocales();
+				const allLocales = [
+					...supportedLocales.locales,
+					...supportedLocales.installedLocales,
+				];
+
+				// Check if French is available
+				const hasFrench = allLocales.some((loc) => loc.startsWith("fr"));
+
+				if (hasFrench) {
+					recognitionLang = "fr-FR";
+				}
+			} catch (error) {
+				// If getSupportedLocales fails, stick with English
+				console.warn("Failed to check French language availability", error);
+			}
+		}
+
+		// Start speech recognition with detected language
 		ExpoSpeechRecognitionModule.start({
-			lang: "en-US",
+			lang: recognitionLang,
 			interimResults: true,
 			continuous: true,
 		});
@@ -81,8 +106,13 @@ const SpeechRecognition = ({
 	const [isEnglishAvailable, setIsEnglishAvailable] = useState<boolean | null>(
 		null,
 	);
+	const [isFrenchAvailable, setIsFrenchAvailable] = useState<boolean | null>(
+		null,
+	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
+	const { locale } = useI18n();
+	const isPreferredLanguageFrench = locale.startsWith("fr");
 
 	const isWeb = Platform.OS === "web";
 	const safeAreaInsets = useSafeAreaInsets();
@@ -106,12 +136,13 @@ const SpeechRecognition = ({
 		}
 	}, [transcript, refreshButtonOpacity]);
 
-	// Check if English is available
+	// Check if English and French are available
 	useEffect(() => {
-		const checkEnglishAvailability = async () => {
-			// On web, just assume English is available
+		const checkLanguageAvailability = async () => {
+			// On web, just assume both languages are available
 			if (isWeb) {
 				setIsEnglishAvailable(true);
+				setIsFrenchAvailable(true);
 				setIsLoading(false);
 				return;
 			}
@@ -121,6 +152,7 @@ const SpeechRecognition = ({
 				const recognitionAvailable = isRecognitionAvailable();
 				if (!recognitionAvailable) {
 					setIsEnglishAvailable(false);
+					setIsFrenchAvailable(false);
 					setIsLoading(false);
 					return;
 				}
@@ -137,20 +169,36 @@ const SpeechRecognition = ({
 						locale.startsWith("en"),
 					);
 					setIsEnglishAvailable(hasEnglish);
+
+					// Check if French is available
+					const hasFrench = allLocales.some((locale) =>
+						locale.startsWith("fr"),
+					);
+					setIsFrenchAvailable(hasFrench);
 				} catch (error) {
 					// If getSupportedLocales fails, assume English is available
 					setIsEnglishAvailable(true);
+					setIsFrenchAvailable(false);
 				}
 			} catch (error) {
 				console.error("Failed to check language availability", error);
 				setIsEnglishAvailable(false);
+				setIsFrenchAvailable(false);
 			} finally {
 				setIsLoading(false);
 			}
 		};
 
-		checkEnglishAvailability();
+		checkLanguageAvailability();
 	}, [isWeb]);
+
+	// Determine the active language
+	const getActiveLanguage = (): SupportedLanguage => {
+		if (isPreferredLanguageFrench && isFrenchAvailable) {
+			return "fr-FR";
+		}
+		return "en-US";
+	};
 
 	useSpeechRecognitionEvent("start", () => {
 		console.log(">>> start");
@@ -177,7 +225,12 @@ const SpeechRecognition = ({
 			setTranscript("");
 			setIsRefreshing(false);
 			setTimeout(() => {
-				startSpeechRecognition();
+				// Start speech recognition with the active language
+				ExpoSpeechRecognitionModule.start({
+					lang: getActiveLanguage(),
+					interimResults: true,
+					continuous: true,
+				});
 			}, 100);
 			return;
 		}
@@ -220,18 +273,20 @@ const SpeechRecognition = ({
 		// If we're loading, show loading message
 		if (isLoading) {
 			return (
-				<Text style={styles.languageText}>
-					Checking language availability...
-				</Text>
+				<FormattedText
+					style={styles.languageText}
+					id="app.checking_language_availability"
+				/>
 			);
 		}
 
-		// If English is not available, show error message
-		if (isEnglishAvailable === false) {
+		// If neither English nor French is available, show error message
+		if (isEnglishAvailable === false && isFrenchAvailable === false) {
 			return (
-				<Text style={styles.languageText}>
-					Voice recognition not available on this device
-				</Text>
+				<FormattedText
+					style={styles.languageText}
+					id="app.voice_recognition_not_availabl"
+				/>
 			);
 		}
 		// If there's a transcript, show it
@@ -241,12 +296,19 @@ const SpeechRecognition = ({
 		// Otherwise show "Listening..."
 		return (
 			<View style={styles.listeningContainer}>
-				<Text
+				<FormattedText
 					style={[styles.transcriptText, { opacity: 0.8, marginBottom: 10 }]}
-				>
-					Listening...
-				</Text>
-				<Text style={styles.languageText}>Available language: English</Text>
+					id="app.listening"
+				/>
+
+				<FormattedText
+					style={styles.languageText}
+					id={
+						isPreferredLanguageFrench && isFrenchAvailable
+							? "app.available_language_french"
+							: "app.available_language_english"
+					}
+				/>
 			</View>
 		);
 	};

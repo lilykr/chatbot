@@ -1,15 +1,17 @@
+import { useI18n } from "../i18n/i18n";
 import type { App } from "../types/apps";
 
 export const getHistoryTitle = (type: App["type"]) => {
+	const { t } = useI18n();
 	switch (type) {
 		case "chat":
-			return "The Sassy Chatbot";
+			return t("app.the_sassy_chatbot");
 		case "voiceMode":
-			return "Voice Mode";
+			return t("app.ai_voice_mode");
 		case "rant":
-			return "AI Rant";
+			return t("app.ai_rant");
 		case "chatWithLily":
-			return "Lisa-Lou's chatbot";
+			return t("app.lisa_lou_chatbot");
 		default:
 			return "";
 	}
