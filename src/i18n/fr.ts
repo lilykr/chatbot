@@ -6,6 +6,7 @@ const fr: Record<TranslationId, string> = {
 	"app.search": "Rechercher...",
 	"app.new_chat": "Nouvelle conversation",
 	"app.new_rant": "Nouveau coup de gueule",
+	"app.type_a_message": "Entrez un message",
 	"app.1_information_we_collect": "1. Informations que nous collectons",
 	"app.2_how_we_use_your_data": "2. Comment nous utilisons vos données",
 	"app.3_thirdparty_services": "3. Services tiers",

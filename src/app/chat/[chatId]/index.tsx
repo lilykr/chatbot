@@ -18,6 +18,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import uuid from "react-native-uuid";
+// storage.clearAll();
+import { ErrorCard } from "../../../components/ErrorCard";
 import { Header } from "../../../components/Header";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { apiUrl } from "../../../constants/apiUrl";
@@ -28,17 +30,16 @@ import { MessageList } from "../../../features/chat/components/MessageList";
 import { useCamera } from "../../../features/chat/hooks/useCamera";
 import { usePersistChat } from "../../../features/chat/hooks/usePersistChat";
 import { VoiceMode } from "../../../features/voice-mode/VoiceMode";
+import { useI18n } from "../../../i18n/i18n";
 import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
-
-// storage.clearAll();
-import { ErrorCard } from "../../../components/ErrorCard";
 // storage.listen("history", (newValue) => {
 // 	console.log("history changed", JSON.stringify(newValue, null, 2));
 // });
 
 export default function Chat() {
+	const { t } = useI18n();
 	const { chatId, openVoiceMode } = useLocalSearchParams<{
 		chatId: string | "new";
 		openVoiceMode?: "true" | "false";
@@ -206,7 +207,7 @@ export default function Chat() {
 			onLayout={handleLayout}
 		>
 			<Header
-				title={titleObject?.title || "The Sassy Chatbot"}
+				title={titleObject?.title || t("app.the_sassy_chatbot")}
 				type={openVoiceMode ? "voiceMode" : "chat"}
 			/>
 			<KeyboardAvoidingView

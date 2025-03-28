@@ -3,6 +3,7 @@ const en = {
 	"app.search": "Search...",
 	"app.new_chat": "New chat",
 	"app.new_rant": "New rant",
+	"app.type_a_message": "Type a message",
 	"app.1_information_we_collect": "1. Information We Collect",
 	"app.2_how_we_use_your_data": "2. How We Use Your Data",
 	"app.3_thirdparty_services": "3. Third-Party Services",

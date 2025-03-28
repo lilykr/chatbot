@@ -5,6 +5,7 @@ import { Animated, Keyboard, StyleSheet, TextInput, View } from "react-native";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { colors } from "../../../constants/colors";
 import { font } from "../../../constants/font";
+import { useI18n } from "../../../i18n/i18n";
 import { SendButton } from "./SendButton";
 
 interface ComposerInputProps {
@@ -25,6 +26,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 	isQuickReplies = false,
 	inputRef,
 }) => {
+	const { t } = useI18n();
 	const hasInput = value.trim().length > 0;
 	const voiceScaleAnim = useRef<Animated.Value>(new Animated.Value(1)).current;
 	const sendScaleAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
@@ -66,7 +68,7 @@ export const ComposerInput: React.FC<ComposerInputProps> = ({
 					style={styles.input}
 					value={value}
 					onChangeText={onChangeText}
-					placeholder={"Type a message"}
+					placeholder={t("app.type_a_message")}
 					placeholderTextColor={colors.lightGrey}
 					multiline
 					onSubmitEditing={onSubmit}
