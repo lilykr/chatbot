@@ -1,5 +1,8 @@
 const en = {
 	"app.": "%",
+	"app.search": "Search...",
+	"app.new_chat": "New chat",
+	"app.new_rant": "New rant",
 	"app.1_information_we_collect": "1. Information We Collect",
 	"app.2_how_we_use_your_data": "2. How We Use Your Data",
 	"app.3_thirdparty_services": "3. Third-Party Services",
@@ -14,7 +17,7 @@ const en = {
 	"app.the_sassy_chatbot": "The Sassy Chatbot",
 	"app.lisa_lou_chatbot": "Lisa-Lou's Chatbot",
 	"app.rant": "Rant",
-	"app.available_language_english": "Available language",
+	"app.available_language_english": "Available language: English",
 	"app.checking_language_availability": "Checking language availability...",
 	"app.create_explore_be_inspired": "Create, explore, be inspired",
 	"app.enhance_ai_responses_and_featu": "- Enhance AI responses and features.",
@@ -108,6 +111,9 @@ const en = {
 	"errors.networkError": "Network error, please try again",
 	"errors.required": "This field is required",
 	"errors.unknown": "An unknown error occurred",
+	"app.what_would_you_like_me_to_rant_about":
+		"What would you like me to rant about?",
+	"app.available_language_french": "Available language: French",
 };
 
 export default en;

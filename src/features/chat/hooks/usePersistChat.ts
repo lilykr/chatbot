@@ -2,8 +2,8 @@ import { storage } from "../../../services/storage";
 
 import type { UIMessage } from "ai";
 import { useEffect } from "react";
+import { useI18n } from "../../../i18n/i18n";
 import type { HistoryItem } from "../../../services/storage";
-
 type ChatTypes = "chat" | "chatWithLily" | "voiceMode";
 
 export function usePersistChat(params: {
@@ -18,6 +18,7 @@ export function usePersistChat(params: {
 	title: string | undefined;
 	isGeneratingTitle?: boolean;
 }) {
+	const { t } = useI18n();
 	const {
 		chatId,
 		messages,
@@ -29,6 +30,7 @@ export function usePersistChat(params: {
 		singleMessage,
 	} = params;
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		if (isGeneratingTitle) return;
 		if (status === "streaming") return;
@@ -48,7 +50,7 @@ export function usePersistChat(params: {
 			}
 
 			const chatValue = {
-				title: title ?? "New chat",
+				title: title ?? t("app.new_chat"),
 				messages,
 			};
 
@@ -86,7 +88,7 @@ export function usePersistChat(params: {
 			if (!singleMessage) return;
 
 			const rantValue = {
-				rantSubject: title ?? "New rant",
+				rantSubject: title ?? t("app.new_rant"),
 				rantText: singleMessage,
 			};
 

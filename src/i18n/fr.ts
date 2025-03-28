@@ -3,6 +3,9 @@ import type { TranslationId } from "./en";
 // Using Record to ensure all keys from TranslationId are present
 const fr: Record<TranslationId, string> = {
 	"app.": "%",
+	"app.search": "Rechercher...",
+	"app.new_chat": "Nouvelle conversation",
+	"app.new_rant": "Nouveau coup de gueule",
 	"app.1_information_we_collect": "1. Informations que nous collectons",
 	"app.2_how_we_use_your_data": "2. Comment nous utilisons vos données",
 	"app.3_thirdparty_services": "3. Services tiers",
@@ -17,7 +20,7 @@ const fr: Record<TranslationId, string> = {
 	"app.the_sassy_chatbot": "Le chatbot culotté",
 	"app.lisa_lou_chatbot": "Chatbot de Lisa-Lou",
 	"app.rant": "Coup de gueule",
-	"app.available_language_english": "Langue disponible",
+	"app.available_language_english": "Langue disponible: Anglais",
 	"app.checking_language_availability":
 		"Vérification de la disponibilité des langues...",
 	"app.create_explore_be_inspired": "Créer, explorer, être inspiré",
@@ -119,6 +122,8 @@ const fr: Record<TranslationId, string> = {
 	"errors.networkError": "Erreur réseau, veuillez réessayer",
 	"errors.required": "Ce champ est obligatoire",
 	"errors.unknown": "Une erreur inconnue s'est produite",
+	"app.what_would_you_like_me_to_rant_about": "Coup de gueule sur quoi ?",
+	"app.available_language_french": "Langue disponible: Français",
 };
 
 export default fr;

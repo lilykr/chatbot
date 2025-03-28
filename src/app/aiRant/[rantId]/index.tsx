@@ -107,7 +107,7 @@ export default function AIRant() {
 				title={
 					initialRant?.value.rantSubject ??
 					(rantMessage && input) ??
-					"AI Rant Mode"
+					t("app.ai_rant")
 				}
 				type="rant"
 			/>
@@ -119,6 +119,7 @@ export default function AIRant() {
 						content={rantContent?.content ?? initialRant?.value.rantText}
 						isLoading={isLoading}
 						onNewResponse={handleNewRant}
+						newResponseButtonText={t("app.new_rant")}
 					/>
 				) : (
 					<>
@@ -126,7 +127,7 @@ export default function AIRant() {
 							input={input ?? ""}
 							onInputChange={setInput}
 							onSubmit={handleSubmit}
-							prompt="What would you like me to rant about?"
+							prompt={t("app.what_would_you_like_me_to_rant_about")}
 							placeholder={t("app.enter_a_topic")}
 							submitButtonText={t("app.rant")}
 							inputRef={inputRef}

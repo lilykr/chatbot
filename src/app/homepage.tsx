@@ -85,7 +85,7 @@ export default function Homepage() {
 						id="app.create_explore_be_inspired"
 					/>
 
-					<SearchBar onSearch={setSearchQuery} />
+					<SearchBar onSearch={setSearchQuery} placeholder={t("app.search")} />
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
