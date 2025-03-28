@@ -76,7 +76,7 @@ export const startSpeechRecognition = async (preferredLocale?: string) => {
 		ExpoSpeechRecognitionModule.start({
 			lang: recognitionLang,
 			interimResults: true,
-			continuous: true,
+			// continuous: true,
 		});
 
 		return true;
@@ -90,6 +90,64 @@ export const startSpeechRecognition = async (preferredLocale?: string) => {
 		return false;
 	}
 };
+
+export type LanguageAvailability = {
+	isEnglishAvailable: boolean;
+	isFrenchAvailable: boolean;
+};
+
+// Export the function to check language availability
+export const checkLanguageAvailability =
+	async (): Promise<LanguageAvailability> => {
+		// On web, just assume both languages are available
+		if (Platform.OS === "web") {
+			return {
+				isEnglishAvailable: true,
+				isFrenchAvailable: true,
+			};
+		}
+
+		try {
+			const recognitionAvailable = isRecognitionAvailable();
+			if (!recognitionAvailable) {
+				return {
+					isEnglishAvailable: false,
+					isFrenchAvailable: false,
+				};
+			}
+
+			try {
+				const supportedLocales = await getSupportedLocales();
+				const allLocales = [
+					...supportedLocales.locales,
+					...supportedLocales.installedLocales,
+				];
+
+				// Check if English is available
+				const hasEnglish = allLocales.some((locale) => locale.startsWith("en"));
+
+				// Check if French is available
+				const hasFrench = allLocales.some((locale) => locale.startsWith("fr"));
+
+				return {
+					isEnglishAvailable: hasEnglish,
+					isFrenchAvailable: hasFrench,
+				};
+			} catch (error) {
+				// If getSupportedLocales fails, assume English is available
+				return {
+					isEnglishAvailable: true,
+					isFrenchAvailable: false,
+				};
+			}
+		} catch (error) {
+			console.error("Failed to check language availability", error);
+			return {
+				isEnglishAvailable: false,
+				isFrenchAvailable: false,
+			};
+		}
+	};
 
 const SpeechRecognition = ({
 	permissionError,
@@ -138,59 +196,18 @@ const SpeechRecognition = ({
 
 	// Check if English and French are available
 	useEffect(() => {
-		const checkLanguageAvailability = async () => {
-			// On web, just assume both languages are available
-			if (isWeb) {
-				setIsEnglishAvailable(true);
-				setIsFrenchAvailable(true);
-				setIsLoading(false);
-				return;
-			}
-
+		const checkLanguages = async () => {
 			setIsLoading(true);
-			try {
-				const recognitionAvailable = isRecognitionAvailable();
-				if (!recognitionAvailable) {
-					setIsEnglishAvailable(false);
-					setIsFrenchAvailable(false);
-					setIsLoading(false);
-					return;
-				}
+			const { isEnglishAvailable: hasEnglish, isFrenchAvailable: hasFrench } =
+				await checkLanguageAvailability();
 
-				try {
-					const supportedLocales = await getSupportedLocales();
-					const allLocales = [
-						...supportedLocales.locales,
-						...supportedLocales.installedLocales,
-					];
-
-					// Check if English is available
-					const hasEnglish = allLocales.some((locale) =>
-						locale.startsWith("en"),
-					);
-					setIsEnglishAvailable(hasEnglish);
-
-					// Check if French is available
-					const hasFrench = allLocales.some((locale) =>
-						locale.startsWith("fr"),
-					);
-					setIsFrenchAvailable(hasFrench);
-				} catch (error) {
-					// If getSupportedLocales fails, assume English is available
-					setIsEnglishAvailable(true);
-					setIsFrenchAvailable(false);
-				}
-			} catch (error) {
-				console.error("Failed to check language availability", error);
-				setIsEnglishAvailable(false);
-				setIsFrenchAvailable(false);
-			} finally {
-				setIsLoading(false);
-			}
+			setIsEnglishAvailable(hasEnglish);
+			setIsFrenchAvailable(hasFrench);
+			setIsLoading(false);
 		};
 
-		checkLanguageAvailability();
-	}, [isWeb]);
+		checkLanguages();
+	}, []);
 
 	// Determine the active language
 	const getActiveLanguage = (): SupportedLanguage => {

@@ -18,7 +18,7 @@ const fr: Record<TranslationId, string> = {
 	"app.ai_conversations_the_chat_inte": "- Conversations IA",
 	"app.ai_voice_mode": "Mode vocal IA",
 	"app.ai_rant": "IA Coup de gueule",
-	"app.the_sassy_chatbot": "Le chatbot culotté",
+	"app.the_sassy_chatbot": "Le chatbot espiègle",
 	"app.lisa_lou_chatbot": "Chatbot de Lisa-Lou",
 	"app.rant": "Coup de gueule",
 	"app.available_language_english": "Langue disponible: Anglais",

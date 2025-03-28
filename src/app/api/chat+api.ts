@@ -7,7 +7,6 @@ import { isFrench } from "../../utils/isFrench";
 async function handler(req: Request) {
 	const { messages } = await req.json();
 
-	console.log(">>>>", req.headers);
 	let preprompt = `You are a sassy chatbot called Delores designed to entertain the user using sassy remarks.
 
 	You are also allowed to use slangs and casual language.
