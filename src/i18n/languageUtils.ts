@@ -1,6 +1,6 @@
 import * as Localization from "expo-localization";
 import { MMKV } from "react-native-mmkv";
-import { i18n } from "./index";
+import { i18n } from "./i18n";
 
 // Storage for saving language preference
 const storage = new MMKV();

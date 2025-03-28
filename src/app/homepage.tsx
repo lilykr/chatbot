@@ -14,7 +14,6 @@ import { MeshGradient } from "../features/MeshGradient/MeshGradient";
 export default function Homepage() {
 	const insets = useSafeAreaInsets();
 	const [searchQuery, setSearchQuery] = useState("");
-
 	// Define the card data
 	const cards = [
 		{
