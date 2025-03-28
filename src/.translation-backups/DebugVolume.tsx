@@ -5,7 +5,6 @@ import {
 	runOnJS,
 	useAnimatedReaction,
 } from "react-native-reanimated";
-import FormattedText from "../../../i18n/FormattedText";
 import { VolumeProgressBar } from "./VolumeProgressBar";
 
 interface DebugVolumeProps {
@@ -44,7 +43,7 @@ export const DebugVolume = ({
 	return (
 		<View style={styles.container}>
 			<View style={styles.row}>
-				<FormattedText style={styles.label} id="app.manual_mode" />
+				<Text style={styles.label}>Manual Mode</Text>
 				<Switch
 					value={isManualMode}
 					onValueChange={handleManualModeToggle}
@@ -52,8 +51,9 @@ export const DebugVolume = ({
 					thumbColor={isManualMode ? "#f5dd4b" : "#f4f3f4"}
 				/>
 			</View>
-			<FormattedText style={styles.volumeText} id="app.volume" />
-
+			<Text style={styles.volumeText}>
+				Volume: {Math.round(displayVolume * 100)}%
+			</Text>
 			{isManualMode && (
 				<View style={styles.buttonContainer}>
 					{Array.from({ length: 10 }, (_, i) => {

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import FormattedText from "../i18n/FormattedText";
-import { useI18n } from "../i18n/i18n";
+import {
+	View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	StyleSheet,
+} from "react-native";
 
 const SupportPage = () => {
-	const { t } = useI18n();
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState("");
@@ -16,45 +19,41 @@ const SupportPage = () => {
 
 	return (
 		<View style={styles.container}>
-			<FormattedText style={styles.title} id="app.support" />
-			<FormattedText
-				style={styles.description}
-				id="app.need_help_fill_out_the_form_be"
-			/>
+			<Text style={styles.title}>Support</Text>
+			<Text style={styles.description}>
+				Need help? Fill out the form below and we'll get back to you as soon as
+				possible.
+			</Text>
 
 			{submitted ? (
-				<FormattedText
-					style={styles.successMessage}
-					id="app.thank_you_your_message_has_bee"
-				/>
+				<Text style={styles.successMessage}>
+					Thank you! Your message has been received.
+				</Text>
 			) : (
 				<View>
 					<TextInput
 						style={styles.input}
-						placeholder={t("app.your_name")}
+						placeholder="Your Name"
 						value={name}
 						onChangeText={setName}
 					/>
-
 					<TextInput
 						style={styles.input}
-						placeholder={t("app.your_email")}
+						placeholder="Your Email"
 						keyboardType="email-address"
 						value={email}
 						onChangeText={setEmail}
 					/>
-
 					<TextInput
 						style={[styles.input, styles.textArea]}
-						placeholder={t("app.your_message")}
+						placeholder="Your Message"
 						multiline
 						numberOfLines={4}
 						value={message}
 						onChangeText={setMessage}
 					/>
-
 					<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-						<FormattedText style={styles.buttonText} id="app.submit" />
+						<Text style={styles.buttonText}>Submit</Text>
 					</TouchableOpacity>
 				</View>
 			)}

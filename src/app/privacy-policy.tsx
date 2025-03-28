@@ -1,96 +1,55 @@
 import type React from "react";
-import { Linking, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import FormattedText from "../i18n/FormattedText";
+import { useI18n } from "../i18n/i18n";
 
 const PrivacyPolicy = () => {
+	const { t } = useI18n();
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.title}>Privacy Policy</Text>
-			<Text style={styles.date}>Last updated: 23/03/25</Text>
+			<FormattedText style={styles.title} id="app.privacy_policy" />
+			<FormattedText style={styles.date} id="app.last_updated_230325" />
 
-			<Section title="Welcome to Lisa-Lou!">
-				<Text>
-					Your privacy is important to us. This Privacy Policy explains how we
-					collect, use, and protect your data when you use our app.
-				</Text>
+			<Section title={t("app.welcome_to_lisalou")}>
+				<FormattedText id="app.your_privacy_is_important_to_u" />
 			</Section>
 
-			<Section title="1. Information We Collect">
-				<Text>
-					- No Personal Data Required: You can use the app without creating an
-					account or providing personal details.
-				</Text>
+			<Section title={t("app.1_information_we_collect")}>
+				<FormattedText id="app.no_personal_data_required_you_" />
 
-				<Text>
-					- Interaction Data: We may collect non-personal usage data (e.g.,
-					which mini-apps are most popular) to improve the experience.
-				</Text>
+				<FormattedText id="app.interaction_data_we_may_collec" />
 
-				<Text>
-					- AI Conversations: The chat interactions are processed in real-time
-					but are not stored or used to track you.
-				</Text>
+				<FormattedText id="app.ai_conversations_the_chat_inte" />
 			</Section>
 
-			<Section title="2. How We Use Your Data">
-				<Text>- Improve app performance and user experience.</Text>
-				<Text>- Enhance AI responses and features.</Text>
-				<Text>- Fix bugs and optimize interactions.</Text>
+			<Section title={t("app.2_how_we_use_your_data")}>
+				<FormattedText id="app.improve_app_performance_and_us" />
+				<FormattedText id="app.enhance_ai_responses_and_featu" />
+				<FormattedText id="app.fix_bugs_and_optimize_interact" />
 
-				<Text>
-					We do not sell, rent, or share your data with third parties for
-					advertising purposes.
-				</Text>
+				<FormattedText id="app.we_do_not_sell_rent_or_share_y" />
 			</Section>
 
-			<Section title="3. Third-Party Services">
-				<Text>
-					To ensure smooth performance, we may use third-party services (such as
-					analytics tools) that comply with privacy laws. These services may
-					collect anonymized data for app improvement but do not track your
-					identity.
-				</Text>
+			<Section title={t("app.3_thirdparty_services")}>
+				<FormattedText id="app.to_ensure_smooth_performance_w" />
 			</Section>
 
-			<Section title="4. Data Security">
-				<Text>
-					We take appropriate security measures to protect your data from
-					unauthorized access or misuse. However, no system is 100% secure, so
-					we encourage users to avoid sharing sensitive information in AI
-					interactions.
-				</Text>
+			<Section title={t("app.4_data_security")}>
+				<FormattedText id="app.we_take_appropriate_security_m" />
 			</Section>
 
-			<Section title="5. Your Rights">
-				<Text>
-					- Access & Deletion: You can request to see or delete any collected
-					data.
-				</Text>
+			<Section title={t("app.5_your_rights")}>
+				<FormattedText id="app.access_deletion_you_can_reques" />
 
-				<Text>
-					- Opt-Out: You can disable analytics tracking in the settings (if
-					applicable).
-				</Text>
+				<FormattedText id="app.optout_you_can_disable_analyti" />
 			</Section>
 
-			<Section title="6. Changes to This Policy">
-				<Text>
-					We may update this Privacy Policy as the app evolves. Any changes will
-					be reflected here, and we’ll notify users if necessary.
-				</Text>
+			<Section title={t("app.6_changes_to_this_policy")}>
+				<FormattedText id="app.we_may_update_this_privacy_pol" />
 			</Section>
 
-			<Section title="7. Contact Us">
-				<Text>
-					If you have any questions about this Privacy Policy, feel free to
-					reach out at{" "}
-					<Text
-						style={styles.link}
-						onPress={() => Linking.openURL("mailto:lisa.lou.kara@gmail.com")}
-					>
-						lisa.lou.kara@gmail.com
-					</Text>
-					.
-				</Text>
+			<Section title={t("app.7_contact_us")}>
+				<FormattedText id="app.if_you_have_any_questions_abou" />
 			</Section>
 		</ScrollView>
 	);

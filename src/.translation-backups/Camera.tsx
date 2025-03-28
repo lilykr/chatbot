@@ -16,7 +16,7 @@ import {
 	StyleSheet,
 	View,
 } from "react-native";
-import FormattedText from "../../i18n/FormattedText";
+import { Text } from "../../components/Text";
 import { CloseButton } from "./components/CloseButton";
 import { FlashButton } from "./components/FlashButton";
 import { FlipCameraButton } from "./components/FlipCameraButton";
@@ -146,10 +146,10 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 				<View style={styles.header}>
 					<View style={styles.headerSpacer} />
 					<Animated.View style={[styles.timerContainer, rotationStyle]}>
-						<FormattedText
-							style={[styles.timerText, styles.timerTextLandscape]}
-							id="app."
-						/>
+						<Text style={[styles.timerText, styles.timerTextLandscape]}>
+							{Math.floor(recordingTime / 60)}:
+							{(recordingTime % 60).toString().padStart(2, "0")}
+						</Text>
 					</Animated.View>
 					<CloseButton onClose={onCloseCamera} rotationStyle={rotationStyle} />
 				</View>
@@ -174,13 +174,11 @@ export const Camera: React.FC<CameraProps> = ({ onClose, onVideoCaptured }) => {
 						onToggleFlash={onToggleFlash}
 						rotationStyle={rotationStyle}
 					/>
-
 					<RecordButton
 						onToggleRecording={onToggleRecording}
 						borderRadius={borderRadius}
 						scale={scale}
 					/>
-
 					<FlipCameraButton
 						isRecording={isRecording}
 						onToggleCameraFacing={toggleCameraFacing}

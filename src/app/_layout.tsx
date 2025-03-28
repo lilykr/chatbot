@@ -23,7 +23,7 @@ import {
 } from "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
-import { I18nProvider } from "../i18n/i18n.js";
+import { I18nProvider } from "../i18n/i18n";
 
 if (Platform.OS !== "web" && !process.env.CI) {
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);

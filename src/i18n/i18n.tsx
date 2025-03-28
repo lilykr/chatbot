@@ -12,9 +12,11 @@ import fr from "./fr";
 
 // Create the i18n instance
 const i18n = new I18n({
-	...en,
-	...fr,
+	en,
+	fr,
 });
+
+i18n.defaultSeparator = ",";
 
 // Set the locale based on device language
 i18n.locale = Localization.getLocales()[0]?.languageCode ?? "en";
@@ -49,7 +51,7 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
 
 	// Provide translation function and locale management
 	const value = {
-		t: (scope: TranslationId) => i18n.t(scope),
+		t: (scope: TranslationId) => i18n.t([scope]),
 		locale,
 		setLocale,
 	};

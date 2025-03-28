@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BouncyPressable } from "../../../components/BouncyPressable";
 import { RoundButton } from "../../../components/RoundButton";
 import { font } from "../../../constants/font";
-import FormattedText from "../../../i18n/FormattedText";
 import { showAlert } from "../../../utils/alert";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -221,20 +220,18 @@ const SpeechRecognition = ({
 		// If we're loading, show loading message
 		if (isLoading) {
 			return (
-				<FormattedText
-					style={styles.languageText}
-					id="app.checking_language_availability"
-				/>
+				<Text style={styles.languageText}>
+					Checking language availability...
+				</Text>
 			);
 		}
 
 		// If English is not available, show error message
 		if (isEnglishAvailable === false) {
 			return (
-				<FormattedText
-					style={styles.languageText}
-					id="app.voice_recognition_not_availabl"
-				/>
+				<Text style={styles.languageText}>
+					Voice recognition not available on this device
+				</Text>
 			);
 		}
 		// If there's a transcript, show it
@@ -244,15 +241,12 @@ const SpeechRecognition = ({
 		// Otherwise show "Listening..."
 		return (
 			<View style={styles.listeningContainer}>
-				<FormattedText
+				<Text
 					style={[styles.transcriptText, { opacity: 0.8, marginBottom: 10 }]}
-					id="app.listening"
-				/>
-
-				<FormattedText
-					style={styles.languageText}
-					id="app.available_language_english"
-				/>
+				>
+					Listening...
+				</Text>
+				<Text style={styles.languageText}>Available language: English</Text>
 			</View>
 		);
 	};

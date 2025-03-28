@@ -1,0 +1,22 @@
+{
+	"name": "i18n-migration-scripts",
+	"version": "1.0.0",
+	"description": "Scripts to automate i18n migration",
+	"private": true,
+	"scripts": {
+		"extract": "node extractText.js",
+		"update-translations": "node updateTranslations.js",
+		"replace": "node replaceHardcodedStrings.js",
+		"migrate": "npm run extract && npm run update-translations && npm run replace",
+		"add-language": "node addNewLanguage.js"
+	},
+	"dependencies": {
+		"@babel/core": "^7.20.12",
+		"@babel/generator": "^7.20.14",
+		"@babel/plugin-syntax-jsx": "^7.18.6",
+		"@babel/preset-react": "^7.18.6",
+		"@babel/preset-typescript": "^7.18.6",
+		"@babel/types": "^7.20.7",
+		"glob": "^8.1.0"
+	}
+}

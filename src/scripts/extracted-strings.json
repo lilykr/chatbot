@@ -1,0 +1,285 @@
+{
+  "statistics": {
+    "totalStrings": 51,
+    "totalFiles": 12
+  },
+  "strings": {
+    "app.enter_a_topic": "Enter a topic...",
+    "app.history": "History",
+    "app.create_explore_be_inspired": "Create, explore, be inspired",
+    "app.privacy_policy": "Privacy Policy",
+    "app.last_updated_230325": "Last updated: 23/03/25",
+    "app.welcome_to_lisalou": "Welcome to Lisa-Lou!",
+    "app.your_privacy_is_important_to_u": "Your privacy is important to us. This Privacy Policy explains how we\n\t\t\t\t\tcollect, use, and protect your data when you use our app.",
+    "app.1_information_we_collect": "1. Information We Collect",
+    "app.no_personal_data_required_you_": "- No Personal Data Required: You can use the app without creating an\n\t\t\t\t\taccount or providing personal details.",
+    "app.interaction_data_we_may_collec": "- Interaction Data: We may collect non-personal usage data (e.g.,\n\t\t\t\t\twhich mini-apps are most popular) to improve the experience.",
+    "app.ai_conversations_the_chat_inte": "- AI Conversations: The chat interactions are processed in real-time\n\t\t\t\t\tbut are not stored or used to track you.",
+    "app.2_how_we_use_your_data": "2. How We Use Your Data",
+    "app.improve_app_performance_and_us": "- Improve app performance and user experience.",
+    "app.enhance_ai_responses_and_featu": "- Enhance AI responses and features.",
+    "app.fix_bugs_and_optimize_interact": "- Fix bugs and optimize interactions.",
+    "app.we_do_not_sell_rent_or_share_y": "We do not sell, rent, or share your data with third parties for\n\t\t\t\t\tadvertising purposes.",
+    "app.3_thirdparty_services": "3. Third-Party Services",
+    "app.to_ensure_smooth_performance_w": "To ensure smooth performance, we may use third-party services (such as\n\t\t\t\t\tanalytics tools) that comply with privacy laws. These services may\n\t\t\t\t\tcollect anonymized data for app improvement but do not track your\n\t\t\t\t\tidentity.",
+    "app.4_data_security": "4. Data Security",
+    "app.we_take_appropriate_security_m": "We take appropriate security measures to protect your data from\n\t\t\t\t\tunauthorized access or misuse. However, no system is 100% secure, so\n\t\t\t\t\twe encourage users to avoid sharing sensitive information in AI\n\t\t\t\t\tinteractions.",
+    "app.5_your_rights": "5. Your Rights",
+    "app.access_deletion_you_can_reques": "- Access & Deletion: You can request to see or delete any collected\n\t\t\t\t\tdata.",
+    "app.optout_you_can_disable_analyti": "- Opt-Out: You can disable analytics tracking in the settings (if\n\t\t\t\t\tapplicable).",
+    "app.6_changes_to_this_policy": "6. Changes to This Policy",
+    "app.we_may_update_this_privacy_pol": "We may update this Privacy Policy as the app evolves. Any changes will\n\t\t\t\t\tbe reflected here, and we’ll notify users if necessary.",
+    "app.7_contact_us": "7. Contact Us",
+    "app.if_you_have_any_questions_abou": "If you have any questions about this Privacy Policy, feel free to\n\t\t\t\t\treach out at",
+    "app.": "%",
+    "app.lisaloukaragmailcom": "lisa.lou.kara@gmail.com",
+    "app.support": "Support",
+    "app.need_help_fill_out_the_form_be": "Need help? Fill out the form below and we'll get back to you as soon as\n\t\t\t\tpossible.",
+    "app.thank_you_your_message_has_bee": "Thank you! Your message has been received.",
+    "app.your_name": "Your Name",
+    "app.your_email": "Your Email",
+    "app.your_message": "Your Message",
+    "app.submit": "Submit",
+    "app.see_all": "See all",
+    "app.wow_such_empty": "Wow, such empty!",
+    "app.your_chat_history_will_appear_": "Your chat history will appear here",
+    "app.suggestions": "Suggestions:",
+    "app.manual_mode": "Manual Mode",
+    "app.volume": "Volume:",
+    "app.checking_language_availability": "Checking language availability...",
+    "app.voice_recognition_not_availabl": "Voice recognition not available on this device",
+    "app.listening": "Listening...",
+    "app.available_language_english": "Available language: English",
+    "app.ai_voice_mode": "AI Voice mode"
+  },
+  "fileMapping": {
+    "app/aiRant/[rantId]/index.tsx": [
+      {
+        "key": "app.enter_a_topic",
+        "text": "Enter a topic..."
+      }
+    ],
+    "app/history.tsx": [
+      {
+        "key": "app.history",
+        "text": "History"
+      }
+    ],
+    "app/homepage.tsx": [
+      {
+        "key": "app.create_explore_be_inspired",
+        "text": "Create, explore, be inspired"
+      }
+    ],
+    "app/privacy-policy.tsx": [
+      {
+        "key": "app.privacy_policy",
+        "text": "Privacy Policy"
+      },
+      {
+        "key": "app.last_updated_230325",
+        "text": "Last updated: 23/03/25"
+      },
+      {
+        "key": "app.welcome_to_lisalou",
+        "text": "Welcome to Lisa-Lou!"
+      },
+      {
+        "key": "app.your_privacy_is_important_to_u",
+        "text": "Your privacy is important to us. This Privacy Policy explains how we\n\t\t\t\t\tcollect, use, and protect your data when you use our app."
+      },
+      {
+        "key": "app.1_information_we_collect",
+        "text": "1. Information We Collect"
+      },
+      {
+        "key": "app.no_personal_data_required_you_",
+        "text": "- No Personal Data Required: You can use the app without creating an\n\t\t\t\t\taccount or providing personal details."
+      },
+      {
+        "key": "app.interaction_data_we_may_collec",
+        "text": "- Interaction Data: We may collect non-personal usage data (e.g.,\n\t\t\t\t\twhich mini-apps are most popular) to improve the experience."
+      },
+      {
+        "key": "app.ai_conversations_the_chat_inte",
+        "text": "- AI Conversations: The chat interactions are processed in real-time\n\t\t\t\t\tbut are not stored or used to track you."
+      },
+      {
+        "key": "app.2_how_we_use_your_data",
+        "text": "2. How We Use Your Data"
+      },
+      {
+        "key": "app.improve_app_performance_and_us",
+        "text": "- Improve app performance and user experience."
+      },
+      {
+        "key": "app.enhance_ai_responses_and_featu",
+        "text": "- Enhance AI responses and features."
+      },
+      {
+        "key": "app.fix_bugs_and_optimize_interact",
+        "text": "- Fix bugs and optimize interactions."
+      },
+      {
+        "key": "app.we_do_not_sell_rent_or_share_y",
+        "text": "We do not sell, rent, or share your data with third parties for\n\t\t\t\t\tadvertising purposes."
+      },
+      {
+        "key": "app.3_thirdparty_services",
+        "text": "3. Third-Party Services"
+      },
+      {
+        "key": "app.to_ensure_smooth_performance_w",
+        "text": "To ensure smooth performance, we may use third-party services (such as\n\t\t\t\t\tanalytics tools) that comply with privacy laws. These services may\n\t\t\t\t\tcollect anonymized data for app improvement but do not track your\n\t\t\t\t\tidentity."
+      },
+      {
+        "key": "app.4_data_security",
+        "text": "4. Data Security"
+      },
+      {
+        "key": "app.we_take_appropriate_security_m",
+        "text": "We take appropriate security measures to protect your data from\n\t\t\t\t\tunauthorized access or misuse. However, no system is 100% secure, so\n\t\t\t\t\twe encourage users to avoid sharing sensitive information in AI\n\t\t\t\t\tinteractions."
+      },
+      {
+        "key": "app.5_your_rights",
+        "text": "5. Your Rights"
+      },
+      {
+        "key": "app.access_deletion_you_can_reques",
+        "text": "- Access & Deletion: You can request to see or delete any collected\n\t\t\t\t\tdata."
+      },
+      {
+        "key": "app.optout_you_can_disable_analyti",
+        "text": "- Opt-Out: You can disable analytics tracking in the settings (if\n\t\t\t\t\tapplicable)."
+      },
+      {
+        "key": "app.6_changes_to_this_policy",
+        "text": "6. Changes to This Policy"
+      },
+      {
+        "key": "app.we_may_update_this_privacy_pol",
+        "text": "We may update this Privacy Policy as the app evolves. Any changes will\n\t\t\t\t\tbe reflected here, and we’ll notify users if necessary."
+      },
+      {
+        "key": "app.7_contact_us",
+        "text": "7. Contact Us"
+      },
+      {
+        "key": "app.if_you_have_any_questions_abou",
+        "text": "If you have any questions about this Privacy Policy, feel free to\n\t\t\t\t\treach out at"
+      },
+      {
+        "key": "app.",
+        "text": "."
+      },
+      {
+        "key": "app.lisaloukaragmailcom",
+        "text": "lisa.lou.kara@gmail.com"
+      }
+    ],
+    "app/support.tsx": [
+      {
+        "key": "app.support",
+        "text": "Support"
+      },
+      {
+        "key": "app.need_help_fill_out_the_form_be",
+        "text": "Need help? Fill out the form below and we'll get back to you as soon as\n\t\t\t\tpossible."
+      },
+      {
+        "key": "app.thank_you_your_message_has_bee",
+        "text": "Thank you! Your message has been received."
+      },
+      {
+        "key": "app.your_name",
+        "text": "Your Name"
+      },
+      {
+        "key": "app.your_email",
+        "text": "Your Email"
+      },
+      {
+        "key": "app.your_message",
+        "text": "Your Message"
+      },
+      {
+        "key": "app.submit",
+        "text": "Submit"
+      }
+    ],
+    "components/History.tsx": [
+      {
+        "key": "app.history",
+        "text": "History"
+      },
+      {
+        "key": "app.see_all",
+        "text": "See all"
+      },
+      {
+        "key": "app.wow_such_empty",
+        "text": "Wow, such empty!"
+      },
+      {
+        "key": "app.your_chat_history_will_appear_",
+        "text": "Your chat history will appear here"
+      }
+    ],
+    "components/RantPills.tsx": [
+      {
+        "key": "app.suggestions",
+        "text": "Suggestions:"
+      }
+    ],
+    "components/RantSuggestions.tsx": [
+      {
+        "key": "app.suggestions",
+        "text": "Suggestions:"
+      }
+    ],
+    "features/camera/Camera.tsx": [
+      {
+        "key": "app.",
+        "text": ":"
+      }
+    ],
+    "features/voice-mode/components/DebugVolume.tsx": [
+      {
+        "key": "app.manual_mode",
+        "text": "Manual Mode"
+      },
+      {
+        "key": "app.volume",
+        "text": "Volume:"
+      },
+      {
+        "key": "app.",
+        "text": "%"
+      }
+    ],
+    "features/voice-mode/components/SpeechRecognition.tsx": [
+      {
+        "key": "app.checking_language_availability",
+        "text": "Checking language availability..."
+      },
+      {
+        "key": "app.voice_recognition_not_availabl",
+        "text": "Voice recognition not available on this device"
+      },
+      {
+        "key": "app.listening",
+        "text": "Listening..."
+      },
+      {
+        "key": "app.available_language_english",
+        "text": "Available language: English"
+      }
+    ],
+    "features/voice-mode/VoiceMode.tsx": [
+      {
+        "key": "app.ai_voice_mode",
+        "text": "AI Voice mode"
+      }
+    ]
+  }
+}

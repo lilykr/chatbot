@@ -1,4 +1,5 @@
-import { Text, type TextProps } from "react-native";
+import { Text } from "react-native";
+import type { TextProps } from "../components/Text";
 import { type TranslationId, useI18n } from "./i18n";
 
 type FormattedTextProps = TextProps & {

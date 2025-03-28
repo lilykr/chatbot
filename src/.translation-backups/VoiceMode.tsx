@@ -7,7 +7,6 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { Header } from "../../components/Header";
-import { useI18n } from "../../i18n/i18n";
 import { DebugVolume } from "./components/DebugVolume";
 import SpeechRecognition, {
 	startSpeechRecognition,
@@ -28,7 +27,6 @@ export type VoiceModeProps = {
 };
 
 export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
-	const { t } = useI18n();
 	// Create the shared values in the component
 	const volume = useSharedValue(0);
 	const opacity = useSharedValue(0);
@@ -182,7 +180,7 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	return (
 		<View style={styles.layout}>
-			<Header title={t("app.ai_voice_mode")} type="voiceMode" />
+			<Header title="AI Voice mode" type="voiceMode" />
 			{/* WaveMesh with opacity animation */}
 			<Animated.View style={[animatedStyle, styles.waveMeshContainer]}>
 				<WaveMesh

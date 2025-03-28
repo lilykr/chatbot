@@ -1,11 +1,11 @@
-import { Text as RNText, type TextProps } from "react-native";
+import { Text as RNText, type TextProps as RNTextProps } from "react-native";
 import { font } from "../constants/font";
 
-type Props = TextProps & {
+export type TextProps = RNTextProps & {
 	weight?: "regular" | "medium" | "bold" | "semibold";
 };
 
-export const Text = ({ weight = "regular", ...props }: Props) => {
+export const Text = ({ weight = "regular", ...props }: TextProps) => {
 	return (
 		<RNText
 			{...props}

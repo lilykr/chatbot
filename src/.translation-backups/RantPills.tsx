@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
-import FormattedText from "../i18n/FormattedText";
 import { BouncyPressable } from "./BouncyPressable";
 import { Text } from "./Text";
 
@@ -21,7 +20,7 @@ interface RantPillsProps {
 export const RantPills = ({ onSelectTopic }: RantPillsProps) => {
 	return (
 		<View style={styles.container}>
-			<FormattedText style={styles.suggestionsText} id="app.suggestions" />
+			<Text style={styles.suggestionsText}>Suggestions:</Text>
 			<View style={styles.pillsContainer}>
 				{RANT_SUGGESTIONS.map((topic) => (
 					<BouncyPressable

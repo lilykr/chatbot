@@ -7,31 +7,29 @@ import { CardButton } from "../components/CardButton";
 import { History } from "../components/History";
 import { RoundButton } from "../components/RoundButton";
 import { SearchBar } from "../components/SearchBar";
+import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
 import { MeshGradient } from "../features/MeshGradient/MeshGradient";
-import FormattedText from "../i18n/FormattedText";
-import { useI18n } from "../i18n/i18n";
 
 export default function Homepage() {
-	const { t } = useI18n();
 	const insets = useSafeAreaInsets();
 	const [searchQuery, setSearchQuery] = useState("");
 	// Define the card data
 	const cards = [
 		{
-			text: t("app.the_sassy_chatbot"),
+			text: "The Sassy Chatbot",
 			onPress: () => router.push("/chat/new"),
 		},
 		{
-			text: t("app.lisa_lou_chatbot"),
+			text: "Lisa-Lou's Chatbot",
 			onPress: () => router.push("/chatWithLily/new"),
 		},
 		{
-			text: t("app.ai_voice_mode"),
+			text: "AI Voice Mode",
 			onPress: () => router.push("/chat/new?openVoiceMode=true"),
 		},
 		{
-			text: t("app.ai_rant"),
+			text: "AI Rant",
 			onPress: () => router.push("/aiRant/new"),
 		},
 	];
@@ -72,7 +70,7 @@ export default function Homepage() {
 							<Ionicons name="sparkles" size={24} color="white" />
 						</RoundButton>
 					</View>
-					<FormattedText
+					<Text
 						weight="semibold"
 						style={{
 							color: "white",
@@ -82,9 +80,9 @@ export default function Homepage() {
 							marginBottom: 8,
 							paddingHorizontal: 16,
 						}}
-						id="app.create_explore_be_inspired"
-					/>
-
+					>
+						Create, explore, be inspired
+					</Text>
 					<SearchBar onSearch={setSearchQuery} />
 					<ScrollView
 						horizontal

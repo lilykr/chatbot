@@ -1,61 +1,65 @@
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { colors } from "../constants/colors";
+import FormattedText from "../i18n/FormattedText";
+import { useI18n } from "../i18n/i18n";
 import { Pill } from "./Pill";
-import { Text } from "./Text";
 
-const RANT_SUGGESTIONS = [
-	"Social Media",
-	"Modern Dating",
-	"AI",
-	"Traffic",
-	"Customer Service",
-	"Public Transport",
-	"Smartphone Addiction",
-	"Work Meetings",
-	"Email Etiquette",
-	"Fast Food",
-	"Weather",
-	"Airport Security",
-	"Self-Checkout",
-	"Streaming Services",
-	"Internet Speed",
-	"Phone Battery Life",
-	"Parking",
-	"Gym Culture",
-	"Coffee Prices",
-	"Remote Work",
-	"Online Ads",
-	"Delivery Apps",
-	"Social Plans",
-	"Tech Support",
-	"Gaming",
-	"Reality TV",
-	"Fashion Trends",
-	"Home Renovation",
-	"Food Delivery",
-	"Influencers",
-];
+// Translation IDs for rant topics
+const RANT_SUGGESTION_IDS = [
+	"rant.topic.social_media",
+	"rant.topic.modern_dating",
+	"rant.topic.ai",
+	"rant.topic.traffic",
+	"rant.topic.customer_service",
+	"rant.topic.public_transport",
+	"rant.topic.smartphone_addiction",
+	"rant.topic.work_meetings",
+	"rant.topic.email_etiquette",
+	"rant.topic.fast_food",
+	"rant.topic.weather",
+	"rant.topic.airport_security",
+	"rant.topic.self_checkout",
+	"rant.topic.streaming_services",
+	"rant.topic.internet_speed",
+	"rant.topic.phone_battery",
+	"rant.topic.parking",
+	"rant.topic.gym_culture",
+	"rant.topic.coffee_prices",
+	"rant.topic.remote_work",
+	"rant.topic.online_ads",
+	"rant.topic.delivery_apps",
+	"rant.topic.social_plans",
+	"rant.topic.tech_support",
+	"rant.topic.gaming",
+	"rant.topic.reality_tv",
+	"rant.topic.fashion_trends",
+	"rant.topic.home_renovation",
+	"rant.topic.food_delivery",
+	"rant.topic.influencers",
+] as const;
 
 interface RantSuggestionsProps {
 	onSelectTopic: (topic: string) => void;
 }
 
 export const RantSuggestions = ({ onSelectTopic }: RantSuggestionsProps) => {
-	const randomTopics = useMemo(() => {
-		const shuffled = [...RANT_SUGGESTIONS].sort(() => Math.random() - 0.5);
+	const { t } = useI18n();
+
+	const randomTopicIds = useMemo(() => {
+		const shuffled = [...RANT_SUGGESTION_IDS].sort(() => Math.random() - 0.5);
 		return shuffled.slice(0, 3);
 	}, []);
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.suggestionsText}>Suggestions:</Text>
+			<FormattedText style={styles.suggestionsText} id="app.suggestions" />
 			<View style={styles.pillsContainer}>
-				{randomTopics.map((topic) => (
+				{randomTopicIds.map((topicId) => (
 					<Pill
-						key={topic}
-						label={topic}
-						onPress={() => onSelectTopic(topic)}
+						key={topicId}
+						label={t(topicId)}
+						onPress={() => onSelectTopic(t(topicId))}
 					/>
 				))}
 			</View>
