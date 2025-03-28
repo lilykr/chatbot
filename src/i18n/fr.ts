@@ -13,10 +13,10 @@ const fr: Record<TranslationId, string> = {
 	"app.access_deletion_you_can_reques": "- Accès et suppression",
 	"app.ai_conversations_the_chat_inte": "- Conversations IA",
 	"app.ai_voice_mode": "Mode vocal IA",
-	"app.ai_rant": "Diatribe IA",
+	"app.ai_rant": "IA Coup de gueule",
 	"app.the_sassy_chatbot": "Le chatbot culotté",
 	"app.lisa_lou_chatbot": "Chatbot de Lisa-Lou",
-	"app.rant": "Diatribe",
+	"app.rant": "Coup de gueule",
 	"app.available_language_english": "Langue disponible",
 	"app.checking_language_availability":
 		"Vérification de la disponibilité des langues...",

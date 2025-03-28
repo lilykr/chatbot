@@ -44,6 +44,7 @@ export const CardButton = ({
 							{
 								color: textColor,
 								fontSize: 18,
+								lineHeight: 22,
 							},
 							textStyle,
 						]}
