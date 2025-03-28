@@ -152,15 +152,11 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 				// Determine preferred language based on locale and availability
 				const preferredLocale = locale;
-				const isPreferredLanguageFrench = preferredLocale.startsWith("fr");
 
 				// Only start if at least one language is available
 				if (isEnglishAvailable || isFrenchAvailable) {
 					// Start recording automatically
-					await autoStartRecording(
-						preferredLocale,
-						isPreferredLanguageFrench && isFrenchAvailable,
-					);
+					await autoStartRecording(preferredLocale);
 				} else {
 					// If no language is available, set error state
 					setPermissionErrorState(
@@ -189,10 +185,7 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 	}, []);
 
 	// Function to start speech recognition with the correct language
-	const autoStartRecording = async (
-		preferredLocale: string,
-		usesFrench: boolean,
-	) => {
+	const autoStartRecording = async (preferredLocale: string) => {
 		// Ensure we've cleaned up any previous recording
 		volumeControlCleanup();
 

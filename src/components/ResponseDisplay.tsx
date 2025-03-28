@@ -26,7 +26,6 @@ export function ResponseDisplay({
 	content,
 	isLoading,
 	onNewResponse,
-	loadingText = "AI is starting the rant...",
 	newResponseButtonText = "New Rant",
 }: ResponseDisplayProps) {
 	const scrollViewRef = useRef<ScrollView>(null);

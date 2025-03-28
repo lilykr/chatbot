@@ -7,7 +7,6 @@ import { BouncyPressable } from "../components/BouncyPressable";
 import { Header } from "../components/Header";
 import { Text } from "../components/Text";
 import { colors } from "../constants/colors";
-import FormattedText from "../i18n/FormattedText";
 import { useI18n } from "../i18n/i18n";
 import { type HistoryItem, storage } from "../services/storage";
 import { getAppImage } from "../utils/getAppImage";

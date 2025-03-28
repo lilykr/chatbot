@@ -172,7 +172,6 @@ const SpeechRecognition = ({
 	const { locale } = useI18n();
 	const isPreferredLanguageFrench = locale.startsWith("fr");
 
-	const isWeb = Platform.OS === "web";
 	const safeAreaInsets = useSafeAreaInsets();
 
 	// Add animated value for refresh button opacity
