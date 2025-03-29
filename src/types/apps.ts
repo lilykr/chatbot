@@ -32,5 +32,13 @@ export type RantApp = {
 	};
 };
 
-export type App = ChatApp | VoiceModeApp | RantApp | ChatWithLilyApp;
+export type RoastApp = {
+	type: "roast";
+	value: {
+		roastTitle: string;
+		imageRoast: string;
+	};
+};
+
+export type App = ChatApp | VoiceModeApp | RantApp | RoastApp | ChatWithLilyApp;
 export type AppType = App["type"];

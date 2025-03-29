@@ -27,6 +27,10 @@ export default function Homepage() {
 			onPress: () => router.push("/aiRant/new"),
 		},
 		{
+			text: t("app.photo_roast"),
+			onPress: () => router.push("/photo_roast"),
+		},
+		{
 			text: t("app.ai_voice_mode"),
 			onPress: () => router.push("/chat/new?openVoiceMode=true"),
 		},

@@ -75,6 +75,7 @@ const fr: Record<TranslationId, string> = {
 		"Une nouvelle version de l'app est disponible. Redémarrez l'app pour l'installer",
 	"app.restart_now": "Redémarrer maintenant",
 	"app.later": "Plus tard",
+	"app.photo_roast": "IA Photo Roast",
 
 	// Adding rant suggestion topics
 	"rant.topic.social_media": "Réseaux sociaux",

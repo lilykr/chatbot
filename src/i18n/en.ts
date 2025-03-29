@@ -69,6 +69,10 @@ const en = {
 		"A new version is available. Restart the app to apply the update.",
 	"app.restart_now": "Restart now",
 	"app.later": "Restart later",
+	"app.photo_roast": "AI Photo Roast",
+	"app.select_photo": "Select a photo to roast",
+	"app.what_would_you_like_me_to_roast": "What would you like me to roast?",
+	"app.new_roast": "New roast",
 
 	"rant.topic.social_media": "Social Media",
 	"rant.topic.modern_dating": "Modern Dating",
