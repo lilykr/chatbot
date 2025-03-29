@@ -70,6 +70,11 @@ const fr: Record<TranslationId, string> = {
 	"app.your_name": "Votre nom",
 	"app.your_privacy_is_important_to_u":
 		"Votre vie privée est importante pour nous. Cette Politique de Confidentialité explique comment nous collectons, utilisons et protégeons vos données lorsque vous utilisez notre application.",
+	"app.update_available": "Mise à jour disponible",
+	"app.update_available_download":
+		"Une nouvelle version de l'app est disponible. Redémarrez l'app pour l'installer",
+	"app.restart_now": "Redémarrer maintenant",
+	"app.later": "Plus tard",
 
 	// Adding rant suggestion topics
 	"rant.topic.social_media": "Réseaux sociaux",

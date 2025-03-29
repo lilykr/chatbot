@@ -64,6 +64,12 @@ const en = {
 	"app.your_name": "Your Name",
 	"app.your_privacy_is_important_to_u":
 		"Your privacy is important to us. This Privacy Policy explains how we\\n					collect, use, and protect your data when you use our app.",
+	"app.update_available": "Update available",
+	"app.update_available_download":
+		"A new version is available. Restart the app to apply the update.",
+	"app.restart_now": "Restart now",
+	"app.later": "Restart later",
+
 	"rant.topic.social_media": "Social Media",
 	"rant.topic.modern_dating": "Modern Dating",
 	"rant.topic.ai": "AI",

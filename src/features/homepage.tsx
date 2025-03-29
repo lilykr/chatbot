@@ -8,7 +8,7 @@ import { History } from "../components/History";
 import { RoundButton } from "../components/RoundButton";
 import { SearchBar } from "../components/SearchBar";
 import { colors } from "../constants/colors";
-import { MeshGradient } from "../features/MeshGradient/MeshGradient";
+import { MeshGradient } from "./MeshGradient/MeshGradient";
 import FormattedText from "../i18n/FormattedText";
 import { useI18n } from "../i18n/i18n";
 
