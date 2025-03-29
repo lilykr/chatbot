@@ -71,7 +71,7 @@ function RootLayout() {
 							}}
 						>
 							<Stack.Screen
-								name="homepage"
+								name="index"
 								options={{
 									animation: "fade",
 									animationDuration: 300,
