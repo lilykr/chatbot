@@ -18,7 +18,7 @@ type Props = {
 	agentId: string;
 };
 
-export function ConversationAI({ agentId }: Props) {
+export default function ConversationAI({ agentId }: Props) {
 	const conversation = useConversation({
 		onConnect: () => console.log("Connected"),
 		onDisconnect: () => console.log("Disconnected"),
