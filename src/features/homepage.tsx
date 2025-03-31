@@ -8,9 +8,9 @@ import { History } from "../components/History";
 import { RoundButton } from "../components/RoundButton";
 import { SearchBar } from "../components/SearchBar";
 import { colors } from "../constants/colors";
-import { MeshGradient } from "./MeshGradient/MeshGradient";
 import FormattedText from "../i18n/FormattedText";
 import { useI18n } from "../i18n/i18n";
+import { MeshGradient } from "./MeshGradient/MeshGradient";
 
 export default function Homepage() {
 	const { t } = useI18n();
@@ -25,6 +25,10 @@ export default function Homepage() {
 		{
 			text: t("app.ai_rant"),
 			onPress: () => router.push("/aiRant/new"),
+		},
+		{
+			text: t("app.conversation_roast"),
+			onPress: () => router.push("/conversation-roast"),
 		},
 		{
 			text: t("app.ai_voice_mode"),

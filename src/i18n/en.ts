@@ -13,6 +13,7 @@ const en = {
 	"app.7_contact_us": "7. Contact Us",
 	"app.access_deletion_you_can_reques": "- Access & Deletion",
 	"app.ai_conversations_the_chat_inte": "- AI Conversations",
+	"app.conversation_roast": "Roast me!",
 	"app.ai_voice_mode": "AI Voice mode",
 	"app.ai_rant": "AI Rant",
 	"app.the_sassy_chatbot": "The Sassy Chatbot",
