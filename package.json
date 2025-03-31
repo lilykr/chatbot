@@ -16,6 +16,7 @@
 		"ship": "yarn build:web && yarn deploy:prod"
 	},
 	"dependencies": {
+		"@11labs/react": "^0.0.8",
 		"@ai-sdk/google": "^1.2.1",
 		"@ai-sdk/react": "^1.1.23",
 		"@expo-google-fonts/epilogue": "^0.2.3",
@@ -35,6 +36,7 @@
 		"expo-camera": "~16.0.17",
 		"expo-clipboard": "~7.0.1",
 		"expo-constants": "~17.0.8",
+		"expo-dev-client": "~5.0.15",
 		"expo-device": "~7.0.2",
 		"expo-font": "~13.0.4",
 		"expo-image-picker": "~16.0.6",
@@ -68,6 +70,7 @@
 		"react-native-screens": "~4.4.0",
 		"react-native-uuid": "^2.0.3",
 		"react-native-web": "~0.19.13",
+		"react-native-webview": "13.12.5",
 		"uuid": "^11.1.0",
 		"zod": "^3.24.2"
 	},

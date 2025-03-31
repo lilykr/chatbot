@@ -22,7 +22,8 @@
 				"NSSpeechRecognitionUsageDescription": "Allow Lisa-Lou to use speech recognition to hear you and respond to you.",
 				"NSMicrophoneUsageDescription": "Allow Lisa-Lou to use the microphone to hear you and respond to you.",
 				"ITSAppUsesNonExemptEncryption": false
-			}
+			},
+			"appleTeamId": "6A3W99PM43"
 		},
 		"android": {
 			"adaptiveIcon": {
@@ -32,10 +33,6 @@
 			"package": "com.lilykr.lisalou",
 			"permissions": [
 				"android.permission.CAMERA",
-				"android.permission.RECORD_AUDIO",
-				"android.permission.MODIFY_AUDIO_SETTINGS",
-				"android.permission.READ_EXTERNAL_STORAGE",
-				"android.permission.WRITE_EXTERNAL_STORAGE",
 				"android.permission.RECORD_AUDIO",
 				"android.permission.MODIFY_AUDIO_SETTINGS",
 				"android.permission.READ_EXTERNAL_STORAGE",
