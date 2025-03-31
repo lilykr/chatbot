@@ -27,7 +27,6 @@ interface WebAudioContextType {
 
 export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 	const [recording, setRecording] = useState<Audio.Recording | null>(null);
-	const [isManualMode, setIsManualMode] = useState(true);
 	const [permissionError, setPermissionError] = useState<string | null>(null);
 	const isMountedRef = useRef(true);
 	const isRecordingSetupInProgressRef = useRef(false);
@@ -96,7 +95,7 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 		// Clean up any existing web audio setup
 		cleanupWebAudio();
 
-		if (!isManualMode && isMountedRef.current) {
+		if (isMountedRef.current) {
 			try {
 				// Create audio context
 				const windowWithAudio = window as unknown as WebAudioContextType;
@@ -136,7 +135,7 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 				console.error("Error setting up Web Audio API:", err);
 			}
 		}
-	}, [isManualMode]);
+	}, []);
 
 	// Clean up Web Audio resources
 	const cleanupWebAudio = useCallback(() => {
@@ -175,11 +174,11 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 	// Monitor volume using Web Audio API
 	const startVolumeMonitoring = useCallback(() => {
 		// Only check for manual mode, allow volume detection during speech recognition
-		if (!analyserRef.current || !isMountedRef.current || isManualMode) return;
+		if (!analyserRef.current || !isMountedRef.current) return;
 
 		const updateVolume = () => {
 			// Check if we should stop monitoring (only if manual mode or component unmounted)
-			if (!analyserRef.current || !isMountedRef.current || isManualMode) {
+			if (!analyserRef.current || !isMountedRef.current) {
 				if (webAudioAnimationFrameRef.current !== null) {
 					cancelAnimationFrame(webAudioAnimationFrameRef.current);
 					webAudioAnimationFrameRef.current = null;
@@ -233,7 +232,7 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 
 		// Start monitoring loop
 		webAudioAnimationFrameRef.current = requestAnimationFrame(updateVolume);
-	}, [isManualMode, updateVolumeValue]);
+	}, [updateVolumeValue]);
 
 	// Properly handle recording lifecycle
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Complex dependencies handled with refs
@@ -251,15 +250,8 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 					await stopAndUnloadRecording(recording);
 				}
 
-				// Clean up web audio if we're switching to manual mode
-				if (isManualMode) {
-					if (Platform.OS === "web") {
-						cleanupWebAudio();
-					}
-				}
-
 				// Only start a new recording if we're not in manual mode
-				if (!isManualMode && isMountedRef.current) {
+				if (isMountedRef.current) {
 					// Set minimum volume while we set up
 					updateVolumeValue(MIN_VOLUME);
 
@@ -281,7 +273,7 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 							Audio.RecordingOptionsPresets.HIGH_QUALITY,
 							(status) => {
 								// Continue volume detection even during speech recognition
-								if (status.metering && isMountedRef.current && !isManualMode) {
+								if (status.metering && isMountedRef.current) {
 									// Convert dB to a 0-1 scale with amplification
 									let rawVolume = Math.min(
 										Math.max((status.metering + 60) / 60, 0),
@@ -338,7 +330,6 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 			}
 		};
 	}, [
-		isManualMode,
 		stopAndUnloadRecording,
 		cleanupWebAudio,
 		setupWebAudio,
@@ -355,44 +346,15 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 		[updateVolumeValue],
 	);
 
-	// Toggle manual mode
-	const toggleManualMode = useCallback(
-		(enabled: boolean) => {
-			setIsManualMode(enabled);
-
-			// Reset any permission errors when switching to manual mode
-			if (enabled) {
-				setPermissionError(null);
-
-				// Make sure to stop any active recording when switching to manual mode
-				if (recording) {
-					stopAndUnloadRecording(recording).catch((err) =>
-						console.error(
-							"Error stopping recording when toggling manual mode:",
-							err,
-						),
-					);
-				}
-			}
-		},
-		[recording, stopAndUnloadRecording],
-	);
-
 	// Handle permission errors
 	const setPermissionErrorState = useCallback(
 		(error: string | null) => {
 			setPermissionError(error);
 
-			// If there's an error, switch to manual mode
-			if (error) {
-				setIsManualMode(true);
-
-				// Also make sure to stop any recording if there's an error
-				if (recording) {
-					stopAndUnloadRecording(recording).catch((err) =>
-						console.error("Error stopping recording on error:", err),
-					);
-				}
+			if (error && recording) {
+				stopAndUnloadRecording(recording).catch((err) =>
+					console.error("Error stopping recording on error:", err),
+				);
 			}
 		},
 		[recording, stopAndUnloadRecording],
@@ -414,9 +376,7 @@ export const useVolumeControl = ({ volume }: UseVolumeControlProps) => {
 	}, [recording, stopAndUnloadRecording, cleanupWebAudio]);
 
 	return {
-		isManualMode,
 		permissionError,
-		toggleManualMode,
 		setPermissionErrorState,
 		handleManualVolumeChange,
 		cleanup,

@@ -8,7 +8,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { Header } from "../../components/Header";
 import { useI18n } from "../../i18n/i18n";
-import { DebugVolume } from "./components/DebugVolume";
 import SpeechRecognition, {
 	checkLanguageAvailability,
 	startSpeechRecognition,
@@ -18,7 +17,6 @@ import { useVolumeControl } from "./hooks/useVolumeControl";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 // Add this constant at the top with other constants
-const enableDebug = false; // You can toggle this to show/hide debug controls
 const FINAL_POINT_COUNT = 1000; // Target number of points
 const INITIAL_POINT_COUNT = 200; // Starting with fewer points for fast initial render
 
@@ -83,11 +81,8 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 
 	// Pass the volume shared value to the hook
 	const {
-		isManualMode,
 		permissionError,
-		toggleManualMode,
 		setPermissionErrorState,
-		handleManualVolumeChange,
 		cleanup: volumeControlCleanup,
 	} = useVolumeControl({ volume });
 
@@ -199,8 +194,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 				);
 			} else {
 				setPermissionErrorState(null);
-				// If successful, ensure manual mode is off
-				toggleManualMode(false);
 			}
 		} catch (error) {
 			const errorMessage =
@@ -229,17 +222,6 @@ export function VoiceMode({ onSpeechEnd, onClose }: VoiceModeProps) {
 				isClosing={isClosing}
 				onClose={handleClose}
 			/>
-
-			<View style={styles.overlay}>
-				{enableDebug && (
-					<DebugVolume
-						volume={volume}
-						isManualMode={isManualMode}
-						onManualModeToggle={toggleManualMode}
-						onVolumeChange={handleManualVolumeChange}
-					/>
-				)}
-			</View>
 		</View>
 	);
 }
@@ -249,14 +231,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "black",
 	},
-	overlay: {
-		position: "absolute",
-		bottom: 40,
-		left: 0,
-		right: 0,
-		alignItems: "center",
-		gap: 20,
-	},
+
 	loadingContainer: {
 		position: "absolute",
 		top: 0,
