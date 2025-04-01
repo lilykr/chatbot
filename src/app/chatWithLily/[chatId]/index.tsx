@@ -2,6 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import {
 	type FlatList,
 	InteractionManager,
+	Platform,
 	StyleSheet,
 	type TextInput,
 	View,
@@ -24,6 +25,7 @@ import { useI18n } from "../../../i18n/i18n";
 import { secureFetch } from "../../../services/securityFront";
 import { type HistoryItem, storage } from "../../../services/storage";
 import { titleSchema } from "../../api/generate-title+api";
+
 export default function ChatWithLily() {
 	const { t } = useI18n();
 	const { chatId } = useLocalSearchParams();
@@ -121,7 +123,11 @@ export default function ChatWithLily() {
 				title={titleObject?.title ?? t("app.lisa_lou_chatbot")}
 				type="chatWithLily"
 			/>
-			<KeyboardAvoidingView keyboardOpenedOffset={-safeAreaInsets.bottom}>
+			<KeyboardAvoidingView
+				keyboardOpenedOffset={
+					Platform.OS === "ios" ? -safeAreaInsets.bottom : 0
+				}
+			>
 				<MessageList
 					users={[{ _id: 1 }, { _id: 2, avatar: IMAGES.LLK_AVATAR }]}
 					messages={messages}
@@ -132,7 +138,6 @@ export default function ChatWithLily() {
 							: null,
 					}}
 				/>
-
 				<ComposerInput
 					inputRef={inputRef}
 					value={input}
