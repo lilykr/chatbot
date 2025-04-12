@@ -26,10 +26,10 @@ export default function Homepage() {
 			text: t("app.ai_rant"),
 			onPress: () => router.push("/aiRant/new"),
 		},
-		// {
-		// 	text: t("app.photo_roast"),
-		// 	onPress: () => router.push("/photo_roast"),
-		// },
+		{
+			text: t("app.photo_roast"),
+			onPress: () => router.push("/photo_roast"),
+		},
 		{
 			text: t("app.ai_voice_mode"),
 			onPress: () => router.push("/chat/new?openVoiceMode=true"),
